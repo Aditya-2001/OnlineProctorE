@@ -1,0 +1,71 @@
+body{
+    background-position: bottom right;
+    background-image: url(image.png);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: auto 100%;
+    font-family: 'Titillium Web',Helvetica,Arial,Lucida,sans-serif;
+}
+#name {
+    width:100%;
+    /* padding-left: 10%; */
+    padding-top: 1%;
+    color: #5BB12F;
+    line-height: 1.5;
+}
+.heading{
+    font-family: "Kaushan Script","Helvetica Neue",Helvetica,Arial,cursive;
+    color: #5BB12F;
+    font-size: 2rem;
+}
+.oops{
+    margin: 5% 10%;
+    font-size: 62px;
+    width: auto;
+    font-weight: bolder;
+}
+.error{
+    margin: 4%;
+    font-size: 22px;
+    font-weight: bold;
+    width: 50%;
+}
+.btn{
+    margin-top: 1%;
+}
+button{
+    width: 5cm;
+    height: 1.5cm;
+    border: 2px solid #5BB12F;
+    border-radius: 1cm;
+    box-shadow: 5px 10px 15px #888888;
+    margin: 20px;
+    font-weight: bolder;
+    font-size: large;
+}
+.b1{
+    background-image: linear-gradient(210deg,#58BA52 0%,#2f8f83 100%);
+    color: white;
+}
+.b2{
+    color: #5BB12F;
+}
+.b1:hover{
+    background-image: none;
+    color: #5BB12F;
+}
+.b2:hover{
+    background-image: linear-gradient(210deg,#58BA52 0%,#2f8f83 100%);
+    color: white;
+}
+@media screen and (max-width:740px) {
+    body{
+        background-size: 100% auto;
+    }
+    .oops{
+        width: 100%;
+    }
+    .error{
+        width: 95%;
+    }
+}
