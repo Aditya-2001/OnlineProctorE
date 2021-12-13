@@ -64,6 +64,8 @@ button{
     }
     .oops{
         width: 100%;
+        text-align: center;
+        margin: 0;
     }
     .error{
         width: 95%;
