@@ -1,13 +1,22 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const mongoose= require('mongoose');
+const config = require('./config');
+const {auth} = require('./controllers/login_logout/authenticate');
 
 var index = require('./routes/root/index');
-var users = require('./routes/users');
+var users = require('./routes/login_logout/users');
 
 var app = express();
+
+mongoose.Promise=global.Promise;
+mongoose.connect(config.mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true}, function(err){
+  if(err) console.log(err);
+  console.log("database is connected");
+});
 
 app.all('*', (req,res,next)=>{
   if(req.secure){
@@ -28,7 +37,10 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 app.use('/', index);
 app.use('/users', users);
-
+app.use(auth);
+app.get('/dashboard', (req, res) => {
+  res.end("Welcome to the portal");
+})
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -42,7 +54,8 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  // res.render('error');
+  res.end('error');
 });
 
 module.exports = app;
