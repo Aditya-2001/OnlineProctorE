@@ -10,7 +10,7 @@ router.post('/signup', register);
 
 router.route('/login')
   .get((req, res) => {
-    res.render('login/login');
+    res.render('login/login', {success: true, message: ''});
   })
   .post(login);
 
@@ -18,6 +18,6 @@ router.route('/forgotpassword')
   .get((req,res)=>{
     res.render('forgot_password/forgot_password');
   })
-router.post('/logout', auth, logout);
+router.get('/logout', auth, logout);
 
 module.exports = router;

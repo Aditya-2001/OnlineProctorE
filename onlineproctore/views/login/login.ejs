@@ -15,7 +15,7 @@
 
 <body>
     <div id="form_wrapper">
-        <div id="form">
+        <form id="form">
             <div class="logoName">
                 <div id="logo">
                     <img src="/Login/logo.png" alt="Logo" style="width:50px;height:50px;">
@@ -24,20 +24,25 @@
                     <h1 class="heading">OnlineProctorE</h1>
                 </div>
             </div>
+            <div class="login-error-message">
+                <p id="setError"></p>
+            </div>
             <div class="input_container">
                 <i class="fas fa-user" style="color: #5BB12F;"></i>
-                <input placeholder="User Name" autocomplete="false" type="email" name="Email" id="field_email" class='input_field'>
+                <input placeholder="User Name" autocomplete="false" type="text" id="useremail" name="username" class='input_field' required>
             </div>
             <div class="input_container">
                 <i class="fas fa-lock" style="color: #5BB12F;"></i>
-                <input  placeholder="Password" autocomplete="false" type="password" name="Password" id="field_password" class='input_field'>
+                <input  placeholder="Password" autocomplete="false" type="password" name="password" id="password" class='input_field' required>
                 <i class="far fa-eye" style="color: #5BB12F;padding-right: 20px;" id="togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
             </div>
-            <input type="submit" value="Login" id='input_submit' class='input_field'>
+            <input type="submit" value="Login" id='login_button' class='input_field'>
             <span style="font-size: 0.5cm;"><a href="/users/forgotpassword">Forgot Password ?</a></span>
-        </div>
+        </form>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#field_password');
@@ -49,6 +54,8 @@
             this.classList.toggle('fa-eye-slash');
         });
     </script>
+    <script type="text/javascript " src="/Login/script.js"></script>
+
 </body>
 
 </html>

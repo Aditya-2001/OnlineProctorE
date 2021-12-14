@@ -84,7 +84,7 @@ span {
 }
 
 .input_container,
-#input_submit {
+#login_button {
     height: 50px;
     /* make the borders more round */
     border-radius: 30px;
@@ -110,7 +110,7 @@ span {
     outline: none;
 }
 
-#input_submit {
+#login_button {
     /* submit button has a different color and different padding */
     background-color: var(--submit_bg);
     padding-left: 0;
@@ -119,7 +119,7 @@ span {
     text-transform: uppercase;
 }
 
-#input_submit:hover {
+#login_button:hover {
     background-color: var(--submit_hover);
     /* simple color transition on hover */
     transition: background-color , 1s;
@@ -187,4 +187,10 @@ i {
     font-size: 2.2rem;
     display: inline-block;
     animation: move 3s ease-in-out infinite;
+}
+
+.login-error-message{
+    text-align: center;
+    color: red;
+    text-shadow: 1px 1px 2px red;
 }

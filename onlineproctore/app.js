@@ -39,7 +39,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use(auth);
 app.get('/dashboard', (req, res) => {
-  res.end("Welcome to the portal");
+  res.render('dashboard/dashboard');
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

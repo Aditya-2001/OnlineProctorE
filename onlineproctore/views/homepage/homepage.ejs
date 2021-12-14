@@ -123,7 +123,11 @@
                             <p class="animated1">Success is never final. Failure is never fatal.<br> It’s courage that counts.</p>	    
                         </div>
                         <div class="col-md-12 text-center">
-                            <a class="animated3 slider btn btn-primary btn-min-block" href="/users/login">Log In</a>   
+                            <%if(authorized){%>
+                                <a class="animated3 slider btn btn-primary btn-min-block" href="/dashboard">Dashboard</a>
+                            <%}else{%>
+                                <a class="animated3 slider btn btn-primary btn-min-block" href="/users/login">Log In</a>
+                            <%}%>  
                         </div>
                     </div>
                 </div>
