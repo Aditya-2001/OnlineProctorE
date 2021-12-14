@@ -76,7 +76,6 @@ exports.forgotPassword = async (req, res) => {
     email = req.body.email;
   }
   else{
-    console.log(req.body.email);
     try{
       const user = await User.findOne({username: req.body.email});
       if(!user){
@@ -94,7 +93,7 @@ exports.forgotPassword = async (req, res) => {
           message: "Unable to generate token"
         });
         accesstoken = user.token;
-        link = config.baseLink+'/users/changepassword/?'+accesstoken;
+        link = config.baseLink+'/users/changepassword/'+accesstoken;
         const mailOptions = {
           from: config.email,
           to: email,
@@ -110,5 +109,31 @@ exports.forgotPassword = async (req, res) => {
     }catch(err){
       console.log(err);
     }
+  }
+}
+
+exports.changePassword = async (req,res) => {
+  const {accesstoken} = req.params;
+  try{
+    await User.findByToken(accesstoken, (err,user)=>{
+      if(err) return res.status(400).json({
+        success: false,
+        message: "Unable to change Password"
+      });
+      if(!user) return res.status(400).json({
+        success: false,
+        message: "Unable to change Password"
+      });
+      if(user){
+        user.password = req.body.password;
+        user.token = undefined;
+        user.save();
+        return res.status(200).json({
+          redirect: '/users/login'
+        });
+      }
+    })
+  }catch(err){
+    console.log(err);
   }
 }

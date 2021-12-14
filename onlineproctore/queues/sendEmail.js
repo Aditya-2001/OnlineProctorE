@@ -16,6 +16,7 @@ sendEmailQueue.process(NUM_WORKERS, async ({data}) => {
   const mailOptions = data.mailOptions;
   await transporter.sendMail(mailOptions, function(error, info){
     if (error) {
+      console.log(error);
       console.log('Email Was not Sent Successfully')
       return {
         success: false,

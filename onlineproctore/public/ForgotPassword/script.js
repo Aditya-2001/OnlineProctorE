@@ -8,6 +8,11 @@ $("#form").submit(async function (e) {
   }catch(error){
     console.log(error.response.data);
     errorr.innerHTML = error.response.data.message;
-    setTimeout(function(){ errorr.innerHTML = "" }, 2000);
+    fader('#setError')
   }
 })
+
+function fader(ID){
+  $(ID).fadeIn()
+  $(ID).delay(4000).fadeOut(4000)
+}
