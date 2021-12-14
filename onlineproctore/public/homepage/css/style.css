@@ -723,25 +723,23 @@ li {
 		display: none;
 	}
     
-    #main-slide .item .slider-content{
-		display: none;
-	}
-    
     #main-slide .item {
         height: 400px;
     }
-    
+    #main-slide .item img{
+        width: auto;
+    }
 }
 
 
 @media (max-width : 479px) {
     
-    #main-slide .item .slider-content{
-		display: none;
-	}
-    
     #main-slide .item {
-        height: 180px;
+        height: 400px;
+    }
+
+    #main-slide .item img{
+        width: auto;
     }
     
 }

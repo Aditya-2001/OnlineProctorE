@@ -5,7 +5,19 @@ const {auth} = require('../../controllers/login_logout/authenticate');
 
 /* GET users listing. */
 router.post('/signup', register);
-router.post('/login', login);
+
+
+
+router.route('/login')
+  .get((req, res) => {
+    res.render('login/login');
+  })
+  .post(login);
+
+router.route('/forgotpassword')
+  .get((req,res)=>{
+    res.render('forgot_password/forgot_password');
+  })
 router.post('/logout', auth, logout);
 
 module.exports = router;
