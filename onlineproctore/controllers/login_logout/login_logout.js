@@ -1,4 +1,3 @@
-const { token } = require('morgan');
 const config = require('../../config');
 const User = require('../../models/user');
 const {registerationQueue} = require('../../queues/registerUser');
@@ -7,8 +6,8 @@ exports.register = async (req, res) => {
   await registerationQueue.add({
     username: req.body.username,
     password: req.body.password,
-    email: '',
-    accountType: '',
+    email: 'iit2019211@iiita.ac.in',
+    staff: true
   });
   res.end('hh');
 }
@@ -113,6 +112,9 @@ exports.forgotPassword = async (req, res) => {
 }
 
 exports.changePassword = async (req,res) => {
+  if(req.cookies.isAuth){
+    return res.status(400).json({success: false, message: 'You are Logged In'});
+  }
   const {accesstoken} = req.params;
   try{
     await User.findByToken(accesstoken, (err,user)=>{

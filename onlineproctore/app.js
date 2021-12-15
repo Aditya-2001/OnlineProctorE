@@ -9,6 +9,7 @@ const {auth} = require('./controllers/login_logout/authenticate');
 
 var index = require('./routes/root/index');
 var users = require('./routes/login_logout/users');
+var staff = require('./routes/staff/staff');
 
 var app = express();
 
@@ -41,6 +42,7 @@ app.use(auth);
 app.get('/dashboard', (req, res) => {
   res.render('dashboard/dashboard');
 })
+app.use('/dashboard/staff', staff);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -7,6 +7,7 @@ const salt = 10;
 const User = new Schema({
   email:{
     type: String,
+    required: true,
     unique: 1
   },
   username: {
