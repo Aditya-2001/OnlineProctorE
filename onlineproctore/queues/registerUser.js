@@ -3,10 +3,13 @@ const User = require("../models/user");
 const registerationQueue = new Queue("Register-User-Queue");
 const {sendEmailQueue} = require('./sendEmail');
 const config = require('../config');
+const ejs = require('ejs');
+const path = require('path');
 const NUM_WORKERS = 5;
 
 registerationQueue.process(NUM_WORKERS, async ({data}) => {
   const newuser = new User(data);
+  const userdata = data;
   await User.findOne({username: newuser.username}, (err, user) => {
     if(err){
       return {
@@ -29,18 +32,32 @@ registerationQueue.process(NUM_WORKERS, async ({data}) => {
           status: 'Unable to create account'
         }
       }
-      const mailOptions = {
-        from: config.email,
-        to: data.email,
-        subject: "Welcome to OnlineProctorE!",
-        text: "Your email has been used to create your account at OnlineProctorE. Login Credentials are as follows : \nUsername : "+data.username+"\nPassword : "+data.password+"\nPassword is auto generated so it is recommended to change ASAP."+"\n\nThanks,\n"+config.projectName
-      };
-      sendEmailQueue.add({mailOptions: mailOptions});
-      return {
-        success: true,
-        user: doc,
-        status: 'Account Created'
-      }
+      ejs.renderFile(path.resolve(__dirname,'../views/email/emailAccountCreation.ejs')
+        , {homepageUrl: config.baseLink, username: userdata.username, password: userdata.password}
+        , function(err, data){
+          if (err) {
+            console.log(err);
+            return {
+              success: false,
+              user: null,
+              status: 'Unable to create account'
+            }
+          }
+          else {
+            const mailOptions = {
+              from: config.email,
+              to: userdata.email,
+              subject: "Welcome to OnlineProctorE!",
+              html: data
+            };
+            sendEmailQueue.add({mailOptions: mailOptions});
+            return {
+              success: true,
+              user: doc,
+              status: 'Account Created'
+            }
+          }
+        })
     });
   }).clone().catch(function(err){ console.log(err)});
     

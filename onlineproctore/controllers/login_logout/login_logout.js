@@ -2,6 +2,9 @@ const config = require('../../config');
 const User = require('../../models/user');
 const {registerationQueue} = require('../../queues/registerUser');
 const {sendEmailQueue} = require('../../queues/sendEmail');
+const ejs = require('ejs');
+const path = require('path');
+
 exports.register = async (req, res) => {
   await registerationQueue.add({
     username: req.body.username,
@@ -71,43 +74,51 @@ exports.forgotPassword = async (req, res) => {
   }
   email = '';
   username = '';
-  if(req.body.email.includes(config.baseEmail)){
-    email = req.body.email;
-  }
-  else{
-    try{
-      const user = await User.findOne({username: req.body.email});
-      if(!user){
-        return res.status(400).json({success: false, message: 'Account Not Found'});
-      }
-      email = user.email;
-      username = user.username;
-      if(email === ''){
-        return res.status(400).json({success: false, message: 'Email Associated with Account Not Found'});
-      }
-      accesstoken = '';
-      user.generateToken((err,user)=>{
-        if(err) return res.status(400).json({
-          success: false,
-          message: "Unable to generate token"
-        });
-        accesstoken = user.token;
-        link = config.baseLink+'/users/changepassword/'+accesstoken;
-        const mailOptions = {
-          from: config.email,
-          to: email,
-          subject: 'Link for changing the password',
-          text: "Hi "+username+",\nA request was received that you forgot your password. Was it really you? Click on the following confirmation link to update your password.\n\nConfirmation Link is "+link+"\n\nIgnore this email if you do not want to change your password.\n\nThanks,\n"+config.projectName
-        };
-        sendEmailQueue.add({mailOptions: mailOptions});
-        return res.status(200).json({
-          success: true,
-          message: "Email Sent"
-        });
-      });
-    }catch(err){
-      console.log(err);
+  try{
+    const user = await User.findOne({username: req.body.email});
+    if(!user){
+      return res.status(400).json({success: false, message: 'Account Not Found'});
     }
+    email = user.email;
+    username = user.username;
+    if(email === ''){
+      return res.status(400).json({success: false, message: 'Email Associated with Account Not Found'});
+    }
+    accesstoken = '';
+    user.generateToken((err,user)=>{
+      if(err) return res.status(400).json({
+        success: false,
+        message: "Unable to generate token"
+      });
+      accesstoken = user.token;
+      link = config.baseLink+'/users/changepassword/'+accesstoken;
+      ejs.renderFile(path.resolve(__dirname,'../../views/email/emailPasswordChange.ejs')
+      , {homepageUrl: config.baseLink, username: username, link: link}
+      , function(err, data){
+        if (err) {
+          console.log(err);
+          return res.status(400).json({
+            success: false,
+            message: "Unable to send email"
+          });
+        }
+        else {
+          const mailOptions = {
+            from: config.email,
+            to: email,
+            subject: 'Link for changing the Account password for OnlineProctorE',
+            html: data
+          };
+          sendEmailQueue.add({mailOptions: mailOptions});
+          return res.status(200).json({
+            success: true,
+            message: "Email Sent"
+          });
+        }
+      })
+    });
+  }catch(err){
+    console.log(err);
   }
 }
 
