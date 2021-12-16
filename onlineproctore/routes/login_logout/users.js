@@ -17,7 +17,7 @@ router.route('/forgotpassword')
   .get((req,res) => res.render('forgot_password/forgot_password'))
   .post(forgotPassword);
 
-router.route('/changepassword/:accesstoken')
+router.route('/changepassword/:accesstoken/:tokenHash')
   .get((req,res) => res.render('changepassword/changepassword'))
   .post(changePassword)
 

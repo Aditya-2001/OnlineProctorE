@@ -91,7 +91,8 @@ exports.forgotPassword = async (req, res) => {
         message: "Unable to generate token"
       });
       accesstoken = user.token;
-      link = config.baseLink+'/users/changepassword/'+accesstoken;
+      tokenHash = user.tokenHash;
+      link = config.baseLink+'/users/changepassword/'+accesstoken+'/'+tokenHash;
       ejs.renderFile(path.resolve(__dirname,'../../views/email/emailPasswordChange.ejs')
       , {homepageUrl: config.baseLink, username: username, link: link}
       , function(err, data){
@@ -123,10 +124,7 @@ exports.forgotPassword = async (req, res) => {
 }
 
 exports.changePassword = async (req,res) => {
-  if(req.cookies.isAuth){
-    return res.status(400).json({success: false, message: 'You are Logged In'});
-  }
-  const {accesstoken} = req.params;
+  const {accesstoken, tokenHash} = req.params;
   try{
     await User.findByToken(accesstoken, (err,user)=>{
       if(err) return res.status(400).json({
@@ -138,12 +136,26 @@ exports.changePassword = async (req,res) => {
         message: "Unable to change Password"
       });
       if(user){
+        if(tokenHash !== user.tokenHash){
+          return res.status(400).json({
+            success: false,
+            message: "Invalid Access"
+          });
+        }
         user.password = req.body.password;
         user.token = undefined;
+        user.tokenHash = undefined;
         user.save();
-        return res.status(200).json({
-          redirect: '/users/login'
-        });
+        if(!req.cookies.isAuth){
+          return res.status(200).json({
+            redirect: '/users/login'
+          });
+        }
+        else{
+          return res.status(200).json({
+            redirect: '/users/logout'
+          });
+        }
       }
     })
   }catch(err){

@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 const config = require('../config');
 const jwt = require('jsonwebtoken');
+const randomstring = require('randomstring');
 const salt = 10;
 const User = new Schema({
   email:{
@@ -21,6 +22,9 @@ const User = new Schema({
     minlength: 8
   },
   token:{
+    type: String
+  },
+  tokenHash:{
     type: String
   },
   student:{
@@ -70,6 +74,10 @@ User.methods.generateToken = function(cb){
   var user =this;
   var token=jwt.sign(user._id.toHexString(),config.secretKey);
   user.token=token;
+  user.tokenHash=randomstring.generate({
+    length: 64,
+    charset: 'alphanumeric'
+  });
   user.save(function(err,user){
     if(err) return cb(err);
     cb(null,user);
@@ -88,7 +96,7 @@ User.statics.findByToken = function(token,cb){
 
 User.methods.deleteToken = function(token,cb){
   var user=this;
-  user.update({$unset : {token :1}},function(err,user){
+  user.update({$unset : {token :1, tokenHash: 1}},function(err,user){
     if(err) return cb(err);
     cb(null,user);
   })
