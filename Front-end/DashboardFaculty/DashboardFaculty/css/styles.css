@@ -1,0 +1,56 @@
+.heading{
+  font-family: "Kaushan Script","Helvetica Neue",Helvetica,Arial,cursive;
+  color: #5BB12F;
+  font-size: 2rem;
+  line-height: 1.5;
+}
+.course-name{
+  margin-top: 2cm;
+  margin-left: 3cm;
+}
+@media (min-width: 992px) {
+  #temp{
+    display: none;
+  }
+}
+.add{
+  margin: auto;
+  color: #5BB12F;
+  text-align: center;
+}
+.add-ico{
+  font-size:100px;
+  text-shadow: 0 2px 2px grey;
+  text-align: center;
+}
+.course{
+  box-shadow: 0 3px 10px 3px gray;
+}
+.vertical-center {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+table{
+  width: 100%;
+}
+#myTable1{
+  margin-left: 5%;
+}
+@media (max-width: 560px) {
+  #myTable1{
+    margin-left: 0;
+  }
+}
+@media (max-width: 590px){
+  .mcq-table{
+    display: none;
+  }
+}
+.form-control:disabled, .form-control[readonly] {
+  background-color:white;
+}
+.bmd-label-static{
+  margin-bottom: 5px;
+}
