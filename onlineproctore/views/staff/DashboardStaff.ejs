@@ -1,0 +1,53 @@
+<%- include('./baseEjs/header')%>
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-warning card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">person</i>
+                  </div>
+                  <p class="card-category">Add Members</p>
+                  <h5 class="card-title">
+                    <small>Expand Group</small>
+                  </h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal1" href="#">Upload Excel or CSV</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        <!-- Modal 1 -->
+      <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-primary">
+              <h4 class="modal-title">Add Students and TA's</h4>
+            </div>
+            <div class="modal-body">
+                <h5 style="padding-bottom: 12px"><b>Please follow the instructions to add new Students or TA's in a genunine manner.</b></h5>
+                <p style="padding-bottom: 10px">1. Only EXCEL files are allowed. <a href="/DashboardStaff/downloads/sample_new_accounts.xlsx" download>Sample Excel File</a></p>
+                <p style="padding-bottom: 10px">2. There could be multiple columns, there order does not matter, for example - email can be given in the column after or before username but inside email column, only email should be there.</p>
+                <p style="padding-bottom: 10px">3. If any duplicate entry is found, then first copy will be taken to create account.</p>
+                <p style="padding-bottom: 10px">4. Compulsory Columns are : Email, Username, Account Type. Account type can be "Student", "Faculty", "Staff" or "TA". Column Names should be in title case.</p>
+                <p style="padding-bottom: 10px">5. Teaching Assistant are also students so there will be 2 handles for them.</p>
+                <p style="padding-bottom: 10px">6. An auto-generated password would be sent to th email address, which will also contain account type and other login credentials.</p>
+
+                <form class="form-inline" id="formadduserstaff" action="/dashboard/staff/users/add" method="POST" enctype="multipart/form-data">
+                    <div class="mb-2">
+                        <input id="accountCreationFile" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="" name="excelFile" required>
+                    </div>
+                    <input type="button" id="course_button" class="btn btn-primary pull-right" value="Add Members" onclick="submitForm()"/>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+<%- include('./baseEjs/footer')%>

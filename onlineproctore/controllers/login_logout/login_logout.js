@@ -48,8 +48,30 @@ exports.login = (req,res) => {
               message: "Unable to generate token"
             });
             res.cookie('auth', user.token).cookie('isAuth', true);
-            res.status(200);
-            return res.json({redirect: '/dashboard'});
+            if(user.student){
+              res.cookie('student', config.student);
+              res.status(200);
+              return res.json({redirect: '/dashboard/student'});
+            }
+            else if(user.ta){
+              res.cookie('ta', config.ta);
+              res.status(200);
+              return res.json({redirect: '/dashboard/ta'});
+            }
+            else if(user.faculty){
+              res.cookie('faculty', config.faculty);
+              res.status(200);
+              return res.json({redirect: '/dashboard/faculty'});
+            }
+            else if(user.staff){
+              res.cookie('staff', config.staff);
+              res.status(200);
+              return res.json({redirect: '/dashboard/staff'});
+            }
+            return res.status(400).json({
+              success: false,
+              message: "Unable to log you in"
+            });
           });    
         });
       });

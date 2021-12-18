@@ -1,0 +1,384 @@
+<%- include('./baseEjs/header')%>
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-warning card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">person</i>
+                  </div>
+                  <p class="card-category">Add Members</p>
+                  <h5 class="card-title">
+                    <small>Expand Group</small>
+                  </h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal1" href="#">Upload Excel or CSV</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">lightbulb</i>
+                  </div>
+                  <p class="card-category">Announce</p>
+                  <h5 class="card-title"><small>Inform class</small></h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal2" href="#">Write Something ...</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-danger card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">quiz</i>
+                  </div>
+                  <p class="card-category">New Quiz</p>
+                  <h5 class="card-title"><small>Assessment</small></h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal3" href="#">Add Questions</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-info card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">emoji_events</i>
+                  </div>
+                  <p class="card-category">Result</p>
+                  <h5 class="card-title">
+                    <small>Check Progress</small></h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a href="#">Download Excel File</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">assistant</i>
+                  </div>
+                  <p class="card-category">Manage TA</p>
+                  <h5 class="card-title">
+                    <small>Permissions</small></h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal5" href="#">Ease your work</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-tabs card-header-primary">
+                  <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                      <ul class="nav nav-tabs" data-tabs="tabs">
+                        <li class="nav-item col-lg-3 col-md-6">
+                          <a class="nav-link col" href="#studs" data-toggle="tab">
+                            <i class="material-icons">person</i> Students
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item col-lg-3 col-md-6">
+                          <a class="nav-link" href="#tass" data-toggle="tab">
+                            <i class="material-icons">admin_panel_settings</i> TA's
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item col-lg-3 col-md-6">
+                          <a class="nav-link" href="#announcemnts" data-toggle="tab">
+                            <i class="material-icons">lightbulb</i> Announcements
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item col-lg-3 col-md-6">
+                            <a class="nav-link active show" href="#quizes" data-toggle="tab">
+                              <i class="material-icons">quiz</i> Quiz's
+                              <div class="ripple-container"></div>
+                            </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane" id="studs">
+                        <table class="table table-hover">
+                            <thead class="text-warning">
+                              <tr><th>Student Name</th>
+                              <th>Email Address</th>
+                            </tr></thead>
+                            <tbody>
+                                <tr>
+                                  <td>Aditya Aggarwal</td>
+                                  <td>iit2019210@iiita.ac.in</td>
+                                </tr>
+                                <tr>
+                                  <td>Divy Agrawal</td>
+                                  <td>iit2019211@iiita.ac.in</td>
+                                </tr>
+                                <tr>
+                                  <td>Ambika Kaushik</td>
+                                  <td>iib2019017@iiita.ac.in</td>
+                                </tr>
+                            </tbody>
+                        </table>        
+                    </div>
+                    <div class="tab-pane" id="tass">
+                        <table class="table table-hover">
+                            <thead class="text-warning">
+                              <tr><th>Teaching Assistant Name</th>
+                              <th>Email Address</th>
+                            </tr></thead>
+                            <tbody>
+                                <tr>  
+                                    <td>T A</td>
+                                    <td>ta1@gmail.com</td>
+                                </tr>
+                                <tr>  
+                                  <td>T A</td>
+                                  <td>ta2@gmail.com</td>
+                                </tr> 
+                            </tbody>
+                        </table>              
+                    </div>
+                    <div class="tab-pane" id="announcemnts">
+                      <table class="table">
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="tab-pane active show" id="quizes">
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td>
+                              Nov. 30, 2021, 11:59 p.m. - Dec. 1, 2021, 11:59 p.m.
+                            </td>
+                            <td>After Evaluation Quiz   </td>
+                            <td class="td-actions text-right">
+                              <a href="AfterExam.html" type="button" rel="tooltip" title="Edit Quiz" class="btn btn-primary btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </a>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Nov. 30, 2021, 11:59 p.m. - Dec. 1, 2021, 11:59 p.m.
+                            </td>
+                            <td>Before Evaluation Quiz   </td>
+                            <td class="td-actions text-right">
+                              <a href="BeforeExam.html" type="button" rel="tooltip" title="Edit Quiz" class="btn btn-primary btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal 1 -->
+      <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-primary">
+              <h4 class="modal-title">Add Students and TA's</h4>
+            </div>
+            <div class="modal-body">
+                <h5 style="padding-bottom: 12px"><b>Please follow the instructions to add new Students or TA's in a genunine manner.</b></h5>
+                <p style="padding-bottom: 10px">1. Only CSV and EXCEL files are allowed. <a href="/static/Sample/sample_add_student_ta.xlsx">Sample Excel File</a></p>
+                <p style="padding-bottom: 10px">2. There could be multiple columns, there order does not matter, for example - email can be given in the column after or before username but inside email column, only email should be there.</p>
+                <p style="padding-bottom: 10px">3. If any duplicate entry is found, then first copy will be taken to create account.</p>
+                <p style="padding-bottom: 10px">4. Compulsory Columns are : Email or Username(atleast one of them is needed), Role. Role can be "Student" or "TA". Column Names should be in title case.</p>
+                <p style="padding-bottom: 10px">5. All the students and tas will be added and informed through email</p>
+
+                <form action="#" class="form-inline" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="J803pMB3yADuvBx8RrJfLTOe39Fghr8In1hQfRzCekEvCgLQ1F1uc5xosCfCPVyV">
+                    <div class="mb-2">
+                        <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="" name="file" required>
+                    </div>
+                    <input type="hidden" name="user" value="1">
+                    <button type="submit" id="course_button" class="btn btn-primary pull-right">Add Members</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 2 -->
+      <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-primary">
+              <h4 class="modal-title">Announce for class</h4>
+            </div>
+            <div class="modal-body">
+                <h5 style="padding-bottom: 12px"><b>Make Announcement</b></h5>
+                <form action="#" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="J803pMB3yADuvBx8RrJfLTOe39Fghr8In1hQfRzCekEvCgLQ1F1uc5xosCfCPVyV">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Type Here Something...</label>
+                      <textarea class="form-control" name="ann_message" id="ann_message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" id="course_button" class="btn btn-primary pull-right">Announce</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 3 -->
+      <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-primary">
+              <h4 class="modal-title">Quiz Manager</h4>
+            </div>
+            <div class="modal-body">
+                <h5 style="padding-bottom: 12px"><b>Quiz can only be deleted before it has been held.</b></h5>
+                <form action="#" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="J803pMB3yADuvBx8RrJfLTOe39Fghr8In1hQfRzCekEvCgLQ1F1uc5xosCfCPVyV">
+                    <div class="form-group">
+                      <label class="bmd-label">Quiz Name</label><br>
+                      <input type="text" class="form-control" id="quiz_name" name="quiz_name" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="bmd-label">Start Datetime of Quiz</label><br>
+                      <input type="datetime-local" class="form-control" id="start_date" name="start_date" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="bmd-label">End Datetime of Quiz</label><br>
+                      <input type="datetime-local" class="form-control" id="end_date" name="end_date" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="bmd-label">Hide Mode - Students will not able to see until quiz starts</label><br>
+                      <select class="form-control" id="hidden_quiz" name="hidden_quiz" required>
+                        <option value="1">On (Recommended)</option>
+                        <option value="2">Off</option>
+                      </select>
+                    </div>
+                    <button type="submit" id="course_button" class="btn btn-primary pull-right">Announce Quiz</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal 5 -->
+      <div class="modal fade" id="modal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-primary">
+              <h4 class="modal-title">Manage Teaching Assistants and Permissions</h4>
+            </div>
+            <div class="modal-body">
+                <h5 style="padding-bottom: 12px"><b>Below mentioned is the list of TA's. You can add multiple main TA and manage their permissions. A page refresh is needed to see effects in new permissions in this table</b></h5>
+                <table id="myTable1">  
+                  <thead>  
+                    <tr>  
+                      <th>TA Username</th>  
+                      <th>TA Email</th> 
+                      <th>Main TA</th>
+                      <th>Manage Permissions</th>
+                    </tr>  
+                  </thead>  
+                  <tbody>
+                    
+                    <tr>
+                      <td>ta1</td>
+                      <td>ta1@gmail.com</td>
+                      <td>No</</td>
+                      <td><button class="btn btn-primary" data-toggle="modal" data-target="#modal6" onclick="getTAData('21', '7')">View/Edit</button></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>ta2</td>
+                      <td>ta2@gmail.com</td>
+                      <td>No</</td>
+                      <td><button class="btn btn-primary" data-toggle="modal" data-target="#modal6" onclick="getTAData('22', '7')">View/Edit</button></td>
+                    </tr>
+                    
+                  </tbody>  
+                </table>
+                
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- Modal 6 -->
+        <div class="modal fade" id="modal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content card">
+              <div class="card-header card-header-primary">
+                <h4 class="modal-title">View/Edit Permissions</h4>
+              </div>
+              <div class="modal-body">
+                  <h4 style="padding-bottom: 12px" id="ta_details"></h4>
+                  <form method="POST" enctype="multipart/form-data" id="ta_form"><input type="hidden" name="csrfmiddlewaretoken" value="J803pMB3yADuvBx8RrJfLTOe39Fghr8In1hQfRzCekEvCgLQ1F1uc5xosCfCPVyV">
+                      <input type="hidden" name="permission_id" id="permission_id">
+                      <input type="hidden" name="course_id_ta" id="course_id_ta">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Head Teaching Assistant <b>(If this permission is Yes then TA can avail all the features as the faculty but its limited to only this particular course)</b></label>
+                        <select class="form-control" id="select_head_ta" name="select_head_ta">
+  
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Can Manage Permissions of other Teaching Assistants <b>(Includes changing permission for him/her self)</b></label>
+                        <select class="form-control" id="canManageTAPermissions" name="canManageTAPermissions">
+  
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Can Check Answer Sheets</label>
+                        <select class="form-control" id="canCheckAnswerSheets" name="canCheckAnswerSheets">
+  
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Can Make Announcements</label>
+                        <select class="form-control" id="canAnnounce" name="canAnnounce">
+  
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Can Manage Quiz <b>(Includes permission for creating a new quiz and other features)</b></label>
+                        <select class="form-control" id="canManageQuiz" name="canManageQuiz">
+  
+                        </select>
+                      </div> 
+                      <button type="submit" id="course_button" class="btn btn-primary pull-right">Update Permissions</button>
+                  </form>
+                  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<%- include('./baseEjs/footer')%>

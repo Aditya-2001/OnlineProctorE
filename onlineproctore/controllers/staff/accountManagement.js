@@ -44,5 +44,5 @@ exports.createAccount = (req, res) => {
     });
   })();
   console.log(filePath);
-  res.status(200).json(req.file);
+  res.status(204).send();
 }

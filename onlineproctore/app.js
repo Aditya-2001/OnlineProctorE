@@ -10,6 +10,7 @@ const {auth} = require('./controllers/login_logout/authenticate');
 var index = require('./routes/root/index');
 var users = require('./routes/login_logout/users');
 var staff = require('./routes/staff/staff');
+var userRedirect = require('./routes/userRedirect');
 
 var app = express();
 
@@ -39,9 +40,10 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', index);
 app.use('/users', users);
 app.use(auth);
-app.get('/dashboard', (req, res) => {
-  res.render('dashboard/dashboard');
-})
+app.use('/dashboard', userRedirect);
+// app.use('/dashboard/student', student);
+// app.use('/dashboard/ta', ta);
+// app.use('/dashboard/faculty', faculty);
 app.use('/dashboard/staff', staff);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

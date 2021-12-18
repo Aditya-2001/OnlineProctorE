@@ -29,6 +29,6 @@ router.use(bodyParser.json());
 /* complete url is /dashboard/staff/users/add */
 router.route('/add')
   .get((req, res) => res.status(200).json({sucess: 'true', message: '/dashboard/staff/users/add'}))
-  .post(upload.single('imageFile'), createAccount)
+  .post(upload.single('excelFile'), createAccount)
 
 module.exports = router;

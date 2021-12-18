@@ -12,25 +12,32 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+function between(min, max) {  
+  return Math.floor(
+    Math.random() * (max - min) + min
+  )
+}
+
 sendEmailQueue.process(NUM_WORKERS, async ({data}) => {
   const mailOptions = data.mailOptions;
-  await transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-      console.log('Email Was not Sent Successfully')
-      return {
-        success: false,
-        message: 'Email Was not Sent Successfully'
+  setTimeout(async()=>{
+    await transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        console.log('Email Was not Sent Successfully')
+        return {
+          success: false,
+          message: 'Email Was not Sent Successfully'
+        }
+      } else {
+        console.log('Email Sent Successfully')
+        return {
+          success: true,
+          message: 'Email Sent Successfully'
+        }
       }
-    } else {
-      console.log('Email Sent Successfully')
-      return {
-        success: true,
-        message: 'Email Sent Successfully'
-      }
-    }
-  });
-    
+    });
+  }, between(0, 3000));    
 });
 
 sendEmailQueue.on("failed", (error) => {

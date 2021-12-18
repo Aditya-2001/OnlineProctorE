@@ -1,0 +1,141 @@
+<%- include('./baseEjs/header')%>
+      <div class="content">
+        <div class="container-fluid">
+              
+            <div class="row">
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="add vertical-center">
+                        <a data-toggle="modal" data-target="#modal2" href="#"><span class="material-icons add-ico"> add_box </span></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                <div class="card card-chart course">
+                    
+                    <img src="/DashboardFaculty/media/ivp.jpg" data-toggle="modal" data-target="#modal" onclick="setID('7')">
+                    
+                    <div class="card-body">
+                        <h4 class="card-title">Image and Video Processing<a href="#" data-toggle="modal" data-target="#modal1" class="material-icons" style="float: right;" onclick="setIDName('7','Image and Video Processing')">edit</a></h4>
+                        <p class="card-category">Started Nov. 18, 2021, 12:27 a.m.</p>
+                    </div>
+                    <a href="Course.html">
+                    <div class="card-footer">
+                        <div class="stats" style="color: #5BB12F;">
+                        Click to view more...
+                        </div>
+                    </div>
+                    </a>
+                </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                <div class="card card-chart course">
+                    
+                    <img src="/DashboardFaculty/media/ai.jpg" data-toggle="modal" data-target="#modal" onclick="setID('8')">
+                    
+                    <div class="card-body">
+                        <h4 class="card-title">Artificial Intelligence<a href="#" data-toggle="modal" data-target="#modal1" class="material-icons" style="float: right;" onclick="setIDName('8','Artificial Intelligence')">edit</a></h4>
+                        <p class="card-category">Started Nov. 18, 2021, 10:42 a.m.</p>
+                    </div>
+                    <a href="Course.html">
+                    <div class="card-footer">
+                        <div class="stats" style="color: #5BB12F;">
+                        Click to view more...
+                        </div>
+                    </div>
+                    </a>
+                </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                <div class="card card-chart course">
+                    
+                    <img src="/DashboardFaculty/media/ml.jpg" data-toggle="modal" data-target="#modal" onclick="setID('9')">
+                    
+                    <div class="card-body">
+                        <h4 class="card-title">Machine Learning<a href="#" data-toggle="modal" data-target="#modal1" class="material-icons" style="float: right;" onclick="setIDName('9','Machine Learning')">edit</a></h4>
+                        <p class="card-category">Started Nov. 29, 2021, 8:47 p.m.</p>
+                    </div>
+                    <a href="Course.html">
+                    <div class="card-footer">
+                        <div class="stats" style="color: #5BB12F;">
+                        Click to view more...
+                        </div>
+                    </div>
+                    </a>
+                </div>
+                </div>
+                
+            </div>
+
+            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content card">
+                    <div class="card-header card-header-primary">
+                    <h5 class="modal-title" id="title">Upload Image</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" enctype="multipart/form-data" action="#"><input type="hidden" name="csrfmiddlewaretoken" value="Mc81OD05CwmsNbwlYlnNjiF4KPgZ20MSDf2EFxnkBNacN8DgAAB8NqpdikcXMFRF">
+                        <input type="hidden" name="course_id" id="course_id" class="form-control" required>
+                        <h4>Upload an image for the course</h4>
+                        <input type="file" name="image"  required><br><br>
+                        <button type="submit" id="course_button" class="btn btn-primary pull-right">Upload</button>
+                        </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content card">
+                    <div class="card-header card-header-primary">
+                    <h5 class="modal-title" id="title1">Change Course Name</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" enctype="multipart/form-data" action="#"><input type="hidden" name="csrfmiddlewaretoken" value="Mc81OD05CwmsNbwlYlnNjiF4KPgZ20MSDf2EFxnkBNacN8DgAAB8NqpdikcXMFRF">
+                        <input type="hidden" name="course_id" id="course_id1" class="form-control" required>
+                        <h4>Edit Course Name</h4>
+                        <input type="text" name="name" class="form-control" id="cour_name" required><br><br>
+                        <button type="submit" id="course_button" class="btn btn-primary pull-right">Edit</button>
+                        </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                  <div class="modal-content card">
+                    <div class="card-header card-header-primary">
+                      <h4 class="modal-title">New Course</h4>
+                      <p class="card-category">Manage a new course</p>
+                    </div>
+                    <div class="modal-body">
+                        <form id="course_form">  <input type="hidden" name="csrfmiddlewaretoken" value="iMRSL0Qkib7CMUbdXzqDxV4x2kX3lQu937LlmGRKOrAstTXqIU7LEJfwBhaIuyxA">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="form-group">
+                                  <label>1. Courses can not be deleted once created</label><br>
+                                  <label>2. Do not give any course name which you have used earlier</label><br>
+                                  <label>3. This product only supports function of 1 main instructor who started the course</label><br>
+                                  <label>4. Please visit the respective course to add students/TAs or make any announcement</label><br>
+                                  <label>5. Any student or TA added late will be able to see all the announcements even if announced before his/her joining</label><br>
+                                  <div class="form-group">
+                                    <label class="bmd-label"> Enter the name of new course to create it</label><br>
+                                    <input class="form-control" name="ann_message" id="ann_message" rows="4" required/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <button type="submit" id="course_button" class="btn btn-primary pull-right">Create New Course</button>
+                            <div class="clearfix"></div>
+                          </form>
+                    </div>
+                  </div>
+                </div>
+            </div>
+              </div>
+      </div>
+<%- include('./baseEjs/footer')%>

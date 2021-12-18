@@ -1,0 +1,387 @@
+<%- include('./baseEjs/header')%>
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">verified</i>
+                      </div>
+                      <p class="card-category">Upload Questions</p>
+                      <h5 class="card-title"><small>Both Type</small></h5>
+                    </div>
+                    <div class="card-footer">
+                      <div class="stats">
+                          <a data-toggle="modal" data-target="#modal0" href="#">Upload File For Question</a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-header card-header-alert card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">flaky</i>
+                      </div>
+                      <p class="card-category">MCQ</p>
+                      <h5 class="card-title"><small></small></h5>
+                    </div>
+                    <div class="card-footer">
+                      <div class="stats">
+                        <a data-toggle="modal" data-target="#modal1" href="#">Add MCQ Question to quizs</a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-header card-header-success card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">create</i>
+                      </div>
+                      <p class="card-category">Written</p>
+                      <h5 class="card-title"><small></small></h5>
+                    </div>
+                    <div class="card-footer">
+                      <div class="stats">
+                        <a data-toggle="modal" data-target="#modal2" href="#">Add short/long question to quiz</a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-header card-header-info card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">visibility</i>
+                      </div>
+                      <p class="card-category">Quiz Hidder</p>
+                      <h5 class="card-title"> <small> Visible </small></h5>
+                    </div>
+                    <div class="card-footer">
+                      <div class="stats">
+                        <a href="#">Hide Quiz</a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">arrow_back</i>
+                  </div>
+                  <p class="card-category">Previous Option</p>
+                  <h5 class="card-title"><small>Enabled</small></h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a href="#">Disable Previous</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p></p>
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-tabs card-header-primary">
+                        <div class="nav-tabs-navigation">
+                            <div class="nav-tabs-wrapper">
+                                <ul class="nav nav-tabs" data-tabs="tabs">
+                                    <li class="nav-item col-md-4">
+                                        <a class="nav-link active" href="#mcqs" data-toggle="tab">
+                                            <i class="material-icons">flaky</i> MCQ Questions
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item col-md-4">
+                                        <a class="nav-link" href="#writtens" data-toggle="tab">
+                                            <i class="material-icons">create</i> Written Questions
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item col-md-4">
+                                        <a class="nav-link" href="#">
+                                            <i class="material-icons">turned_in</i> View Detailed Analysis
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="display: none;" id="quiz_id">13</p>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="mcqs">
+                                <table class="table table-hover">
+                                    <thead class="text-warning">
+                                    <th>Question</th>
+                                    <th>Options</th>
+                                    <th class="mcq-table">Correct Options(0-based indexing)</th>
+                                    <th class="mcq-table">Marking Scheme</th>
+                                    <th class="mcq-table">Maximum Marks</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Canny edge detector removes streaking or broken edges by ?</td>
+                                            <td>[&#x27;Low Pass Filtering&#x27;, &#x27;Hysteresis&#x27;, &#x27;Finding Zero Crossings&#x27;, &#x27;Non-maxima Suppression&#x27;]</td>
+                                            <td class="mcq-table">[1]</td>
+                                            <td class="mcq-table">No Partial Marking</td>
+                                            <td class="mcq-table">3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>In morphological operations, SE is viewed as ?</td>
+                                            <td>[&#x27;High Pass Filter&#x27;, &#x27;Convolution Mask&#x27;, &#x27;Low Pass Filter&#x27;, &#x27;Correlation Mask&#x27;]</td>
+                                            <td class="mcq-table">[1]</td>
+                                            <td class="mcq-table">No Partial Marking</td>
+                                            <td class="mcq-table">3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Which of the following does not give negative of an image obtained with intensity levels [0,L-1] with “r” and “s” being pixel values?</td>
+                                            <td>[&#x27;s = l – 1 + r&#x27;, &#x27;s = l – 1 – r&#x27;, &#x27; s = l + 1 + r&#x27;, &#x27;s = l + 1 + r&#x27;]</td>
+                                            <td class="mcq-table">[0, 2, 3]</td>
+                                            <td class="mcq-table">Partial Marking</td>
+                                            <td class="mcq-table">3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Which of the following are not general form of log transformation?</td>
+                                            <td>[&#x27;s = c.log(1 + r)&#x27;, &#x27;s = c+log(1 + r)&#x27;, &#x27;s = c.log(1 – r)&#x27;, &#x27;s = c-log(1 – r)&#x27;]</td>
+                                            <td class="mcq-table">[1, 2, 3]</td>
+                                            <td class="mcq-table">No Partial Marking</td>
+                                            <td class="mcq-table">3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Piecewise Linear Transformation function involves which of the following?</td>
+                                            <td>[&#x27;bit-plane slicing&#x27;, &#x27;intensity level slicing&#x27;, &#x27;contrast stretching&#x27;, &#x27;None of the above&#x27;]</td>
+                                            <td class="mcq-table">[0, 1, 2]</td>
+                                            <td class="mcq-table">Partial Marking</td>
+                                            <td class="mcq-table">3.0</td>
+                                        </tr>   
+                                    </tbody>
+                                </table>        
+                            </div>
+                            <div class="tab-pane" id="writtens">
+                                <table class="table table-hover">
+                                    <thead class="text-warning">
+                                    <th>Question</th>
+                                    <th></th>
+                                    <th>Maximum Marks</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>What is Chromatic Adoption?</td>
+                                            <td></td>
+                                            <td>3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Define Resolutions.</td>
+                                            <td></td>
+                                            <td>3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Define subjective brightness and brightness adaptation.</td>
+                                            <td></td>
+                                            <td>3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Define weber ratio?</td>
+                                            <td></td>
+                                            <td>3.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Write down the properties of 2d Fourier Transform.</td>
+                                            <td></td>
+                                            <td>3.0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>              
+                            </div>
+                            <div class="tab-pane" id="assign">
+                                <table class="table">
+                                    <thead class="text-warning">
+                                    <th>Student Name</th>
+                                    <th>Student Email</th>
+                                    <th>Score</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Aditya</td>
+                                        <td>iit2019210@iiita.ac.in   </td>
+                                        <td>0.0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ambika</td>
+                                        <td>iib2019017@iiita.ac.in   </td>
+                                        <td>0.0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Divy</td>
+                                        <td>iit2019211@iiita.ac.in   </td>
+                                        <td>0.0</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal 0 -->
+        <div class="modal fade" id="modal0" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content card">
+              <div class="card-header card-header-primary">
+                <h4 class="modal-title">Upload Questions</h4>
+              </div>
+              <div class="modal-body">
+                  <h5 style="padding-bottom: 12px"><b>Please follow the instructions to add upload questions in a genunine manner.</b></h5>
+                  <p style="padding-bottom: 10px">1. Only CSV and EXCEL files are allowed. <a href="#">Sample Excel File</a></p>
+                  <p style="padding-bottom: 10px">2. There could be multiple columns, there order does not matter.</p>
+                  <p style="padding-bottom: 10px">3. You can upload both type of questions like Subjective or Objective.</p>
+                  <p style="padding-bottom: 10px">4. Compulsory Columns are : Question Type(Value can be Subjective or Objective), Question, Maximum Marks(Integer).</p>
+                  <p style="padding-bottom: 10px">5. For objective questions, options need to be given, so maximum 6 options can be given and column name must be Option1, Option2, ... Option6, one with Correct Option(out of 1-6) and the Marking Scheme(1 for partial and 2 for no partial).</p>
+                  <p style="padding-bottom: 10px">6. Note: If maximum options in any objective question are 3 for example then there no need to mention Option4-Option6. If there are multiple options correct then separate then with comma(,)</p>
+                  <p style="padding-bottom: 10px">7. Do not copy paste in the excel sheet from any kind of browser to avoid any errors.</p>
+
+                  <form action="#" class="form-inline" method="POST" enctype="multipart/form-data">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="i95qWcYPaURXUE5MSOrg15EfcW1zuCDljCgj3HvEVihR0mdAmzo4USZkQMvojz9s">
+                      <div class="mb-2">
+                          <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="" name="file" required>
+                      </div>
+                      <input type="hidden" name="question_type" value="3" required>
+                      <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Upload Questions</button>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal 1 -->
+        <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content card">
+              <div class="card-header card-header-primary">
+                <h4 class="modal-title">Add a mcq Question to quiz</h4>
+              </div>
+              <div class="modal-body">
+                <h5 style="padding-bottom: 12px"><b>1. Students will be given a question and some options and have to select the option</b></h5>
+                <h5 style="padding-bottom: 12px"><b>2. Questions will not be visible to students unless quiz is hided</b></h5>
+                <h5 style="padding-bottom: 12px"><b>3. Editing feature for question is not available at this moment and ignore comma in the options</b></h5>
+                <h5 style="padding-bottom: 12px"><b>4. Only activated options will be considered<b></h5>
+
+                <form action="#" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="i95qWcYPaURXUE5MSOrg15EfcW1zuCDljCgj3HvEVihR0mdAmzo4USZkQMvojz9s">
+                    <input type="hidden" name="question_type" value="1" required>
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Type the question below</label>
+                      <textarea class="form-control" name="question_written" id="question_written" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="bmd-label-floating">Maximum Marks for the question</label>
+                      <input type="number" class="form-control" name="max_marks_written" required>
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Option 1</label><br>
+                      <select class="form-control" name="sel1">
+                        <option value="1">Deactivated Option</option>
+                        <option value="2">Correct Option</option>
+                        <option value="3">Incorrect Option</option>
+                      </select>
+                      <input type="text" class="form-control" name="opt1" placeholder="Type Option">
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Option 2</label><br>
+                      <select class="form-control" name="sel2">
+                        <option value="1">Deactivated Option</option>
+                        <option value="2">Correct Option</option>
+                        <option value="3">Incorrect Option</option>
+                      </select>
+                      <input type="text" class="form-control" name="opt2" placeholder="Type Option">
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Option 3</label><br>
+                      <select class="form-control" name="sel3">
+                        <option value="1">Deactivated Option</option>
+                        <option value="2">Correct Option</option>
+                        <option value="3">Incorrect Option</option>
+                      </select>
+                      <input type="text" class="form-control" name="opt3" placeholder="Type Option">
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Option 4</label><br>
+                      <select class="form-control" name="sel4">
+                        <option value="1">Deactivated Option</option>
+                        <option value="2">Correct Option</option>
+                        <option value="3">Incorrect Option</option>
+                      </select>
+                      <input type="text" class="form-control" name="opt4" placeholder="Type Option">
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Option 5</label><br>
+                      <select class="form-control" name="sel5">
+                        <option value="1">Deactivated Option</option>
+                        <option value="2">Correct Option</option>
+                        <option value="3">Incorrect Option</option>
+                      </select>
+                      <input type="text" class="form-control" name="opt5" placeholder="Type Option">
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Option 6</label><br>
+                      <select class="form-control" name="sel6">
+                        <option value="1">Deactivated Option</option>
+                        <option value="2">Correct Option</option>
+                        <option value="3">Incorrect Option</option>
+                      </select>
+                      <input type="text" class="form-control" name="opt6" placeholder="Type Option">
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Marking Scheme</label><br>
+                      <select class="form-control" name="marking_scheme">
+                        <option value="1">Partial Marking Scheme - Also consider wrong marked answers (Recommended)</option>
+                        <option value="2">Also correct answers must be marked</option>
+                      </select>
+                    </div>
+                    <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Add Question</button>
+                </form>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal 2 -->
+        <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content card">
+              <div class="card-header card-header-primary">
+                <h4 class="modal-title">Add a written type question</h4>
+              </div>
+              <div class="modal-body">
+                  <h5 style="padding-bottom: 12px"><b>1. Students will be given a question and have to write the answer using keyboard</b></h5>
+                  <h5 style="padding-bottom: 12px"><b>2. Questions will not be visible to students unless quiz is hided</b></h5>
+                  <h5 style="padding-bottom: 12px"><b>3. Editing feature for question is not available at this moment</b></h5>
+
+                  <form action="#" method="POST" enctype="multipart/form-data">
+                      <input type="hidden" name="csrfmiddlewaretoken" value="i95qWcYPaURXUE5MSOrg15EfcW1zuCDljCgj3HvEVihR0mdAmzo4USZkQMvojz9s">
+                      <input type="hidden" name="question_type" value="2" required>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Type the question below</label>
+                        <textarea class="form-control" name="question_written" id="question_written" rows="4" required></textarea>
+                      </div>
+                      <div class="form-group">
+                          <label class="bmd-label-floating">Maximum Marks for the question</label>
+                        <input type="number" class="form-control" name="max_marks_written" required>
+                        </div>
+                      <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Add Question</button>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<%- include('./baseEjs/footer')%>
