@@ -2,7 +2,7 @@ const path = require('path');
 const XLSX = require('xlsx');
 const {registerationQueue} = require('../../queues/registerUser');
 const generator = require('generate-password');
-const fs = require('fs');
+const { removeFile } = require('../../functions');
 
 exports.createAccount = (req, res) => {
   const filePath = path.resolve(__dirname, '../../' + req.file.path);
@@ -31,17 +31,7 @@ exports.createAccount = (req, res) => {
         await registerationQueue.add(data);
       }
     }
-    fs.unlink(filePath, function(err) {
-      if(err && err.code == 'ENOENT') {
-        console.info("File doesn't exist, won't remove it.");
-      } 
-      else if(err){
-        console.error("Error occurred while trying to remove file");
-      }
-      else{
-        console.info(`removed`);
-      }
-    });
+    removeFile(filePath);
   })();
   console.log(filePath);
   res.status(204).send();

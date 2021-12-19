@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 const config = require('../config');
 const jwt = require('jsonwebtoken');
 const randomstring = require('randomstring');
+const Course = require('./course');
+const Enrollment = require('./enrollment');
 const salt = 10;
 const User = new Schema({
   email:{
@@ -61,6 +63,12 @@ User.pre('save',function(next){
   else{
     next();
   }
+});
+
+User.post("remove", async function(res, next) { 
+  await Course.deleteMany({instructors: {$all: [this._id]}});
+  await Enrollment.deleteMany({user: this._id});
+  next();
 });
 
 User.methods.comparepassword = function(password,cb){

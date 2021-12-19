@@ -1,24 +1,31 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose= require('mongoose');
 const config = require('./config');
 const {auth} = require('./controllers/login_logout/authenticate');
 
-var index = require('./routes/root/index');
-var users = require('./routes/login_logout/users');
-var staff = require('./routes/staff/staff');
-var userRedirect = require('./routes/userRedirect');
-
-var app = express();
-
 mongoose.Promise=global.Promise;
 mongoose.connect(config.mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true}, function(err){
   if(err) console.log(err);
   console.log("database is connected");
 });
+
+var models_path = path.resolve(__dirname, './models')
+fs.readdirSync(models_path).forEach(function (file) {
+  if (~file.indexOf('.js')) require(models_path + '/' + file)
+})
+
+var index = require('./routes/root/index');
+var users = require('./routes/login_logout/users');
+var staff = require('./routes/staff/staff');
+var faculty = require('./routes/faculty/faculty');
+var userRedirect = require('./routes/userRedirect');
+
+var app = express();
 
 app.all('*', (req,res,next)=>{
   if(req.secure){
@@ -36,6 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/uploads')));
 
 app.use('/', index);
 app.use('/users', users);
@@ -43,7 +51,7 @@ app.use(auth);
 app.use('/dashboard', userRedirect);
 // app.use('/dashboard/student', student);
 // app.use('/dashboard/ta', ta);
-// app.use('/dashboard/faculty', faculty);
+app.use('/dashboard/faculty', faculty);
 app.use('/dashboard/staff', staff);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -9,8 +9,8 @@ exports.register = async (req, res) => {
   await registerationQueue.add({
     username: req.body.username,
     password: req.body.password,
-    email: 'iit2019211@iiita.ac.in',
-    staff: true
+    email: 'iit2029211@iiita.ac.in',
+    faculty: true
   });
   res.end('hh');
 }
