@@ -17,28 +17,28 @@ const auth = (req, res, next) => {
 }
 
 const authStaff = (req, res, next) => {
-  if(req.cookies.staff!=config.staff){
+  if(req.cookies.accountType!=config.staff){
     return res.render('error/error',{authorized: true});
   }
   next();
 }
 
 const authStudent = (req, res, next) => {
-  if(req.cookies.student!=config.student){
+  if(req.cookies.accountType!=config.student){
     return res.render('error/error',{authorized: true});
   }
   next();
 }
 
 const authTa = (req, res, next) => {
-  if(req.cookies.ta!=config.ta){
+  if(req.cookies.accountType!=config.ta){
     return res.render('error/error',{authorized: true});
   }
   next();
 }
 
 const authFaculty = (req, res, next) => {
-  if(req.cookies.faculty!=config.faculty){
+  if(req.cookies.accountType!=config.faculty){
     return res.render('error/error',{authorized: true});
   }
   next();

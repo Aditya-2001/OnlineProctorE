@@ -12,12 +12,13 @@
                     <% courses.forEach( course => { %>
                     <div class="col-md-3 col-sm-6">
                         <div class="card card-chart course">
-                            <img src=<%= course.courseImage %> data-toggle="modal" data-target="#modal" onclick="setID('<%= course._id%>')">
+                            <img src="data:image/<%=course.courseImage.contentType%>;base64,
+                            <%=course.courseImage.data.toString('base64')%>" data-toggle="modal" data-target="#modal" onclick="setID('<%= course._id%>')">
                             <div class="card-body">
                                 <h4 class="card-title"><%= course.courseName %><a href="#" data-toggle="modal" data-target="#modal1" class="material-icons" style="float: right;" onclick="setIDName('<%= course._id %>', '<%= course.courseName %>')">edit</a></h4>
                                 <p class="card-category">Started On <%= course.createdOn.toString().slice(0,-31) %></p>
                             </div>
-                            <a href=<%= 'dashboard/faculty/course/' + course._id %>>
+                            <a href=<%= 'faculty/course/' + course._id %>>
                             <div class="card-footer">
                                 <div class="stats" style="color: #5BB12F;">
                                 Click to view more...
@@ -38,7 +39,7 @@
                                     <input type="hidden" name="_id" id="course_id" class="form-control" required>
                                     <h4>Upload an image for the course</h4>
                                     <input type="file" name="imageFile" required><br><br>
-                                    <button type="submit" id="course_button" class="btn btn-primary pull-right" onclick="submitForm()">Upload</button>
+                                    <button type="submit" id="course_button" class="btn btn-primary pull-right" onclick="submitForm('changeCourseImage')">Upload</button>
                                 </form>
                             </div>
                         </div>

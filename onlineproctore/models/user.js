@@ -6,7 +6,9 @@ const jwt = require('jsonwebtoken');
 const randomstring = require('randomstring');
 const Course = require('./course');
 const Enrollment = require('./enrollment');
+const Announcement = require('./announcement');
 const salt = 10;
+
 const User = new Schema({
   email:{
     type: String,
@@ -65,9 +67,23 @@ User.pre('save',function(next){
   }
 });
 
-User.post("remove", async function(res, next) { 
-  await Course.deleteMany({instructors: {$all: [this._id]}});
-  await Enrollment.deleteMany({user: this._id});
+User.post("remove", async function(res, next) {
+  await Course.find({instructors: {$all: [this._id]}}, async (err, courses) => {
+    for await (let course of courses){
+      if(course.instructors.length == 0){
+        course.remove();
+      }
+      else{
+        course.save();
+      }
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await Enrollment.find({user: this._id}, async (err, enrollments) => {
+    for await (let enrollment of enrollments){
+      enrollment.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await Announcement.remove({user: this._id});
   next();
 });
 

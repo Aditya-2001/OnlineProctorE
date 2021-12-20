@@ -5,6 +5,7 @@ const {uploadCourseImage} = require('../../controllers/faculty/courseImageUpload
 const {addCourse, displayCourses, changeCourseName, changeCourseImage, deleteUser} = require('../../controllers/faculty/courses');
 const {authFaculty} = require('../../controllers/login_logout/authenticate');
 const viewCourse = require('./viewCourse');
+const {authUserCourse} = require('../../controllers/faculty/viewEachCourse');
 
 router.use(authFaculty);
 router.use(bodyParser.json())
@@ -21,9 +22,9 @@ router.route('/changeCourseName')
 router.route('/changeCourseImage')
   .post(uploadCourseImage.single('imageFile'),changeCourseImage)
 
-// router.route('/delete')
-//   .get(deleteUser);
+router.route('/delete')
+  .get(deleteUser);
 
-router.use('/course',viewCourse);
+router.use('/course/:course_id', authUserCourse, viewCourse);
 
 module.exports = router;

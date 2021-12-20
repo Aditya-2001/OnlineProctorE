@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
-const { removeFile } = require('../functions');
 const Enrollment = require('./enrollment');
-const path = require('path');
+const Announcement = require('./announcement');
+const Quiz = require('./quiz');
 
 const Course = new Schema({
   instructors : [{
@@ -13,8 +13,8 @@ const Course = new Schema({
     autopopulate: true
   }],
   courseImage : {
-    type : String,
-    default : '/course/demo.jpg'
+    data: Buffer,
+    contentType: String
   },
   courseName : {
     type : String,
@@ -28,7 +28,13 @@ const Course = new Schema({
 })
 
 Course.post("remove", async function(res, next) {
-  await Enrollment.deleteMany({course: this._id});
+  await Enrollment.find({course: this._id}, async (err, enrollments) => {
+    for await (let enrollment of enrollments){
+      enrollment.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await Announcement.remove({course: this._id});
+  await Quiz.remove({course: this._id});
   next();
 });
 

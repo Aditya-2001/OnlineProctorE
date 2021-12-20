@@ -1,5 +1,8 @@
+const { removeFile } = require("../../functions");
 const Course = require("../../models/course");
 const User = require("../../models/user");
+const path = require('path');
+const fs = require('fs');
 
 exports.addCourse = async (req,res) => {
   await User.findByToken(req.cookies.auth, async (err, user) => {
@@ -7,7 +10,11 @@ exports.addCourse = async (req,res) => {
       success: false,
       message: "Unable add Course"
     });
-    const data = {courseName: req.body.courseName, instructors: [user._id]};
+    img = {
+      data: fs.readFileSync(path.resolve(__dirname, '../../uploads/course/demo.jpg')),
+      contentType: "image/png"
+    }
+    const data = {courseName: req.body.courseName, instructors: [user._id], courseImage: img};
     const newCourse = new Course(data);
     newCourse.save((err,doc)=>{
       if(err) return res.status(400).json({
@@ -58,17 +65,22 @@ exports.changeCourseImage = async(req,res) => {
       message: 'Unable to change Course Image'
     })
     console.log(req.file);
-    course.courseImage = req.file.path.slice(7);
-    course.save(err => console.log(err));
+    img = {
+      data: fs.readFileSync(path.resolve(__dirname, '../../'+req.file.path)),
+      contentType: "image/png"
+    }
+    course.courseImage = img;
+    course.save();
+    removeFile(path.resolve(__dirname, '../../'+req.file.path));
     return res.status(200).redirect('/dashboard');
   }).clone().catch(function(err){ console.log(err)});
 }
 
-// exports.deleteUser = async (req, res) => {
-//   await User.findByToken(req.cookies.auth, (err,user) => {
-//     user.remove();
-//     res.status(200).json({
-//       success: true
-//     })
-//   })
-// }
+exports.deleteUser = async (req, res) => {
+  await User.findByToken(req.cookies.auth, (err,user) => {
+    user.remove();
+    res.status(200).json({
+      success: true
+    })
+  })
+}

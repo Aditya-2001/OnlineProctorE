@@ -5,11 +5,13 @@ const mongooseAutopopulate = require('mongoose-autopopulate');
 const Enrollment = new Schema({
   course: {
     type: Schema.Types.ObjectId,
+    ref : 'Course',
     required: true,
     autopopulate: true
   },
   user: {
     type: Schema.Types.ObjectId,
+    ref : 'User',
     required: true,
     autopopulate: true
   },
@@ -19,7 +21,7 @@ const Enrollment = new Schema({
   },
   headTa: {
     type: Boolean,
-    required: true
+    default: false
   }},{
     timestamps: true
 })

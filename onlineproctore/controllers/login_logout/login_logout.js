@@ -9,8 +9,11 @@ exports.register = async (req, res) => {
   await registerationQueue.add({
     username: req.body.username,
     password: req.body.password,
-    email: 'iit2029211@iiita.ac.in',
-    faculty: true
+    email: req.body.email,
+    student: JSON.parse(req.body.student),
+    ta: JSON.parse(req.body.ta),
+    faculty: JSON.parse(req.body.faculty),
+    staff: JSON.parse(req.body.staff)
   });
   res.end('hh');
 }
@@ -49,22 +52,22 @@ exports.login = (req,res) => {
             });
             res.cookie('auth', user.token).cookie('isAuth', true);
             if(user.student){
-              res.cookie('student', config.student);
+              res.cookie('accountType', config.student);
               res.status(200);
               return res.json({redirect: '/dashboard/student'});
             }
             else if(user.ta){
-              res.cookie('ta', config.ta);
+              res.cookie('accountType', config.ta);
               res.status(200);
               return res.json({redirect: '/dashboard/ta'});
             }
             else if(user.faculty){
-              res.cookie('faculty', config.faculty);
+              res.cookie('accountType', config.faculty);
               res.status(200);
               return res.json({redirect: '/dashboard/faculty'});
             }
             else if(user.staff){
-              res.cookie('staff', config.staff);
+              res.cookie('accountType', config.staff);
               res.status(200);
               return res.json({redirect: '/dashboard/staff'});
             }
@@ -84,8 +87,10 @@ exports.logout = (req,res) => {
     if(err) return res.render('error/error', {authorized: true});
     res.clearCookie('auth');
     res.clearCookie('isAuth');
+    res.clearCookie('accountType');
     req.cookies.auth = null;
     req.cookies.isAuth = null;
+    req.cookies.accountType = null;
     res.redirect('/');
   });
 };
