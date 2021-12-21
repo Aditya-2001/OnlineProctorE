@@ -74,7 +74,6 @@ exports.getCourseDetails = async (req,res) => {
 
 exports.addMembers = (req, res) => {
   const course_id = req.course_id;
-  console.log(course_id);
   const filePath = path.resolve(__dirname, '../../' + req.file.path);
   const workbook = XLSX.readFile(filePath);
   (async function() {
@@ -89,21 +88,24 @@ exports.addMembers = (req, res) => {
           if(!user) console.log('User Not Found');
           if(user){
             var accountType = config.student; 
-            if(account.Role === "Faculty"){
+            if(account.Role.toLowerCase() === "faculty"){
               accountType = config.faculty;
-              await Course.findOne({course: course_id}, (err,course) => {
+              await Course.findOne({course: course_id, instructors: {$all: [user._id]}}, async (err,course) => {
                 if(err) console.log(err);
-                if(!course) console.log('No Such Course found');
-                if(course){
-                  if(!course.instructors.some( instructor => instructor._id === user._id)){
-                    course.instructors.push(user._id);
-                    course.save();
-                  }
+                if(course) console.log('Already enrolled in course');
+                if(!course){
+                  await Course.findOne({course: course_id}, async (err, addMemCourse) => {
+                    if(err) console.log(err);
+                    if(!addMemCourse) console.log('Course Not Found');
+                    if(addMemCourse){
+                      addMemCourse.instructors.push(user._id);
+                    }
+                  })
                 }
               }).clone().catch(function(err){console.log(err)});
             }
             else{
-              if(account.Role === "TA"){
+              if(account.Role.toLowerCase() === "ta"){
                 accountType = config.ta;
               }
               const newEnrollment = new Enrollment({course: course_id, user: user._id, accountType: accountType})
@@ -179,4 +181,46 @@ exports.changeHierarchy = async (req, res) => {
     enrollment.save();
     return res.status(204).send();
   }).clone().catch(function(err){console.log(err)});
+}
+
+exports.addSingleMember = async (req, res) => {
+  const type = req.body.accountType;
+  const email = req.body.email;
+  await User.findOne({email: email}, async (err, user) => {
+    if(err) console.log(err);
+    if(!user) console.log('User Not Found');
+    if(user){
+      var accountType = config.student; 
+      if(type === "Faculty"){
+        accountType = config.faculty;
+        await Course.findOne({course: course_id}, (err,course) => {
+          if(err) console.log(err);
+          if(!course) console.log('No Such Course found');
+          if(course){
+            if(!course.instructors.some( instructor => instructor._id === user._id)){
+              course.instructors.push(user._id);
+              course.save();
+            }
+          }
+        }).clone().catch(function(err){console.log(err)});
+      }
+      else{
+        if(type === "TA"){
+          accountType = config.ta;
+        }
+        const newEnrollment = new Enrollment({course: course_id, user: user._id, accountType: accountType})
+        await Enrollment.findOne({course: course_id, user: user._id}, (err, enrollment) => {
+          if(err) console.log(err);
+          if(enrollment) console.log('Already Enrolled');
+          if(!enrollment) newEnrollment.save()
+        }).clone().catch(function(err){console.log(err)});
+      }
+    }
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.deleteCourse = async (req, res) => {
+  const course_id = req.course_id;
+  await Course.remove({_id: course_id});
+  res.status(200).redirect('/dashboard');
 }

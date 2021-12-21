@@ -6,6 +6,8 @@ const {addCourse, displayCourses, changeCourseName, changeCourseImage, deleteUse
 const {authFaculty} = require('../../controllers/login_logout/authenticate');
 const viewCourse = require('./viewCourse');
 const {authUserCourse} = require('../../controllers/faculty/viewEachCourse');
+const veiwQuiz = require('./viewQuiz');
+const {authUserQuiz} = require('../../controllers/faculty/viewEachQuiz');
 
 router.use(authFaculty);
 router.use(bodyParser.json())
@@ -26,5 +28,7 @@ router.route('/delete')
   .get(deleteUser);
 
 router.use('/course/:course_id', authUserCourse, viewCourse);
+
+router.use('/quiz/:quiz_id', authUserQuiz, veiwQuiz);
 
 module.exports = router;

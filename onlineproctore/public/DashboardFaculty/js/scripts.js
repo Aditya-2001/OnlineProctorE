@@ -41,6 +41,18 @@ $("#makeCourseAnnouncement").submit(async function (e) {
   }
 })
 
+$("#addWrittenQuestion").submit(async function (e) {
+  e.preventDefault();
+  var serializedData = $(this).serialize();
+  var quizId = document.getElementById("quizId").value;
+  try{
+    await axios.post(quizId+'/addwrittenquestion', serializedData);
+    location.reload();
+  }catch(error){
+    console.log(error.response);
+  }
+})
+
 $("#createCourseQuiz").submit(async function (e) {
   e.preventDefault();
   if(!validateQuiz()){

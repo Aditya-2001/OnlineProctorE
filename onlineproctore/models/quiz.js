@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
+const Question = require('./question');
 
 const Quiz = new Schema({
   course: {
@@ -55,6 +56,11 @@ const Quiz = new Schema({
   }},{
     timestamps: true
 })
+
+Quiz.post("remove", async function(res, next) {
+  await Question.remove({quiz: this._id});
+  next();
+});
 
 Quiz.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('Quiz', Quiz);

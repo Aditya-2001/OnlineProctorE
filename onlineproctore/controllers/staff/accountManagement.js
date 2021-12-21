@@ -16,16 +16,16 @@ exports.createAccount = (req, res) => {
         var username = account.Username;
         var email = account.Email;
         var data = {username: username, password: password, email: email};
-        if(account["Account Type"] === "Student"){
+        if(account["Account Type"].toLowerCase() === "student"){
           data.student = true;
         }
-        if(account["Account Type"] === "Staff"){
+        else if(account["Account Type"].toLowerCase() === "staff"){
           data.staff = true;
         }
-        if(account["Account Type"] === "TA"){
+        else if(account["Account Type"].toLowerCase() === "ta"){
           data.ta = true;
         }
-        if(account["Account Type"] === "Faculty"){
+        else if(account["Account Type"].toLowerCase() === "faculty"){
           data.faculty = true;
         }
         await registerationQueue.add(data);

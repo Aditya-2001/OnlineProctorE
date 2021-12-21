@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {getCourseDetails, uploadExcelFile, addMembers, makeAnnouncement, createQuiz, changeHierarchy} = require('../../controllers/faculty/viewEachCourse');
+const {getCourseDetails, uploadExcelFile, addMembers, 
+  makeAnnouncement, createQuiz, changeHierarchy, deleteCourse, 
+  addSingleMember} = require('../../controllers/faculty/viewEachCourse');
 
 router.route('/')
   .get(getCourseDetails);
@@ -13,6 +15,12 @@ router.route('/announce')
 
 router.route('/createquiz')
   .post(createQuiz)
+
+router.route('/addsingle')
+  .post(addSingleMember)
+
+router.route('/delete')
+  .get(deleteCourse)
 
 router.route('/changeHierarchy')
   .post(changeHierarchy)

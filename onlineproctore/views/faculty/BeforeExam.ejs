@@ -61,7 +61,7 @@
                     </div>
                     <div class="card-footer">
                       <div class="stats">
-                        <a href="#">Hide Quiz</a>
+                        <a href="<%= quizId + '/hidequiz' %>">Hide Quiz</a>
                       </div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                 </div>
                 <div class="card-footer">
                   <div class="stats">
-                    <a href="#">Disable Previous</a>
+                    <a href="<%= quizId + '/disableprevious' %>">Disable Previous</a>
                   </div>
                 </div>
               </div>
@@ -241,7 +241,7 @@
               </div>
               <div class="modal-body">
                   <h5 style="padding-bottom: 12px"><b>Please follow the instructions to add upload questions in a genunine manner.</b></h5>
-                  <p style="padding-bottom: 10px">1. Only CSV and EXCEL files are allowed. <a href="#">Sample Excel File</a></p>
+                  <p style="padding-bottom: 10px">1. Only CSV and EXCEL files are allowed. <a href="/DashboardFaculty/downloads/upload_questions.xlsx">Sample Excel File</a></p>
                   <p style="padding-bottom: 10px">2. There could be multiple columns, there order does not matter.</p>
                   <p style="padding-bottom: 10px">3. You can upload both type of questions like Subjective or Objective.</p>
                   <p style="padding-bottom: 10px">4. Compulsory Columns are : Question Type(Value can be Subjective or Objective), Question, Maximum Marks(Integer).</p>
@@ -249,13 +249,12 @@
                   <p style="padding-bottom: 10px">6. Note: If maximum options in any objective question are 3 for example then there no need to mention Option4-Option6. If there are multiple options correct then separate then with comma(,)</p>
                   <p style="padding-bottom: 10px">7. Do not copy paste in the excel sheet from any kind of browser to avoid any errors.</p>
 
-                  <form action="#" class="form-inline" method="POST" enctype="multipart/form-data">
-                      <input type="hidden" name="csrfmiddlewaretoken" value="i95qWcYPaURXUE5MSOrg15EfcW1zuCDljCgj3HvEVihR0mdAmzo4USZkQMvojz9s">
+                  <form id="addQuizQuestions" action="<%= quizId + '/addquestions' %>" class="form-inline" method="POST" enctype="multipart/form-data">
                       <div class="mb-2">
-                          <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="" name="file" required>
+                          <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="" name="excelFile" required/>
                       </div>
                       <input type="hidden" name="question_type" value="3" required>
-                      <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Upload Questions</button>
+                      <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal" onclick="submitForm('addQuizQuestions')">Upload Questions</button>
                   </form>
               </div>
             </div>
@@ -362,22 +361,24 @@
                 <h4 class="modal-title">Add a written type question</h4>
               </div>
               <div class="modal-body">
-                  <h5 style="padding-bottom: 12px"><b>1. Students will be given a question and have to write the answer using keyboard</b></h5>
-                  <h5 style="padding-bottom: 12px"><b>2. Questions will not be visible to students unless quiz is hided</b></h5>
-                  <h5 style="padding-bottom: 12px"><b>3. Editing feature for question is not available at this moment</b></h5>
+                  <h5 style="padding-bottom: 3px"><b>1. Students will be given a question and have to write the answer using keyboard</b></h5>
+                  <h5 style="padding-bottom: 6px"><b>2. Quiz will not be visible to students unless quiz is unhided</b></h5>
 
-                  <form action="#" method="POST" enctype="multipart/form-data">
-                      <input type="hidden" name="csrfmiddlewaretoken" value="i95qWcYPaURXUE5MSOrg15EfcW1zuCDljCgj3HvEVihR0mdAmzo4USZkQMvojz9s">
-                      <input type="hidden" name="question_type" value="2" required>
+                  <form id="addWrittenQuestion">
                       <div class="form-group">
+                        <input type="text" id="quizId" value="<%= quizId %>" hidden/>
                         <label class="bmd-label-floating">Type the question below</label>
-                        <textarea class="form-control" name="question_written" id="question_written" rows="4" required></textarea>
+                        <textarea class="form-control" name="question" id="question_written" rows="4" required></textarea>
+                      </div>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Add a note regarding Question if you wish</label>
+                        <textarea class="form-control" name="note" id="question_note" rows="2"></textarea>
                       </div>
                       <div class="form-group">
                           <label class="bmd-label-floating">Maximum Marks for the question</label>
-                        <input type="number" class="form-control" name="max_marks_written" required>
+                        <input type="number" class="form-control" name="maximumMarks" required/>
                         </div>
-                      <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Add Question</button>
+                      <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
                   </form>
               </div>
             </div>
