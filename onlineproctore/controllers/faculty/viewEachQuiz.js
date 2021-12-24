@@ -164,3 +164,14 @@ exports.addWrittenQuestion = async (req, res) => {
     res.status(200).redirect('/dashboard/faculty/quiz/'+quizId);
   }).clone().catch(function(err){console.log(err)})
 }
+
+exports.deleteQuiz = async (req, res) => {
+  const quizId = req.quizId;
+  await Quiz.find({_id: quizId}, (err, quiz) => {
+    if(err) return res.status(400).render('error/error');
+    if(!quiz) return res.status(400).render('error/error');
+    const courseId = quiz.course._id;
+    quiz.remove();
+    res.status(200).redirect('/dashboard/faculty/course/' + courseId);
+  }).clone().catch(function(err){console.log(err)})
+}

@@ -7,6 +7,12 @@ if(document.body.clientWidth<992){
     document.getElementById("passTemp").setAttribute("href","Password.html");
 }
 
+$(document).ready(function () {
+  $('.dtBasicExample').DataTable();
+  $('.dtBasicExample1').DataTable();
+  $('.dataTables_length').addClass('bs-select');
+});
+
 $("#courseCreationForm").submit(async function (e) {
     e.preventDefault();
     var serializedData = $(this).serialize();

@@ -2,15 +2,15 @@
       <div class="content">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
                 <div class="card-header card-header-warning card-header-icon">
                   <div class="card-icon">
                     <i class="material-icons">person</i>
                   </div>
-                  <p class="card-category">Add Members</p>
+                  <p class="card-category">Add Users</p>
                   <h5 class="card-title">
-                    <small>Expand Group</small>
+                    <small>Enroll</small>
                   </h5>
                 </div>
                 <div class="card-footer">
@@ -20,9 +20,27 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
-                <div class="card-header card-header-success card-header-icon">
+                <div class="card-header card-header-secondary card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">person</i>
+                  </div>
+                  <p class="card-category">Individual</p>
+                  <h5 class="card-title">
+                    <small>Enroll User</small>
+                  </h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal7" href="#">Add one user</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-primary card-header-icon">
                   <div class="card-icon">
                     <i class="material-icons">lightbulb</i>
                   </div>
@@ -36,9 +54,9 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
-                <div class="card-header card-header-danger card-header-icon">
+                <div class="card-header card-header-success card-header-icon">
                   <div class="card-icon">
                     <i class="material-icons">quiz</i>
                   </div>
@@ -52,7 +70,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
                 <div class="card-header card-header-info card-header-icon">
                   <div class="card-icon">
@@ -60,7 +78,7 @@
                   </div>
                   <p class="card-category">Result</p>
                   <h5 class="card-title">
-                    <small>Check Progress</small></h5>
+                    <small>Amelioration</small></h5>
                 </div>
                 <div class="card-footer">
                   <div class="stats">
@@ -69,11 +87,11 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
-                <div class="card-header card-header-primary card-header-icon">
+                <div class="card-header card-header-purple card-header-icon">
                   <div class="card-icon">
-                    <i class="material-icons">assistant</i>
+                    <i class="material-icons">supervisor_account</i>
                   </div>
                   <p class="card-category">Manage TA</p>
                   <h5 class="card-title">
@@ -86,34 +104,65 @@
                 </div>
               </div>
             </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-green card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">visibility</i>
+                  </div>
+                  <p class="card-category">Announcements</p>
+                  <h5 class="card-title"><small>View</small></h5>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a href="Announcements.html">View Announcements...</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-danger card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">delete</i>
+                  </div>
+                  <p class="card-category">Delete Course</p>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal8" href="#">Delete This Course</a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="row">
             <div class="col-lg-12 col-md-12">
               <div class="card">
-                <div class="card-header card-header-tabs card-header-primary">
+                <div class="card-header card-header-tabs card-header-green">
                   <div class="nav-tabs-navigation">
                     <div class="nav-tabs-wrapper">
                       <ul class="nav nav-tabs" data-tabs="tabs">
                         <li class="nav-item col-lg-3 col-md-6">
-                          <a class="nav-link col" href="#studs" data-toggle="tab">
+                          <a class="nav-link col active show" href="#studs" data-toggle="tab">
                             <i class="material-icons">person</i> Students
                             <div class="ripple-container"></div>
                           </a>
                         </li>
                         <li class="nav-item col-lg-3 col-md-6">
                           <a class="nav-link" href="#tass" data-toggle="tab">
-                            <i class="material-icons">admin_panel_settings</i> TA's
+                            <i class="material-icons">supervisor_account</i> TA's
                             <div class="ripple-container"></div>
                           </a>
                         </li>
                         <li class="nav-item col-lg-3 col-md-6">
-                          <a class="nav-link" href="#announcemnts" data-toggle="tab">
-                            <i class="material-icons">lightbulb</i> Announcements
+                          <a class="nav-link" href="#instructor" data-toggle="tab">
+                            <i class="material-icons">manage_accounts</i> Instructorss
                             <div class="ripple-container"></div>
                           </a>
                         </li>
                         <li class="nav-item col-lg-3 col-md-6">
-                            <a class="nav-link active show" href="#quizes" data-toggle="tab">
+                            <a class="nav-link" href="#quizes" data-toggle="tab">
                               <i class="material-icons">quiz</i> Quiz's
                               <div class="ripple-container"></div>
                             </a>
@@ -124,8 +173,8 @@
                 </div>
                 <div class="card-body">
                   <div class="tab-content">
-                    <div class="tab-pane" id="studs">
-                        <table class="table table-hover">
+                    <div class="tab-pane  active show" id="studs">
+                        <table class="dtBasicExample1 table table-hover table-striped table-sm">
                             <thead class="text-warning">
                               <tr><th>Username</th>
                               <th>Email Address</th>
@@ -143,7 +192,7 @@
                         </table>        
                     </div>
                     <div class="tab-pane" id="tass">
-                        <table class="table table-hover">
+                        <table class="dtBasicExample1 table table-hover table-striped table-sm">
                             <thead class="text-warning">
                               <tr><th>Teaching Assistant Username</th>
                               <th>Email Address</th>
@@ -160,8 +209,26 @@
                             </tbody>
                         </table>              
                     </div>
+                    <div class="tab-pane" id="instructor">
+                      <table class="dtBasicExample1 table table-hover table-striped table-sm">
+                        <thead class="text-warning">
+                          <tr><th class="th-sm">Name</th>
+                          <th class="th-sm">Email</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr>  
+                                <td>Anupam Aggarwal</td>
+                                <td>anupam@iiita.ac.in</td>
+                            </tr>
+                            <tr>  
+                              <td>Shiv Ram Dubey</td>
+                              <td>srd@iiita.ac.in</td>
+                            </tr> 
+                        </tbody>
+                      </table>
+                    </div>
                     <div class="tab-pane" id="announcemnts">
-                      <table class="table table-hover">
+                      <table class="dtBasicExample1 table table-hover table-striped table-sm">
                         <thead class="text-warning">
                           <tr><th>Subject</th>
                           <th>Message</th>
@@ -178,8 +245,8 @@
                         </tbody>
                       </table>
                     </div>
-                    <div class="tab-pane active show" id="quizes">
-                      <table class="table table-hover">
+                    <div class="tab-pane" id="quizes">
+                      <table class="dtBasicExample1 table table-hover table-striped table-sm">
                         <thead class="text-warning">
                           <tr><th>Duration</th>
                           <th>Quiz Name</th>
@@ -208,11 +275,12 @@
             </div>
           </div>
         </div>
-        <!-- Modal 1 -->
+
+      <!-- Modal 1 -->
       <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
           <div class="modal-content card">
-            <div class="card-header card-header-primary">
+            <div class="card-header card-header-green">
               <h4 class="modal-title">Add Students and TA's</h4>
             </div>
             <div class="modal-body">
@@ -233,12 +301,11 @@
           </div>
         </div>
       </div>
-
       <!-- Modal 2 -->
       <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
           <div class="modal-content card">
-            <div class="card-header card-header-primary">
+            <div class="card-header card-header-green">
               <h4 class="modal-title">Announce for class</h4>
             </div>
             <div class="modal-body">
@@ -253,18 +320,20 @@
                       <label class="bmd-label-floating">Type Here Something...</label>
                       <textarea class="form-control" name="message" id="ann_message" rows="4" required></textarea>
                     </div>
+                    <!-- <div class="mb-2">
+                      <input type="file" class="" name="file">
+                    </div> -->
                     <input type="submit" id="course_button" class="btn btn-primary pull-right" value="Announce"/>
                 </form>
             </div>
           </div>
         </div>
       </div>
-
       <!-- Modal 3 -->
       <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
           <div class="modal-content card">
-            <div class="card-header card-header-primary">
+            <div class="card-header card-header-green">
               <h4 class="modal-title">Quiz Manager</h4>
             </div>
             <div class="modal-body">
@@ -306,20 +375,20 @@
       </div>
       <!-- Modal 5 -->
       <div class="modal fade" id="modal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
           <div class="modal-content card">
-            <div class="card-header card-header-primary">
+            <div class="card-header card-header-green">
               <h4 class="modal-title">Manage Teaching Assistants and Permissions</h4>
             </div>
             <div class="modal-body">
-                <h5 style="padding-bottom: 12px"><b>Below mentioned is the list of TA's. You can add multiple main TA and manage their permissions. A page refresh is needed to see effects in new permissions in this table</b></h5>
+                <h5 style="padding-bottom: 12px"><b>Below mentioned is the list of TA's. You can add multiple head TA.</b></h5>
                 <table id="myTable1">  
                   <thead>  
                     <tr>  
                       <th>TA Username</th>  
                       <th>TA Email</th> 
                       <th>Head TA</th>
-                      <th>Manage</th>
+                      <th>Manage Permissions</th>
                     </tr>  
                   </thead>  
                   <tbody>
@@ -333,7 +402,7 @@
                             <td><button class="btn btn-primary" onclick="changeHierarchy('<%= enrollment._id %>', false)">Remove</button></td>
                           <% } else{ %>
                             <td>No</td>
-                            <td><button class="btn btn-primary" onclick="changeHierarchy('<%= enrollment._id %>', true)">Make</button></td>
+                            <td><button class="btn btn-primary" onclick="changeHierarchy('<%= enrollment._id %>', true)">Appoint</button></td>
                           <% } %>
                         </tr> 
                       <% } %>
@@ -345,5 +414,54 @@
           </div>
         </div>
       </div>
+      <!-- Modal 7 -->
+      <div class="modal fade" id="modal7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-green">
+              <h4 class="modal-title">Add User</h4>
+            </div>
+            <div class="modal-body">
+                <h5 style="padding-bottom: 12px"><b>Add Individual User</b></h5>
+                <form method="POST" enctype="multipart/form-data" id="ta_form"><input type="hidden" name="csrfmiddlewaretoken" value="J803pMB3yADuvBx8RrJfLTOe39Fghr8In1hQfRzCekEvCgLQ1F1uc5xosCfCPVyV">
+                  <div class="form-group">
+                    <label class="bmd-label">Email</label><br>
+                    <input type="text" class="form-control" id="user_email" name="user_email" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="bmd-label">User type?</label><br>
+                    <select class="form-control" id="user_type" name="user_type" required>
+                      <option value="1">Student</option>
+                      <option value="2">TA</option>
+                      <option value="3">Faculty</option>
+                    </select>
+                  </div>
+                    <button type="submit" id="course_button" class="btn btn-primary pull-right">Add User</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal 8 -->
+      <div class="modal fade" id="modal8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable-centered modal-md" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-green">
+              <h4 class="modal-title">Delete This Course</h4>
+            </div>
+            <div class="modal-body">
+                <h5 style="padding-bottom: 12px"><b>All data related to this course will be deleted</b></h5>
+                <form method="POST" enctype="multipart/form-data" id="ta_form"><input type="hidden" name="csrfmiddlewaretoken" value="J803pMB3yADuvBx8RrJfLTOe39Fghr8In1hQfRzCekEvCgLQ1F1uc5xosCfCPVyV">
+                  <div class="form-group">
+                    <label class="bmd-label">Enter "<b>RandomString</b>" to delete this course</label><br>
+                    <input type="text" class="form-control" id="random_string" name="random_string" required>
+                  </div>
+                    <button type="submit" id="course_button" class="btn btn-primary pull-right">Delete Course</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
       </div>
 <%- include('./baseEjs/footer')%>

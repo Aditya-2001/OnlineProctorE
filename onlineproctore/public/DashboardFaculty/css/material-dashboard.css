@@ -13584,7 +13584,6 @@ label {
 select,
 select.form-control {
   -moz-appearance: none;
-  -webkit-appearance: none;
 }
 
 @media (min-width: 576px) {
@@ -17516,7 +17515,7 @@ html[dir="rtl"] .form-check .form-check-sign .check:before {
 .card.bg-primary,
 .card.card-rotate.bg-primary .front,
 .card.card-rotate.bg-primary .back {
-  background: linear-gradient(60deg, #5BB12F, #5BB12F);
+  background: linear-gradient(60deg, #0d6efd, #0d6efd);
 }
 
 .card .card-header-info .card-icon,

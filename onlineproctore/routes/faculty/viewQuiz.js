@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, addWrittenQuestion} = require('../../controllers/faculty/viewEachQuiz');
+const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, addWrittenQuestion, deleteQuiz} = require('../../controllers/faculty/viewEachQuiz');
 
 router.route('/')
   .get(getCourseQuiz);
@@ -16,5 +16,8 @@ router.route('/disableprevious')
 
 router.route('/addwrittenquestion')
   .post(addWrittenQuestion)
+
+router.route('/deletequiz')
+  .get(deleteQuiz)
 
 module.exports = router;
