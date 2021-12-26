@@ -1,0 +1,41 @@
+<%- include('./baseEjs/header')%>
+      <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-green">
+                    <h4 class="card-title">View Profile</h4>
+                    <p class="card-category">You have only view permission for email and username and edit permission for first name and last name.</p>
+                    </div>
+                    <div class="card-body">
+                    <form action="/dashboard/student/profile/" enctype="multipart/form-data" method="POST">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="MBse2wpSK1v2P8BIOK8jihpoctCtiiWrqwrn8nc0s6BiHV3sDGDVvQUFTlKDV2tC">
+                            <br>
+                            <div class="form-group">
+                                <label>Email address</label>
+                                <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Email" value=aditya.agg2001@gmail.com readonly>
+                                <small class="form-text text-muted">This email was allocated by staff.</small>
+                            </div><br>
+                            <div class="form-group">
+                                <label>Roll Number</label>
+                                <input class="form-control" type="text" placeholder="Username" value=faculty readonly>
+                                <small class="form-text text-muted">This roll number was allocated by staff.</small>
+                            </div><br>
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input class="form-control" type="text" placeholder="Enter your first name" value="Aditya" name="first_name">
+                            </div><br>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input class="form-control" type="text" placeholder="Enter your last name" value="Aggarwal" name="last_name">
+                            </div><br>
+                            <button type="submit" id="profile_button" class="btn btn-primary pull-right">Update Profile</button>
+                    </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+      </div>
+<%- include('./baseEjs/footer')%>

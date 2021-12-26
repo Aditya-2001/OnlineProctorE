@@ -24,9 +24,6 @@ router.route('/changeCourseName')
 router.route('/changeCourseImage')
   .post(uploadCourseImage.single('imageFile'),changeCourseImage)
 
-router.route('/delete')
-  .get(deleteUser);
-
 router.use('/course/:course_id', authUserCourse, viewCourse);
 
 router.use('/quiz/:quiz_id', authUserQuiz, veiwQuiz);

@@ -59,14 +59,60 @@ exports.getCourseDetails = async (req,res) => {
           success: true,
           message: 'Error in finding quizes created in this course'
         })
-        return res.status(200).render('faculty/Course', {
-          course_id: course_id,
-          enrollments: enrollment,
-          announcements: announcement,
-          quizzes: quiz,
-          student: config.student,
-          ta: config.ta
-        });
+        await User.findByToken(req.cookies.auth, async (err, user) => {
+          if(err) return res.status(400).json({
+            success: true,
+            message: 'Error in finding the user'
+          })
+          if(!user) return res.status(400).json({
+            success: true,
+            message: 'Error in finding the user'
+          })
+          if(user){
+            await Enrollment.findOne({course: course_id, user: user._id}, async (err, enrolledUser) => {
+              if(err) return res.status(400).json({
+                success: true,
+                message: 'Error in finding enrollment'
+              })
+              if(!enrolledUser){
+                await Course.findOne({_id: course_id}, (err, course) => {
+                  return res.status(200).render('faculty/Course', {
+                    course_id: course_id,
+                    course: course,
+                    enrollments: enrollment,
+                    announcements: announcement,
+                    quizzes: quiz,
+                    student: config.student,
+                    ta: config.ta
+                  });
+                }).clone().catch(function(err){console.log(err)});
+              }
+              if(enrolledUser){
+                if(enrolledUser.accountType == config.ta){
+                  return res.status(200).render('studentTa/Course', {
+                    course_id: course_id,
+                    enrolledUser: enrolledUser,
+                    enrollments: enrollment,
+                    announcements: announcement,
+                    quizzes: quiz,
+                    student: config.student,
+                    ta: config.ta
+                  });
+                }
+                else{
+                  return res.status(200).render('studentTa/Course', {
+                    course_id: course_id,
+                    enrollments: enrollment,
+                    announcements: announcement,
+                    quizzes: quiz,
+                    student: config.student,
+                    ta: config.ta
+                  });
+                }
+              }
+            }).clone().catch(function(err){console.log(err)});
+          }
+        })
       }).clone().catch(function(err){console.log(err)});
     }).clone().catch(function(err){console.log(err)});
   }).clone().catch(function(err){console.log(err)});
@@ -121,7 +167,7 @@ exports.addMembers = (req, res) => {
     }
     removeFile(filePath);
     console.log(filePath);
-    return res.status(200).redirect('/dashboard/faculty/course/'+course_id);
+    return res.status(200).redirect(req.get('referer'));
   })();
 }
 
@@ -184,6 +230,7 @@ exports.changeHierarchy = async (req, res) => {
 }
 
 exports.addSingleMember = async (req, res) => {
+  const course_id = req.course_id;
   const type = req.body.accountType;
   const email = req.body.email;
   await User.findOne({email: email}, async (err, user) => {
@@ -191,21 +238,24 @@ exports.addSingleMember = async (req, res) => {
     if(!user) console.log('User Not Found');
     if(user){
       var accountType = config.student; 
-      if(type === "Faculty"){
+      if(type === "faculty"){
         accountType = config.faculty;
-        await Course.findOne({course: course_id}, (err,course) => {
+        await Course.findOne({course: course_id, instructors: {$all: [user._id]}}, async (err,course) => {
           if(err) console.log(err);
-          if(!course) console.log('No Such Course found');
-          if(course){
-            if(!course.instructors.some( instructor => instructor._id === user._id)){
-              course.instructors.push(user._id);
-              course.save();
-            }
+          if(course) console.log('Already enrolled in course');
+          if(!course){
+            await Course.findOne({course: course_id}, async (err, addMemCourse) => {
+              if(err) console.log(err);
+              if(!addMemCourse) console.log('Course Not Found');
+              if(addMemCourse){
+                addMemCourse.instructors.push(user._id);
+              }
+            })
           }
         }).clone().catch(function(err){console.log(err)});
       }
       else{
-        if(type === "TA"){
+        if(type === "ta"){
           accountType = config.ta;
         }
         const newEnrollment = new Enrollment({course: course_id, user: user._id, accountType: accountType})
@@ -216,11 +266,18 @@ exports.addSingleMember = async (req, res) => {
         }).clone().catch(function(err){console.log(err)});
       }
     }
+    return res.status(204).send();
   }).clone().catch(function(err){console.log(err)});
 }
 
 exports.deleteCourse = async (req, res) => {
   const course_id = req.course_id;
-  await Course.remove({_id: course_id});
-  res.status(200).redirect('/dashboard');
+  const confirmation = req.body.confirmation;
+  if(course_id == confirmation){
+    await Course.remove({_id: course_id});
+    return res.status(200).redirect('/dashboard');
+  }
+  else{
+    return res.status(400).redirect(req.get('referer'));
+  }
 }

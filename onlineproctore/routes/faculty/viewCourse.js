@@ -20,9 +20,12 @@ router.route('/addsingle')
   .post(addSingleMember)
 
 router.route('/delete')
-  .get(deleteCourse)
+  .post(deleteCourse)
 
 router.route('/changeHierarchy')
   .post(changeHierarchy)
+
+router.route('/addSingleMember')
+  .post(addSingleMember)
 
 module.exports = router;

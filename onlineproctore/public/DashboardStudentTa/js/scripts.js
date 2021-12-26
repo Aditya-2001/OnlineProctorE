@@ -13,22 +13,12 @@ $(document).ready(function () {
   $('.dataTables_length').addClass('bs-select');
 });
 
-$("#courseCreationForm").submit(async function (e) {
-    e.preventDefault();
-    var serializedData = $(this).serialize();
-    try{
-      await axios.post('/dashboard/faculty/add', serializedData);
-      location.reload();
-    }catch(error){
-      console.log(error.response);
-    }
-})
 
 $("#changeCourseName").submit(async function (e) {
     e.preventDefault();
     var serializedData = $(this).serialize();
     try{
-      await axios.post('/dashboard/faculty/changeCourseName', serializedData);
+      await axios.post('/dashboard/user/changeCourseName', serializedData);
       location.reload();
     }catch(error){
       console.log(error.response);
@@ -79,6 +69,19 @@ $("#addWrittenQuestion").submit(async function (e) {
     location.reload();
   }catch(error){
     console.log(error.response);
+  }
+})
+
+$("#deleteQuiz").submit(async function (e) {
+  e.preventDefault();
+  var serializedData = $(this).serialize();
+  var quizId = document.getElementById("quizId").value;
+  try{
+    await axios.post(quizId+'/deleteQuiz', serializedData);
+    axios.get('/dashboard');
+  }catch(error){
+    console.log(error.response);
+    location.reload();
   }
 })
 

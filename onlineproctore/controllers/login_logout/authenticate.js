@@ -23,15 +23,8 @@ const authStaff = (req, res, next) => {
   next();
 }
 
-const authStudent = (req, res, next) => {
-  if(req.cookies.accountType!=config.student){
-    return res.render('error/error',{authorized: true});
-  }
-  next();
-}
-
-const authTa = (req, res, next) => {
-  if(req.cookies.accountType!=config.ta){
+const authStudentTa = (req, res, next) => {
+  if(req.cookies.accountType!=config.student && req.cookies.accountType!=config.ta){
     return res.render('error/error',{authorized: true});
   }
   next();
@@ -44,4 +37,4 @@ const authFaculty = (req, res, next) => {
   next();
 }
 
-module.exports = {auth, authStaff, authStudent, authTa, authFaculty};
+module.exports = {auth, authStaff, authStudentTa, authFaculty};

@@ -23,6 +23,7 @@ var index = require('./routes/root/index');
 var users = require('./routes/login_logout/users');
 var staff = require('./routes/staff/staff');
 var faculty = require('./routes/faculty/faculty');
+var studentTa = require('./routes/studentTa/studentTa');
 var userRedirect = require('./routes/userRedirect');
 
 var app = express();
@@ -43,14 +44,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
-app.use(express.static(path.join(__dirname, '/uploads')));
 
 app.use('/', index);
 app.use('/users', users);
 app.use(auth);
 app.use('/dashboard', userRedirect);
-// app.use('/dashboard/student', student);
-// app.use('/dashboard/ta', ta);
+app.use('/dashboard/user', studentTa);
 app.use('/dashboard/faculty', faculty);
 app.use('/dashboard/staff', staff);
 // catch 404 and forward to error handler

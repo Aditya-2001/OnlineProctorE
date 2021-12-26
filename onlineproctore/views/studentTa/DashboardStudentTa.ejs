@@ -1,0 +1,72 @@
+<%- include('./baseEjs/header')%>
+      <div class="content">
+        <div class="container-fluid">
+              
+            <div class="row">
+              <% enrollments.forEach( enrollment => { %>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card card-chart course">
+                      <img src="data:image/<%=enrollment.course.courseImage.contentType%>;base64,
+                      <%=enrollment.course.courseImage.data.toString('base64')%>" 
+                      <% if(enrollment.headTa){ %>
+                      data-toggle="modal" data-target="#modal" onclick="setID('<%= enrollment.course._id%>')"
+                      <% } %>
+                      >
+                        <div class="card-body">
+                            <h4 class="card-title"><%= enrollment.course.courseName %>
+                                <% if(enrollment.headTa){ %>
+                                <a href="#" data-toggle="modal" data-target="#modal1" class="material-icons" style="float: right;" onclick="setIDName('<%= enrollment.course._id %>', '<%= enrollment.course.courseName %>')">edit</a>
+                                <% } %>
+                            </h4>
+                            <p class="card-category">Started On <%= enrollment.course.createdOn.toString().slice(0,-31) %></p>
+                        </div>
+                        <a href=<%= 'user/course/' + enrollment.course._id %>>
+                        <div class="card-footer">
+                            <div class="stats" style="color: #5BB12F;">
+                            Click to view more...
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                <% }); %>
+                    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content card">
+                            <div class="card-header card-header-green">
+                            <h5 class="modal-title" id="title">Upload Image</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form id="changeCourseImage" method="POST" enctype="multipart/form-data" action="/dashboard/user/changeCourseImage">
+                                    <input type="hidden" name="_id" id="course_id" class="form-control" required>
+                                    <h4>Upload an image for the course</h4>
+                                    <input type="file" name="imageFile" required><br><br>
+                                    <button type="submit" id="course_button" class="btn btn-primary pull-right" onclick="submitForm('changeCourseImage')">Upload</button>
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+        
+                    <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content card">
+                            <div class="card-header card-header-green">
+                            <h5 class="modal-title" id="title1">Change Course Name</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form id="changeCourseName">
+                                  <input type="hidden" name="_id" id="course_id1" class="form-control" required>
+                                  <h4>Edit Course Name</h4>
+                                  <input type="text" name="courseName" class="form-control" id="cour_name" required><br><br>
+                                  <input type="submit" id="course_button" class="btn btn-primary pull-right" value="Edit"/>
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+    </div> 
+<%- include('./baseEjs/footer')%>

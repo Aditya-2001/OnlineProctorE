@@ -90,21 +90,23 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-              <div class="card card-stats">
-                <div class="card-header card-header-danger card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">delete</i>
+            <% if(enrolledUser.headTa){ %>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                  <div class="card-header card-header-danger card-header-icon">
+                    <div class="card-icon">
+                      <i class="material-icons">delete</i>
+                    </div>
+                    <p class="card-category">Delete Quiz</p>
                   </div>
-                  <p class="card-category">Delete Quiz</p>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <a data-toggle="modal" data-target="#modal8" href="#">Delete This Quiz</a>
+                  <div class="card-footer">
+                    <div class="stats">
+                      <a data-toggle="modal" data-target="#modal8" href="#">Delete This Quiz</a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <% } %>
           </div>
           <p></p>
           <div class="row">
@@ -326,12 +328,12 @@
               </div>
               <div class="modal-body">
                   <h5 style="padding-bottom: 12px"><b>All data related to this quiz will be deleted</b></h5>
-                  <form method="POST" enctype="multipart/form-data" id="ta_form"><input type="hidden" name="csrfmiddlewaretoken" value="J803pMB3yADuvBx8RrJfLTOe39Fghr8In1hQfRzCekEvCgLQ1F1uc5xosCfCPVyV">
+                  <form id="deleteQuiz">
                     <div class="form-group">
-                      <label class="bmd-label">Enter "<b>RandomString</b>" to delete this quiz</label><br>
-                      <input type="text" class="form-control" id="random_string" name="random_string" required>
+                      <label class="bmd-label">Enter "<b><%= quizId %></b>" to delete this quiz</label><br>
+                      <input type="text" class="form-control" id="random_string" name="confirmation" required/>
                     </div>
-                      <button type="submit" id="quiz_button" class="btn btn-primary pull-right">Delete Quiz</button>
+                      <input type="submit" id="quiz_button" class="btn btn-primary pull-right" value="Delete Quiz"/>
                   </form>
               </div>
             </div>

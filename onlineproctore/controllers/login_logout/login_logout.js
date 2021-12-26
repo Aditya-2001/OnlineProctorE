@@ -54,12 +54,7 @@ exports.login = (req,res) => {
             if(user.student){
               res.cookie('accountType', config.student);
               res.status(200);
-              return res.json({redirect: '/dashboard/student'});
-            }
-            else if(user.ta){
-              res.cookie('accountType', config.ta);
-              res.status(200);
-              return res.json({redirect: '/dashboard/ta'});
+              return res.json({redirect: '/dashboard/user'});
             }
             else if(user.faculty){
               res.cookie('accountType', config.faculty);

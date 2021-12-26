@@ -75,12 +75,3 @@ exports.changeCourseImage = async(req,res) => {
     return res.status(200).redirect('/dashboard');
   }).clone().catch(function(err){ console.log(err)});
 }
-
-exports.deleteUser = async (req, res) => {
-  await User.findByToken(req.cookies.auth, (err,user) => {
-    user.remove();
-    res.status(200).json({
-      success: true
-    })
-  })
-}

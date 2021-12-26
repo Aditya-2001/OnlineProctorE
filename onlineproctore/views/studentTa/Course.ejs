@@ -2,6 +2,7 @@
       <div class="content">
         <div class="container-fluid">
           <div class="row">
+            <% if(enrolledUser.headTa){ %>
             <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
                 <div class="card-header card-header-warning card-header-icon">
@@ -38,6 +39,7 @@
                 </div>
               </div>
             </div>
+            <% } %>
             <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
                 <div class="card-header card-header-primary card-header-icon">
@@ -87,6 +89,7 @@
                 </div>
               </div>
             </div>
+            <% if(enrolledUser.headTa){ %>
             <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
                 <div class="card-header card-header-purple card-header-icon">
@@ -104,6 +107,7 @@
                 </div>
               </div>
             </div>
+            <% } %>
             <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
                 <div class="card-header card-header-green card-header-icon">
@@ -120,6 +124,7 @@
                 </div>
               </div>
             </div>
+            <% if(enrolledUser.headTa){ %>
             <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="card card-stats">
                 <div class="card-header card-header-danger card-header-icon">
@@ -135,6 +140,7 @@
                 </div>
               </div>
             </div>
+            <% } %>
           </div>
           <div class="row">
             <div class="col-lg-12 col-md-12">
@@ -192,22 +198,22 @@
                         </table>        
                     </div>
                     <div class="tab-pane" id="tass">
-                      <table class="dtBasicExample1 table table-hover table-striped table-sm">
-                          <thead class="text-warning">
-                            <tr><th>Teaching Assistant Username</th>
-                            <th>Email Address</th>
-                          </tr></thead>
-                          <tbody>
-                            <% enrollments.forEach(enrollment => { %>
-                              <% if(enrollment.accountType == ta){ %>
-                                <tr>
-                                  <td><%= enrollment.user.username %></td>
-                                  <td><%= enrollment.user.email %></td>
-                                </tr>
-                              <% } %>
-                            <% }); %>
-                          </tbody>
-                      </table>              
+                        <table class="dtBasicExample1 table table-hover table-striped table-sm">
+                            <thead class="text-warning">
+                              <tr><th>Teaching Assistant Username</th>
+                              <th>Email Address</th>
+                            </tr></thead>
+                            <tbody>
+                              <% enrollments.forEach(enrollment => { %>
+                                <% if(enrollment.accountType == ta){ %>
+                                  <tr>
+                                    <td><%= enrollment.user.username %></td>
+                                    <td><%= enrollment.user.email %></td>
+                                  </tr>
+                                <% } %>
+                              <% }); %>
+                            </tbody>
+                        </table>              
                     </div>
                     <div class="tab-pane" id="instructor">
                       <table class="dtBasicExample1 table table-hover table-striped table-sm">
@@ -216,12 +222,30 @@
                           <th class="th-sm">Email</th>
                         </tr></thead>
                         <tbody>
-                          <% course.instructors.forEach(instructor => { %>
+                          <% enrollments[0].course.instructors.forEach(instructor => { %>
                             <tr>
                               <td><%= instructor.username %></td>
                               <td><%= instructor.email %></td>
                             </tr>
                           <% }) %> 
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="tab-pane" id="announcemnts">
+                      <table class="dtBasicExample1 table table-hover table-striped table-sm">
+                        <thead class="text-warning">
+                          <tr><th>Subject</th>
+                          <th>Message</th>
+                          <th>Announcement Date</th>
+                        </tr></thead>
+                        <tbody>
+                          <% announcements.forEach(announcement =>{ %>
+                            <tr>
+                              <td><%= announcement.subject %></td>
+                              <td><%= announcement.message %></td>
+                              <td><%= announcement.createdAt.toString().slice(0,-31) %></td>
+                            </tr>
+                          <% }); %>
                         </tbody>
                       </table>
                     </div>
@@ -252,7 +276,7 @@
                                 <%= quiz.endDate.toString().slice(16,-31) %>
                               </td>
                               <td class="td-actions text-right">
-                                <a href="<%= '/dashboard/faculty/quiz/' + quiz._id %>" type="button" rel="tooltip" title="Edit Quiz" class="btn btn-primary btn-link btn-sm">
+                                <a href="<%= '/dashboard/user/quiz/' + quiz._id %>" type="button" rel="tooltip" title="Edit Quiz" class="btn btn-primary btn-link btn-sm">
                                   <i class="material-icons">edit</i>
                                 </a>
                               </td>
@@ -445,7 +469,7 @@
                 <h5 style="padding-bottom: 12px"><b>All data related to this course will be deleted</b></h5>
                 <form id="deleteCourse">
                   <div class="form-group">
-                    <label class="bmd-label">Enter "<b><%= course_id %></b>" to delete this course</label><br>
+                    <label class="bmd-label">Enter "<b><%=course_id%></b>" to delete this course</label><br>
                     <input type="text" class="form-control" id="random_string" name="confirmation" required>
                   </div>
                     <input type="submit" id="course_button" class="btn btn-primary pull-right" value="Delete Course"/>

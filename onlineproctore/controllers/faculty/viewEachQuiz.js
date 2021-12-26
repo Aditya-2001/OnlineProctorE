@@ -2,10 +2,12 @@ const Quiz = require('../../models/quiz');
 const User = require('../../models/user');
 const Course = require('../../models/course');
 const Question = require('../../models/question');
+const Enrollment = require('../../models/enrollment');
 const multer = require('multer');
 const {removeFile} = require('../../functions');
 const XLSX = require('xlsx');
 const path = require('path');
+const config = require('../../config');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -48,10 +50,31 @@ exports.getCourseQuiz = async (req, res) => {
   const quizId = req.quizId;
   await Quiz.findOne({_id: quizId}, async (err, quiz) => {
     if(err) return res.status(400).render('error/error');
-    if(quiz.quizHeld){
-      return res.status(200).render('faculty/AfterExam', {quizId: quizId});
+    if(req.cookies.accountType == config.faculty){
+      if(quiz.quizHeld){
+        return res.status(200).render('faculty/AfterExam', {quizId: quizId, quiz: quiz});
+      }
+      return res.status(200).render('faculty/BeforeExam', {quizId: quizId, quiz: quiz});
     }
-    return res.status(200).render('faculty/BeforeExam', {quizId: quizId});
+    else{
+      await User.findByToken(req.cookies.auth, async (err, user) => {
+        if(err) return res.status(400).render('error/error');
+        if(!user) return res.status(400).render('error/error');
+        await Enrollment.findOne({course: quiz.course._id, user: user._id}, (err, enrolledUser) => {
+          if(err) return res.status(400).render('error/error');
+          if(!enrolledUser) return res.status(400).render('error/error');
+          if(enrolledUser.accountType == config.student){
+            return res.status(200).render('studentTa/quizPage');
+          }
+          else{
+            if(quiz.quizHeld){
+              return res.status(200).render('studentTa/AfterExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser});
+            }
+            return res.status(200).render('studentTa/BeforeExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser});
+          }
+        }).clone().catch(function(err){console.log(err)})
+      })
+    }
   }).clone().catch(function(err){console.log(err)})
 }
 
@@ -114,7 +137,7 @@ exports.addQuestions = (req, res) => {
     }
     removeFile(filePath);
     console.log(filePath);
-    return res.status(200).redirect('/dashboard/faculty/quiz/'+quizId);
+    return res.status(200).redirect(req.get('referer'));
   })();
 }
 
@@ -128,7 +151,7 @@ exports.hideQuiz = async (req, res) => {
       quiz.hidden = true;
     }
     quiz.save();
-    res.status(200).redirect('/dashboard/faculty/quiz/'+quizId);
+    res.status(200).redirect(req.get('referer'));
   }).clone().catch(function(err){console.log(err)})
 }
 
@@ -142,7 +165,7 @@ exports.disablePrevious = async (req, res) => {
       quiz.disablePrevious = true;
     }
     quiz.save();
-    res.status(200).redirect('/dashboard/faculty/quiz/'+quizId);
+    res.status(200).redirect(req.get('referer'));
   }).clone().catch(function(err){console.log(err)})
 }
 
@@ -156,22 +179,22 @@ exports.addWrittenQuestion = async (req, res) => {
   }
   var writtenQuestion = {quiz: quizId, question: quizQuestion, maximumMarks: maximumMarks, note: note};
   const newQuestion = new Question(writtenQuestion);
-  console.log(newQuestion);
   await Question.findOne(writtenQuestion, (err, foundQuestion) => {
     if(err) console.log(err);
     if(foundQuestion) console.log('Question Already Exists');
     if(!foundQuestion) newQuestion.save();
-    res.status(200).redirect('/dashboard/faculty/quiz/'+quizId);
+    res.status(200).redirect(req.get('referer'));
   }).clone().catch(function(err){console.log(err)})
 }
 
 exports.deleteQuiz = async (req, res) => {
   const quizId = req.quizId;
-  await Quiz.find({_id: quizId}, (err, quiz) => {
-    if(err) return res.status(400).render('error/error');
-    if(!quiz) return res.status(400).render('error/error');
-    const courseId = quiz.course._id;
-    quiz.remove();
-    res.status(200).redirect('/dashboard/faculty/course/' + courseId);
-  }).clone().catch(function(err){console.log(err)})
+  const confirmation = req.body.confirmation;
+  if(confirmation == quizId){
+    await Quiz.remove({_id: quizId});
+    return res.status(200).redirect('/dashboard');
+  }
+  else{
+    return res.status(400).redirect(req.get('referer'));
+  }
 }

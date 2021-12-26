@@ -5,19 +5,19 @@ const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, 
 router.route('/')
   .get(getCourseQuiz);
 
-router.route('/addquestions')
+router.route('/addQuestions')
   .post(uploadExcelFile.single('excelFile'), addQuestions)
 
-router.route('/hidequiz')
+router.route('/hideQuiz')
   .get(hideQuiz)
 
-router.route('/disableprevious')
+router.route('/disablePrevious')
   .get(disablePrevious)
 
-router.route('/addwrittenquestion')
+router.route('/addWrittenQuestion')
   .post(addWrittenQuestion)
 
-router.route('/deletequiz')
-  .get(deleteQuiz)
+router.route('/deleteQuiz')
+  .post(deleteQuiz)
 
 module.exports = router;
