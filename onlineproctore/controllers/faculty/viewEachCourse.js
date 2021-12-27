@@ -83,7 +83,8 @@ exports.getCourseDetails = async (req,res) => {
                     announcements: announcement,
                     quizzes: quiz,
                     student: config.student,
-                    ta: config.ta
+                    ta: config.ta,
+                    page: course.courseName
                   });
                 }).clone().catch(function(err){console.log(err)});
               }
@@ -96,17 +97,17 @@ exports.getCourseDetails = async (req,res) => {
                     announcements: announcement,
                     quizzes: quiz,
                     student: config.student,
-                    ta: config.ta
+                    ta: config.ta,
+                    page: enrolledUser.course.courseName
                   });
                 }
                 else{
-                  return res.status(200).render('studentTa/Course', {
+                  return res.status(200).render('studentTa/CourseStudent', {
                     course_id: course_id,
-                    enrollments: enrollment,
+                    enrolledUser: enrolledUser,
                     announcements: announcement,
                     quizzes: quiz,
-                    student: config.student,
-                    ta: config.ta
+                    page: enrolledUser.course.courseName
                   });
                 }
               }
@@ -249,8 +250,9 @@ exports.addSingleMember = async (req, res) => {
               if(!addMemCourse) console.log('Course Not Found');
               if(addMemCourse){
                 addMemCourse.instructors.push(user._id);
+                addMemCourse.save();
               }
-            })
+            }).clone().catch(function(err){console.log(err)});
           }
         }).clone().catch(function(err){console.log(err)});
       }
@@ -274,10 +276,25 @@ exports.deleteCourse = async (req, res) => {
   const course_id = req.course_id;
   const confirmation = req.body.confirmation;
   if(course_id == confirmation){
-    await Course.remove({_id: course_id});
-    return res.status(200).redirect('/dashboard');
+    await Course.findOne({_id: course_id}, (err, course) => {
+      if(err) return res.status(200).redirect('/dashboard');
+      if(!course) return res.status(200).redirect('/dashboard');
+      course.remove();
+      return res.status(200).redirect('/dashboard');
+    }).clone().catch(function(err){console.log(err)});
   }
   else{
-    return res.status(400).redirect(req.get('referer'));
+    return res.status(200).redirect(req.get('referer'));
   }
+}
+
+exports.viewAnnouncements = async (req, res) => {
+  const course_id = req.course_id;
+  await Announcement.find({course: course_id}, (err, announcements) => {
+    if(err) res.status(400).render('error/error');
+    res.status(200).render('studentTa/Announcements', {
+      announcements: announcements,
+      page: 'Announcements'
+    });
+  }).clone().catch(function(err){console.log(err)});
 }

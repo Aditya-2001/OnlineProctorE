@@ -33,8 +33,16 @@ Course.post("remove", async function(res, next) {
       enrollment.remove();
     }
   }).clone().catch(function(err){console.log(err)});
-  await Announcement.remove({course: this._id});
-  await Quiz.remove({course: this._id});
+  await Announcement.find({course: this._id}, async (err, announcements) => {
+    for await (let announcement of announcements){
+      announcement.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await Quiz.find({course: this._id}, async (err, quizzes) => {
+    for await (let quiz of quizzes){
+      quiz.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
   next();
 });
 

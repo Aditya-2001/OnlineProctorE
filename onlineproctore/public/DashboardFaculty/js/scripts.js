@@ -59,16 +59,6 @@ $("#addIndividualMember").submit(async function (e) {
   }
 })
 
-$("#deleteCourse").submit(async function (e) {
-  e.preventDefault();
-  var serializedData = $(this).serialize();
-  var course_id = document.getElementById("course_id").value;
-  try{
-    await axios.post(course_id+'/delete', serializedData);
-  }catch(error){
-    console.log(error.response);
-  }
-})
 
 $("#addWrittenQuestion").submit(async function (e) {
   e.preventDefault();
@@ -76,6 +66,18 @@ $("#addWrittenQuestion").submit(async function (e) {
   var quizId = document.getElementById("quizId").value;
   try{
     await axios.post(quizId+'/addWrittenQuestion', serializedData);
+    location.reload();
+  }catch(error){
+    console.log(error.response);
+  }
+})
+
+$("#addMCQQuestion").submit(async function (e) {
+  e.preventDefault();
+  var serializedData = $(this).serialize();
+  var quizId = document.getElementById("quizId").value;
+  try{
+    await axios.post(quizId+'/addMCQQuestion', serializedData);
     location.reload();
   }catch(error){
     console.log(error.response);

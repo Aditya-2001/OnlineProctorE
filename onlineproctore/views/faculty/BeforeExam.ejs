@@ -52,42 +52,68 @@
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="card card-stats">
+                  <% if(quiz.hidden){ %>
                     <div class="card-header card-header-info card-header-icon">
                       <div class="card-icon">
                         <i class="material-icons">visibility</i>
                       </div>
                       <p class="card-category">Quiz Hidder</p>
-                      <% if(quiz.hidden){ %>
+                      
                         <h5 class="card-title"><small>Hidden</small></h5>
+                      </div>
+                      <div class="card-footer">
+                        <div class="stats">
+                          <a href="<%= quizId + '/hideQuiz' %>">Unhide Quiz</a>
+                        </div>
+                      </div>
                       <% }else{ %>
+                        <div class="card-header card-header-info card-header-icon">
+                          <div class="card-icon">
+                            <i class="material-icons">visibility</i>
+                          </div>
+                          <p class="card-category">Quiz Hidder</p>
                         <h5 class="card-title"><small>Visible</small></h5>
-                      <% } %>
+                      
                     </div>
                     <div class="card-footer">
                       <div class="stats">
                         <a href="<%= quizId + '/hideQuiz' %>">Hide Quiz</a>
                       </div>
                     </div>
+                    <% } %>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12">
               <div class="card card-stats">
+                <% if(quiz.disablePrevious){ %>
                 <div class="card-header card-header-purple card-header-icon">
                   <div class="card-icon">
                     <i class="material-icons">arrow_back</i>
                   </div>
                   <p class="card-category">Previous Option</p>
-                  <% if(quiz.disablePrevious){ %>
+                  
                     <h5 class="card-title"><small>Disabled</small></h5>
+                  </div>
+                  <div class="card-footer">
+                    <div class="stats">
+                      <a href="<%= quizId + '/disablePrevious' %>">Enable Previous</a>
+                    </div>
+                  </div>
                   <% }else{ %>
+                    <div class="card-header card-header-purple card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">arrow_back</i>
+                      </div>
+                      <p class="card-category">Previous Option</p>
                     <h5 class="card-title"><small>Enabled</small></h5>
-                  <% } %>
+                  
                 </div>
                 <div class="card-footer">
                   <div class="stats">
                     <a href="<%= quizId + '/disablePrevious' %>">Disable Previous</a>
                   </div>
                 </div>
+                <% } %>
               </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12">
@@ -149,7 +175,21 @@
                                     <th class="mcq-table">Maximum Marks</th>
                                     </thead>
                                     <tbody>
-
+                                      <% questions.forEach(question => { %>
+                                        <% if(question.mcq){ %>
+                                          <tr>
+                                            <td><%= question.question %></td>
+                                            <td><%= question.options %></td>
+                                            <td><%= question.correctOptions %></td>
+                                            <% if(question.markingScheme){ %>
+                                              <td>Partial Marking</td>
+                                            <% } else{ %>
+                                              <td>No Partial Marking</td>
+                                            <% } %>
+                                            <td><%= question.maximumMarks %></td>
+                                          </tr>
+                                        <% } %>
+                                      <% }) %>
                                     </tbody>
                                 </table>        
                             </div>
@@ -161,7 +201,15 @@
                                     <th>Maximum Marks</th>
                                     </thead>
                                     <tbody>
-                                        
+                                      <% questions.forEach(question => { %>
+                                        <% if(!question.mcq){ %>
+                                          <tr>
+                                            <td><%= question.question %></td>
+                                            <td></td>
+                                            <td><%= question.maximumMarks %></td>
+                                          </tr>
+                                        <% } %>
+                                      <% }) %>
                                     </tbody>
                                 </table>              
                             </div>
@@ -208,79 +256,39 @@
                 <h4 class="modal-title">Add a mcq Question to quiz</h4>
               </div>
               <div class="modal-body">
-                <form action="#" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="i95qWcYPaURXUE5MSOrg15EfcW1zuCDljCgj3HvEVihR0mdAmzo4USZkQMvojz9s">
-                    <input type="hidden" name="question_type" value="1" required>
+                <form id="addMCQQuestion">
                     <div class="form-group">
                       <label class="bmd-label-floating">Type the question below</label>
-                      <textarea class="form-control" name="question_written" id="question_written" rows="4" required></textarea>
+                      <textarea class="form-control" name="question" id="question_written" rows="4" required></textarea>
                     </div>
                     <div class="form-group">
                         <label class="bmd-label-floating">Maximum Marks for the question</label>
-                      <input type="number" class="form-control" name="max_marks_written" required>
-                    </div><br>
+                      <input type="number" class="form-control" name="maximumMarks" required>
+                    </div>
                     <div class="form-group">
-                      <label class="bmd-label">Option 1</label><br>
-                      <select class="form-control" name="sel1">
-                        <option value="1">Deactivated Option</option>
-                        <option value="2">Correct Option</option>
-                        <option value="3">Incorrect Option</option>
-                      </select>
-                      <input type="text" class="form-control" name="opt1" placeholder="Type Option">
-                    </div><br>
+                      <input type="text" class="form-control" name="option1" placeholder="Enter Option 1">
+                    </div>
                     <div class="form-group">
-                      <label class="bmd-label">Option 2</label><br>
-                      <select class="form-control" name="sel2">
-                        <option value="1">Deactivated Option</option>
-                        <option value="2">Correct Option</option>
-                        <option value="3">Incorrect Option</option>
-                      </select>
-                      <input type="text" class="form-control" name="opt2" placeholder="Type Option">
-                    </div><br>
+                      <input type="text" class="form-control" name="option2" placeholder="Enter Option 2">
+                    </div>
                     <div class="form-group">
-                      <label class="bmd-label">Option 3</label><br>
-                      <select class="form-control" name="sel3">
-                        <option value="1">Deactivated Option</option>
-                        <option value="2">Correct Option</option>
-                        <option value="3">Incorrect Option</option>
-                      </select>
-                      <input type="text" class="form-control" name="opt3" placeholder="Type Option">
-                    </div><br>
+                      <input type="text" class="form-control" name="option3" placeholder="Enter Option 3">
+                    </div>
                     <div class="form-group">
-                      <label class="bmd-label">Option 4</label><br>
-                      <select class="form-control" name="sel4">
-                        <option value="1">Deactivated Option</option>
-                        <option value="2">Correct Option</option>
-                        <option value="3">Incorrect Option</option>
-                      </select>
-                      <input type="text" class="form-control" name="opt4" placeholder="Type Option">
-                    </div><br>
+                      <input type="text" class="form-control" name="option4" placeholder="Enter Option 4">
+                    </div>
                     <div class="form-group">
-                      <label class="bmd-label">Option 5</label><br>
-                      <select class="form-control" name="sel5">
-                        <option value="1">Deactivated Option</option>
-                        <option value="2">Correct Option</option>
-                        <option value="3">Incorrect Option</option>
-                      </select>
-                      <input type="text" class="form-control" name="opt5" placeholder="Type Option">
-                    </div><br>
-                    <div class="form-group">
-                      <label class="bmd-label">Option 6</label><br>
-                      <select class="form-control" name="sel6">
-                        <option value="1">Deactivated Option</option>
-                        <option value="2">Correct Option</option>
-                        <option value="3">Incorrect Option</option>
-                      </select>
-                      <input type="text" class="form-control" name="opt6" placeholder="Type Option">
-                    </div><br>
+                      <label class="bmd-label">Enter Correct Options</label><br>
+                      <input type="text" class="form-control" name="correctOptions" placeholder="Correct Options Number. eg: 1,2">
+                    </div>
                     <div class="form-group">
                       <label class="bmd-label">Marking Scheme</label><br>
-                      <select class="form-control" name="marking_scheme">
-                        <option value="1">Partial Marking Scheme - Also consider wrong marked answers (Recommended)</option>
-                        <option value="2">Also correct answers must be marked</option>
+                      <select class="form-control" name="markingScheme">
+                        <option value="Yes">Partial Marking</option>
+                        <option value="No">No Partial Marking</option>
                       </select>
                     </div>
-                    <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Add Question</button>
+                    <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
                 </form>
             </div>
             </div>
@@ -326,12 +334,12 @@
               </div>
               <div class="modal-body">
                   <h5 style="padding-bottom: 12px"><b>All data related to this quiz will be deleted</b></h5>
-                  <form method="POST" enctype="multipart/form-data" id="ta_form"><input type="hidden" name="csrfmiddlewaretoken" value="J803pMB3yADuvBx8RrJfLTOe39Fghr8In1hQfRzCekEvCgLQ1F1uc5xosCfCPVyV">
+                  <form id="deleteQuiz" action= <%= quizId + '/deleteQuiz' %> method="POST">
                     <div class="form-group">
-                      <label class="bmd-label">Enter "<b>RandomString</b>" to delete this quiz</label><br>
-                      <input type="text" class="form-control" id="random_string" name="random_string" required>
+                      <label class="bmd-label">Enter "<b><%= quizId %></b>" to delete this quiz</label><br>
+                      <input type="text" class="form-control" id="random_string" name="confirmation" required/>
                     </div>
-                      <button type="submit" id="quiz_button" class="btn btn-primary pull-right">Delete Quiz</button>
+                      <input type="submit" id="quiz_button" class="btn btn-primary pull-right" value="Delete Quiz"/>
                   </form>
               </div>
             </div>

@@ -3,33 +3,33 @@
         <div class="container-fluid">
               
             <div class="row">
-              <% enrollments.forEach( enrollment => { %>
-                <div class="col-md-3 col-sm-6">
-                    <div class="card card-chart course">
-                      <img src="data:image/<%=enrollment.course.courseImage.contentType%>;base64,
-                      <%=enrollment.course.courseImage.data.toString('base64')%>" 
-                      <% if(enrollment.headTa){ %>
-                      data-toggle="modal" data-target="#modal" onclick="setID('<%= enrollment.course._id%>')"
-                      <% } %>
-                      >
-                        <div class="card-body">
-                            <h4 class="card-title"><%= enrollment.course.courseName %>
-                                <% if(enrollment.headTa){ %>
-                                <a href="#" data-toggle="modal" data-target="#modal1" class="material-icons" style="float: right;" onclick="setIDName('<%= enrollment.course._id %>', '<%= enrollment.course.courseName %>')">edit</a>
-                                <% } %>
-                            </h4>
-                            <p class="card-category">Started On <%= enrollment.course.createdOn.toString().slice(0,-31) %></p>
-                        </div>
-                        <a href=<%= 'user/course/' + enrollment.course._id %>>
-                        <div class="card-footer">
-                            <div class="stats" style="color: #5BB12F;">
-                            Click to view more...
+                <% enrollments.forEach( enrollment => { %>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card card-chart course">
+                          <img src="data:image/<%=enrollment.course.courseImage.contentType%>;base64,
+                          <%=enrollment.course.courseImage.data.toString('base64')%>" 
+                          <% if(enrollment.headTa){ %>
+                          data-toggle="modal" data-target="#modal" onclick="setID('<%= enrollment.course._id%>')"
+                          <% } %>
+                          >
+                            <div class="card-body">
+                                <h4 class="card-title"><%= enrollment.course.courseName %>
+                                    <% if(enrollment.headTa){ %>
+                                    <a href="#" data-toggle="modal" data-target="#modal1" class="material-icons" style="float: right;" onclick="setIDName('<%= enrollment.course._id %>', '<%= enrollment.course.courseName %>')">edit</a>
+                                    <% } %>
+                                </h4>
+                                <p class="card-category">Started On <%= enrollment.course.createdOn.toString().slice(0,-31) %></p>
                             </div>
+                            <a href=<%= 'user/course/' + enrollment.course._id %>>
+                            <div class="card-footer">
+                                <div class="stats" style="color: #5BB12F;">
+                                Click to view more...
+                                </div>
+                            </div>
+                            </a>
                         </div>
-                        </a>
                     </div>
-                </div>
-                <% }); %>
+                    <% }); %>
                     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content card">

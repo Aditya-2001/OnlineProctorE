@@ -1,0 +1,98 @@
+<%- include('./baseEjs/header')%>
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-tabs card-header-green">
+                  <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                      <ul class="nav nav-tabs" data-tabs="tabs">
+                        <li class="nav-item col-md-6">
+                          <a class="nav-link col active show" href="#announce" data-toggle="tab">
+                            <i class="material-icons">lightbulb</i> Announcements
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item col-md-6">
+                          <a class="nav-link" href="#quizes" data-toggle="tab">
+                            <i class="material-icons">quiz</i> Quiz
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane active show" id="announce">
+                        <table class="dtBasicExample table table-hover table-striped table-sm">
+                            <thead class="text-warning">
+                                <tr><th>Subject</th>
+                                <th>Date</th>
+                                <th>Message</th>
+                            </tr></thead>
+                            <tbody>
+                              <% announcements.forEach(announcement =>{ %>
+                                <tr>
+                                  <td><%= announcement.subject %></td>
+                                  <td><%= announcement.message %></td>
+                                  <td><%= announcement.createdAt.toString().slice(0,-31) %></td>
+                                </tr>
+                              <% }); %>
+                            </tbody>
+                        </table>  
+                    </div>
+                    <div class="tab-pane" id="quizes">
+                      <table class="dtBasicExample1 table table-hover table-striped table-sm">
+                        <thead class="text-warning">
+                          <tr><th class="th-sm">Exam</th>
+                          <th class="th-sm">Start Date</th>
+                          <th class="th-sm">End Date</th>
+                          <th class="th-sm">Start Time</th>
+                          <th class="th-sm">End Time</th>
+                          <th class="th-sm"> </th>
+                        </tr></thead>
+                        <tbody>
+                          <% quizzes.forEach(quiz => { %>
+                            <tr>
+                              <td> <%= quiz.quizName %> </td>
+                              <td>
+                                <%= quiz.startDate.toString().slice(0,16) %>
+                              </td>
+                              <td>
+                                <%= quiz.startDate.toString().slice(16,-31) %>
+                              </td>
+                              <td>
+                                <%= quiz.endDate.toString().slice(0,16) %>
+                              </td>
+                              <td>
+                                <%= quiz.endDate.toString().slice(16,-31) %>
+                              </td>
+                              <% if(quiz.quizHeld){ %>
+                                <td>
+                                  <a href="#" type="button" rel="tooltip" title="View Quiz" class="btn btn-primary btn-link btn-sm">
+                                    <i class="material-icons" style="vertical-align: auto;">visibility</i>
+                                  </a>
+                                </td>
+                              <% } else{ %>
+                                <td>
+                                  <a href="#" type="button" rel="tooltip" title="Attempt Quiz" class="btn btn-primary btn-link btn-sm">
+                                    <i class="material-icons">play_arrow</i>
+                                  </a>
+                                </td>
+                              <% } %>
+                            </tr>
+                          <% }) %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<%- include('./baseEjs/footer')%>

@@ -83,7 +83,11 @@ User.post("remove", async function(res, next) {
       enrollment.remove();
     }
   }).clone().catch(function(err){console.log(err)});
-  await Announcement.remove({user: this._id});
+  await Announcement.remove({user: this._id}, async (err, announcements) => {
+    for await (let announcement of announcements){
+      announcement.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
   next();
 });
 

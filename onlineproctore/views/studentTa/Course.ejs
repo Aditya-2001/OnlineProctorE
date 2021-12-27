@@ -119,7 +119,7 @@
                 </div>
                 <div class="card-footer">
                   <div class="stats">
-                    <a href="Announcements.html">View Announcements...</a>
+                    <a href="<%= course_id + '/announcements' %>">View Announcements...</a>
                   </div>
                 </div>
               </div>
@@ -467,7 +467,7 @@
             </div>
             <div class="modal-body">
                 <h5 style="padding-bottom: 12px"><b>All data related to this course will be deleted</b></h5>
-                <form id="deleteCourse">
+                <form id="deleteCourse" action= <%= course_id + '/delete' %> method="POST">
                   <div class="form-group">
                     <label class="bmd-label">Enter "<b><%=course_id%></b>" to delete this course</label><br>
                     <input type="text" class="form-control" id="random_string" name="confirmation" required>

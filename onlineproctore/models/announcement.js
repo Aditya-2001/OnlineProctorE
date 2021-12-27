@@ -33,7 +33,11 @@ const Announcement = new Schema({
 })
 
 Announcement.post('remove', async function(res,next){
-  await AnnouncementFileUpload.remove({announcement: this._id});
+  await AnnouncementFileUpload.find({announcement: this._id}, async (err, announcementsfiles) => {
+    for await (let announcementfile of announcementsfiles){
+      announcementfile.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
   next();
 })
 

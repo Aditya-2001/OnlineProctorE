@@ -50,31 +50,34 @@ exports.getCourseQuiz = async (req, res) => {
   const quizId = req.quizId;
   await Quiz.findOne({_id: quizId}, async (err, quiz) => {
     if(err) return res.status(400).render('error/error');
-    if(req.cookies.accountType == config.faculty){
-      if(quiz.quizHeld){
-        return res.status(200).render('faculty/AfterExam', {quizId: quizId, quiz: quiz});
+    await Question.find({quiz: quizId}, async (err, questions) => {
+      if(err) return res.status(400).render('error/error');
+      if(req.cookies.accountType == config.faculty){
+        if(quiz.quizHeld){
+          return res.status(200).render('faculty/AfterExam', {quizId: quizId, quiz: quiz, questions: questions, page: quiz.quizName});
+        }
+        return res.status(200).render('faculty/BeforeExam', {quizId: quizId, quiz: quiz, questions: questions, page: quiz.quizName});
       }
-      return res.status(200).render('faculty/BeforeExam', {quizId: quizId, quiz: quiz});
-    }
-    else{
-      await User.findByToken(req.cookies.auth, async (err, user) => {
-        if(err) return res.status(400).render('error/error');
-        if(!user) return res.status(400).render('error/error');
-        await Enrollment.findOne({course: quiz.course._id, user: user._id}, (err, enrolledUser) => {
+      else{
+        await User.findByToken(req.cookies.auth, async (err, user) => {
           if(err) return res.status(400).render('error/error');
-          if(!enrolledUser) return res.status(400).render('error/error');
-          if(enrolledUser.accountType == config.student){
-            return res.status(200).render('studentTa/quizPage');
-          }
-          else{
-            if(quiz.quizHeld){
-              return res.status(200).render('studentTa/AfterExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser});
+          if(!user) return res.status(400).render('error/error');
+          await Enrollment.findOne({course: quiz.course._id, user: user._id}, (err, enrolledUser) => {
+            if(err) return res.status(400).render('error/error');
+            if(!enrolledUser) return res.status(400).render('error/error');
+            if(enrolledUser.accountType == config.student){
+              return res.status(200).render('studentTa/quizPage');
             }
-            return res.status(200).render('studentTa/BeforeExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser});
-          }
-        }).clone().catch(function(err){console.log(err)})
-      })
-    }
+            else{
+              if(quiz.quizHeld){
+                return res.status(200).render('studentTa/AfterExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser, questions: questions, page: quiz.quizName});
+              }
+              return res.status(200).render('studentTa/BeforeExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser, questions: questions, page: quiz.quizName});
+            }
+          }).clone().catch(function(err){console.log(err)})
+        })
+      }
+    }).clone().catch(function(err){console.log(err)})
   }).clone().catch(function(err){console.log(err)})
 }
 
@@ -190,11 +193,54 @@ exports.addWrittenQuestion = async (req, res) => {
 exports.deleteQuiz = async (req, res) => {
   const quizId = req.quizId;
   const confirmation = req.body.confirmation;
-  if(confirmation == quizId){
-    await Quiz.remove({_id: quizId});
-    return res.status(200).redirect('/dashboard');
+  await Quiz.findOne({_id: quizId}, async (err, quiz) => {
+    if(err) return res.status(400).render('error/error');
+    if(!quiz) return res.status(400).render('error/error');
+    if(confirmation == quizId){
+      console.log(quiz.course);
+      const courseId = quiz.course._id;
+      quiz.remove();
+      if(req.cookies.accountType == config.faculty){
+        return res.status(200).redirect('/dashboard/faculty/course/' + courseId);
+      }
+      return res.status(200).redirect('/dashboard/user/course/' + courseId);
+    }
+    else{
+      return res.status(200).redirect(req.get('referer'));
+    }
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.addMCQQuestion = async (req, res) => {
+  const quizId = req.quizId;
+  const question = req.body.question;
+  const maximumMarks = req.body.maximumMarks;
+  const partialMarking = req.body.markingScheme;
+  var markingScheme = true;
+  if(partialMarking.toLowerCase() === "no"){
+    markingScheme = false;
   }
-  else{
-    return res.status(400).redirect(req.get('referer'));
-  }
+  var options = [];
+  if(req.body.option1)
+    options.push(req.body.option1);
+  if(req.body.option2)
+    options.push(req.body.option2);
+  if(req.body.option3)
+    options.push(req.body.option3);
+  if(req.body.option4)
+    options.push(req.body.option4);
+  var correctOptions = [];
+  String(req.body.correctOptions).split(',').forEach(option => {
+    correctOptions.push(String(options[parseInt(option)-1]));
+  })
+  var mcqQuestion = {quiz: quizId, question: question, maximumMarks: maximumMarks,
+    mcq: true, options: options, correctOptions: correctOptions, markingScheme: markingScheme};
+  const newQuestion = new Question(mcqQuestion);
+  console.log(newQuestion);
+  await Question.findOne(mcqQuestion, (err, foundQuestion) => {
+    if(err) console.log(err);
+    if(foundQuestion) console.log('Question Already Exists');
+    if(!foundQuestion) newQuestion.save();
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)})
 }

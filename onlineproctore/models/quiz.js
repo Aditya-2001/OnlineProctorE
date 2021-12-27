@@ -58,7 +58,11 @@ const Quiz = new Schema({
 })
 
 Quiz.post("remove", async function(res, next) {
-  await Question.remove({quiz: this._id});
+  await Question.find({quiz: this._id}, async (err, questions) => {
+    for await (let question of questions){
+      question.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
   next();
 });
 

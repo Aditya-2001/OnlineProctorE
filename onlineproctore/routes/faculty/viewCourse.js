@@ -2,10 +2,13 @@ const express = require('express');
 const router = express.Router();
 const {getCourseDetails, uploadExcelFile, addMembers, 
   makeAnnouncement, createQuiz, changeHierarchy, deleteCourse, 
-  addSingleMember} = require('../../controllers/faculty/viewEachCourse');
+  addSingleMember, viewAnnouncements} = require('../../controllers/faculty/viewEachCourse');
 
 router.route('/')
   .get(getCourseDetails);
+
+router.route('/announcements')
+  .get(viewAnnouncements)
 
 router.route('/add')
   .post(uploadExcelFile.single('excelFile'), addMembers)

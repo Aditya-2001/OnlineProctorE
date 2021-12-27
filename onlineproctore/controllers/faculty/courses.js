@@ -39,7 +39,8 @@ exports.displayCourses = async (req,res) => {
       });
       return res.status(200).render('faculty/DashboardFaculty', {
         success: true,
-        courses: courses
+        courses: courses,
+        page: 'Dashboard'
       })
     }).clone().catch(function(err){ console.log(err)});
   })

@@ -49,9 +49,11 @@ exports.displayCourses = async (req, res) => {
         success: false,
         courses: null
       });
+      console.log(enrollments);
       return res.status(200).render('studentTa/DashboardStudentTa', {
         success: true,
-        enrollments: enrollments
+        enrollments: enrollments,
+        page: 'Dashboard'
       })
     }).clone().catch(function(err){ console.log(err)});
   })
