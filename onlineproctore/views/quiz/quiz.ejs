@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/Quiz/img/logo.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Title</title>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- CSS Files -->
+    <link href="/Quiz/css/material-dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Quiz/css/styles.css">
+
+</head>
+<body class='snippet-body'>
+    <div class="wrapper ">
+        <div class="main-panel">
+            <nav class="nbar">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h1 class="heading">OnlineProctorE</h1>
+                    </div>
+                    <div class="col-sm-6 nav-name">
+                        <div class="info">
+                            <table class="info-tab">
+                                <tr>
+                                    <td>
+                                        <span class="start">Name:</span> Ambika Singh Kaushik 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="start">Course:</span> Mini Project 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="start">Time Remaining:</span> <span id="hours"></span><span id="mins"></span><span id="secs"></span><span id="end"></span><br>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="right-tab">
+                                <tr>
+                                    <td>
+                                        <button class="btn btn-primary">Sumbit</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- <span class="start">Name:</span> Ambika Singh Kaushik <br>
+                            <span class="start">Course:</span> Mini Project <br>
+                            <span class="start">Time Remaining:</span> <span id="hours"></span><span id="mins"></span><span id="secs"></span><span id="end"></span> -->
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-9 col-md-8 quiz">
+                            <div class="quiz-card">
+                                <div class="ques-ans active" id="page01">
+                                    <div class="question">
+                                        <span class="que">Q</span><span class="question-number">1.</span> What is your favourite fruit?
+                                    </div> <hr>
+                                    <div class="answer checkbox">
+                                        <label> 
+                                            <input type="checkbox" name="option1" value="option1" id="option1page01"><i class="fa icon-checkbox"></i><span class="options" id="text1page01">Mango</span>
+                                        </label>
+                                        <br>
+                                        <label> 
+                                            <input type="checkbox" name="option2" value="option2" id="option2page01"><i class="fa icon-checkbox"></i><span class="options" id="text2page01">Apple</span>
+                                        </label>
+                                        <br>
+                                        <label> 
+                                            <input type="checkbox" name="option3" value="option3" id="option3page01"><i class="fa icon-checkbox"></i><span class="options" id="text3page01">Fig</span>
+                                        </label>
+                                        <br>
+                                        <label> 
+                                            <input type="checkbox" name="option4" value="option4" id="option4page01"><i class="fa icon-checkbox"></i><span class="options" id="text4page01">Banana</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="ques-ans none" id="page02">
+                                    <div class="question">
+                                        <span class="que">Q</span><span class="question-number">2.</span> What is your favourite vegitable?
+                                    </div> <hr>
+                                    <div class="answer checkbox">
+                                        <label> 
+                                            <input type="checkbox" name="option1" value="option1" id="option1page02"><i class="fa icon-checkbox"></i><span class="options" id="text1page02">Potato</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option2" value="option2" id="option2page02"><i class="fa icon-checkbox"></i><span class="options" id="text2page02">Tomato</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option3" value="option3" id="option3page02"><i class="fa icon-checkbox"></i><span class="options" id="text3page02">Cabbage</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option4" value="option4" id="option4page02"><i class="fa icon-checkbox"></i><span class="options" id="text4page02">Onion</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="ques-ans none" id="page03">
+                                    <div class="question">
+                                        <span class="que">Q</span><span class="question-number">3.</span> What is your favourite fruit?
+                                    </div> <hr>
+                                    <div class="answer checkbox">
+                                        <label> 
+                                            <input type="checkbox" name="option1" value="option1" id="option1page03"><i class="fa icon-checkbox"></i><span class="options" id="text1page03">Mango</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option2" value="option2" id="option2page03"><i class="fa icon-checkbox"></i><span class="options" id="text2page03">Apple</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option3" value="option3" id="option3page03"><i class="fa icon-checkbox"></i><span class="options" id="text3page03">Fig</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option4" value="option4" id="option4page03"><i class="fa icon-checkbox"></i><span class="options" id="text4page03">Banana</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="ques-ans none" id="page04">
+                                    <div class="question">
+                                        <span class="que">Q</span><span class="question-number">4.</span> What is your name?
+                                    </div> <hr>
+                                    <div class="answer">
+                                        <textarea id="text1page04" name="subjective" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="butn">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <button class="btn btn-danger prev-btn prev" type="button">Previous</button>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button class="btn btn-purple rev-btn mark" type="button">Mark For Review</button>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button class="btn btn-primary save-btn btn-save-answer next" type="button">Save and Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 side">
+                            <div class="side-card-nav">
+                                <div class="panel panel-default ">
+                                    <div class="panel-body">
+                                        <ul class="pagination test-questions">
+                                            <li><button id="displaypage01" class="test-ques que-not-answered" onclick="display('page01')">01</button></li>
+                                            <li><button id="displaypage02" class="test-ques que-not-attempted" onclick="display('page02')">02</button></li>
+                                            <li><button id="displaypage03" class="test-ques que-save" onclick="display('page03')">03</button></li>
+                                            <li><button id="displaypage04" class="test-ques que-mark" onclick="display('page04')">04</button></li>
+                                        </ul>
+                                    </div>
+                                </div>        
+                            </div>
+                            <div class="side-card-video">
+                                <video id="video" height="100%" width="100%" autoplay muted></video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/Quiz/js/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="/Quiz/js/script.js"></script>
+</html>

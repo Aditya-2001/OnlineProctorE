@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
 const Question = require('./question');
+const Submission = require('./submission');
 
 const Quiz = new Schema({
   course: {
@@ -63,6 +64,11 @@ Quiz.post("remove", async function(res, next) {
       question.remove();
     }
   }).clone().catch(function(err){console.log(err)});
+  await Submission.find({quiz: this._id}, async (err, submissions) => {
+    for await (let submission of submissions){
+      submission.remove();
+    }
+  })
   next();
 });
 

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
+const QuestionSubmission = require('./questionSubmission');
 
 const Question = new Schema({
   quiz: {
@@ -42,8 +43,18 @@ const Question = new Schema({
   negativeMarking: {
     type: Number,
     default: 0
-  }
+  }},{
+    timestamps: true
 })
+
+Question.post("remove", async function(res, next) {
+  await QuestionSubmission.find({question: this._id}, async (err, questionSubmissions) => {
+    for await (let questionSubmission of questionSubmissions){
+      questionSubmission.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  next();
+});
 
 Question.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('Question', Question);

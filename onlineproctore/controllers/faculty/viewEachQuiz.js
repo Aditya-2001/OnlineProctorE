@@ -66,7 +66,12 @@ exports.getCourseQuiz = async (req, res) => {
             if(err) return res.status(400).render('error/error');
             if(!enrolledUser) return res.status(400).render('error/error');
             if(enrolledUser.accountType == config.student){
-              return res.status(200).render('studentTa/quizPage');
+              if(!quiz.quizHeld && req.device.type == 'desktop'){
+                return res.status(200).render('quiz/quiz', {quizId: quizId, quiz: quiz});
+              }
+              else{
+                return res.status(400).render('error/error');
+              }
             }
             else{
               if(quiz.quizHeld){

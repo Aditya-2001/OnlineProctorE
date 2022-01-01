@@ -26,6 +26,7 @@ var options = {
   key : fs.readFileSync(__dirname+'/certificates/private.key'),
   cert: fs.readFileSync(__dirname+'/certificates/certificate.pem')
 };
+// , '192.168.0.100'
 var secureServer = https.createServer(options, app);
 secureServer.listen(app.get('secPort'), ()=>{
   console.log('listening on port '+app.get('secPort'));

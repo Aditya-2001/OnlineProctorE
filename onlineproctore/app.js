@@ -5,6 +5,7 @@ const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose= require('mongoose');
+const device = require('express-device');
 const config = require('./config');
 const {auth} = require('./controllers/login_logout/authenticate');
 
@@ -39,6 +40,7 @@ app.all('*', (req,res,next)=>{
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(device.capture());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -52,6 +54,9 @@ app.use('/dashboard', userRedirect);
 app.use('/dashboard/user', studentTa);
 app.use('/dashboard/faculty', faculty);
 app.use('/dashboard/staff', staff);
+
+// oncontextmenu='return false' to be added in body tag at last
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
