@@ -8,6 +8,7 @@ const XLSX = require('xlsx');
 const {removeFile} = require('../../functions');
 const Announcement = require("../../models/announcement");
 const Quiz = require("../../models/quiz");
+const Submission = require("../../models/submission");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -102,13 +103,22 @@ exports.getCourseDetails = async (req,res) => {
                   });
                 }
                 else{
-                  return res.status(200).render('studentTa/CourseStudent', {
-                    course_id: course_id,
-                    enrolledUser: enrolledUser,
-                    announcements: announcement,
-                    quizzes: quiz,
-                    page: enrolledUser.course.courseName
-                  });
+                  for await (let quizz of quiz){
+                    await Submission.exists({quiz: quizz._id, user: user._id}, async (err, submission) => {
+                      if(!submission){
+                        await Submission.create({quiz: quizz._id, user: user._id});
+                      }
+                    })
+                  }
+                  await Submission.find({user: user._id}, async (err, submissions) => {
+                    return res.status(200).render('studentTa/CourseStudent', {
+                      course_id: course_id,
+                      enrolledUser: enrolledUser,
+                      announcements: announcement,
+                      submissions: submissions,
+                      page: enrolledUser.course.courseName
+                    });
+                  }).clone().catch(function(err){console.log(err)})
                 }
               }
             }).clone().catch(function(err){console.log(err)});

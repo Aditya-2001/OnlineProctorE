@@ -8,6 +8,8 @@ const {removeFile} = require('../../functions');
 const XLSX = require('xlsx');
 const path = require('path');
 const config = require('../../config');
+const Submission = require('../../models/submission');
+const QuestionSubmission = require('../../models/questionSubmission');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -62,16 +64,20 @@ exports.getCourseQuiz = async (req, res) => {
         await User.findByToken(req.cookies.auth, async (err, user) => {
           if(err) return res.status(400).render('error/error');
           if(!user) return res.status(400).render('error/error');
-          await Enrollment.findOne({course: quiz.course._id, user: user._id}, (err, enrolledUser) => {
+          await Enrollment.findOne({course: quiz.course._id, user: user._id}, async (err, enrolledUser) => {
             if(err) return res.status(400).render('error/error');
             if(!enrolledUser) return res.status(400).render('error/error');
             if(enrolledUser.accountType == config.student){
-              if(!quiz.quizHeld && req.device.type == 'desktop'){
-                return res.status(200).render('quiz/quiz', {quizId: quizId, quiz: quiz});
-              }
-              else{
-                return res.status(400).render('error/error');
-              }
+              await Submission.findOne({quiz: quizId, user: user._id}, async (err, submission) => {
+                if(err) return res.status(400).render('error/error');
+                if(!submission) return res.status(400).render('error/error');
+                if(!quiz.quizHeld && !submission.submitted && req.device.type == 'desktop'){
+                  return res.status(200).render('quiz/quiz', {quizId: quizId, quiz: quiz, submission: submission});
+                }
+                else{
+                  return res.status(400).render('error/error');
+                }
+              }).clone().catch(function(err){console.log(err)})
             }
             else{
               if(quiz.quizHeld){

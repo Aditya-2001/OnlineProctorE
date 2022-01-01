@@ -15,6 +15,10 @@ const QuestionSubmission = new Schema({
     required: true,
     autopopulate: true
   },
+  markedForReview: {
+    type: Boolean,
+    default: false
+  },
   mcq: {
     type: Boolean,
     default: true

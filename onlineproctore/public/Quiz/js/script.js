@@ -16,7 +16,7 @@ var optionsCount = new Map([
 
 window.onload = function() {
     start();
-    // getQuizQuestions();
+    getQuizQuestions();
 };
 async function start(){
     let video = document.querySelector("#video");
@@ -24,9 +24,17 @@ async function start(){
     video.srcObject = stream;
 }
 
-// async function getQuizQuestions(){
-//     await axios.get('')
-// }
+async function getQuizQuestions(){
+    var quizId = document.getElementById("quizId").value;
+    console.log('function called');
+    try{
+        const response = await axios.get(quizId+'/getQuestions');
+        console.log(response);
+    }catch(error){
+        console.log(error.response);
+    }
+
+}
 function nextOrPrevQuestion() {
     // console.log($('.quiz-card').find('.ques-ans.active')[0].id);
     var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;

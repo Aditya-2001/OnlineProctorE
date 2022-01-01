@@ -55,31 +55,31 @@
                           <th class="th-sm"> </th>
                         </tr></thead>
                         <tbody>
-                          <% quizzes.forEach(quiz => { %>
-                            <% if(!quiz.hidden){ %>
+                          <% submissions.forEach(submission => { %>
+                            <% if(!submission.quiz.hidden){ %>
                             <tr>
-                              <td> <%= quiz.quizName %> </td>
+                              <td> <%= submission.quiz.quizName %> </td>
                               <td>
-                                <%= quiz.startDate.toString().slice(0,16) %>
+                                <%= submission.quiz.startDate.toString().slice(0,16) %>
                               </td>
                               <td>
-                                <%= quiz.startDate.toString().slice(16,-31) %>
+                                <%= submission.quiz.startDate.toString().slice(16,-31) %>
                               </td>
                               <td>
-                                <%= quiz.endDate.toString().slice(0,16) %>
+                                <%= submission.quiz.endDate.toString().slice(0,16) %>
                               </td>
                               <td>
-                                <%= quiz.endDate.toString().slice(16,-31) %>
+                                <%= submission.quiz.endDate.toString().slice(16,-31) %>
                               </td>
-                              <% if(quiz.quizHeld){ %>
+                              <% if(submission.quiz.quizHeld || submission.submitted){ %>
                                 <td>
-                                  <a href="<%= '/dashboard/user/quiz/' + quiz._id %>" type="button" rel="tooltip" title="View Quiz" class="btn btn-primary btn-link btn-sm">
+                                  <a href="<%= '/dashboard/user/quiz/' + submission.quiz._id %>" type="button" rel="tooltip" title="View Quiz" class="btn btn-primary btn-link btn-sm">
                                     <i class="material-icons" style="vertical-align: auto;">visibility</i>
                                   </a>
                                 </td>
                               <% } else{ %>
                                 <td>
-                                  <a href="<%= '/dashboard/user/quiz/' + quiz._id %>" type="button" rel="tooltip" title="Attempt Quiz" class="btn btn-primary btn-link btn-sm">
+                                  <a href="<%= '/dashboard/user/quiz/' + submission.quiz._id %>" type="button" rel="tooltip" title="Attempt Quiz" class="btn btn-primary btn-link btn-sm">
                                     <i class="material-icons">play_arrow</i>
                                   </a>
                                 </td>
