@@ -18,6 +18,7 @@
 </head>
 <body class='snippet-body'>
     <input id="quizId" name="quizId" value="<%= quizId %>" hidden/>
+    <input id="submissionId" name="submissionId" value="<%= submission._id%>" hidden/>
     <div class="wrapper ">
         <div class="main-panel">
             <nav class="nbar">
@@ -47,7 +48,7 @@
                             <table class="right-tab">
                                 <tr>
                                     <td>
-                                        <button class="btn btn-primary">Sumbit</button>
+                                        <button class="btn btn-primary submit">Sumbit</button>
                                     </td>
                                 </tr>
                             </table>
@@ -59,81 +60,12 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-9 col-md-8 quiz">
-                            <div class="quiz-card">
-                                <div class="ques-ans active" id="page01">
-                                    <div class="question">
-                                        <span class="que">Q</span><span class="question-number">1.</span> What is your favourite fruit?
-                                    </div> <hr>
-                                    <div class="answer checkbox">
-                                        <label> 
-                                            <input type="checkbox" name="option1" value="option1" id="option1page01"><i class="fa icon-checkbox"></i><span class="options" id="text1page01">Mango</span>
-                                        </label>
-                                        <br>
-                                        <label> 
-                                            <input type="checkbox" name="option2" value="option2" id="option2page01"><i class="fa icon-checkbox"></i><span class="options" id="text2page01">Apple</span>
-                                        </label>
-                                        <br>
-                                        <label> 
-                                            <input type="checkbox" name="option3" value="option3" id="option3page01"><i class="fa icon-checkbox"></i><span class="options" id="text3page01">Fig</span>
-                                        </label>
-                                        <br>
-                                        <label> 
-                                            <input type="checkbox" name="option4" value="option4" id="option4page01"><i class="fa icon-checkbox"></i><span class="options" id="text4page01">Banana</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="ques-ans none" id="page02">
-                                    <div class="question">
-                                        <span class="que">Q</span><span class="question-number">2.</span> What is your favourite vegitable?
-                                    </div> <hr>
-                                    <div class="answer checkbox">
-                                        <label> 
-                                            <input type="checkbox" name="option1" value="option1" id="option1page02"><i class="fa icon-checkbox"></i><span class="options" id="text1page02">Potato</span>
-                                        </label><br>
-                                        <label> 
-                                            <input type="checkbox" name="option2" value="option2" id="option2page02"><i class="fa icon-checkbox"></i><span class="options" id="text2page02">Tomato</span>
-                                        </label><br>
-                                        <label> 
-                                            <input type="checkbox" name="option3" value="option3" id="option3page02"><i class="fa icon-checkbox"></i><span class="options" id="text3page02">Cabbage</span>
-                                        </label><br>
-                                        <label> 
-                                            <input type="checkbox" name="option4" value="option4" id="option4page02"><i class="fa icon-checkbox"></i><span class="options" id="text4page02">Onion</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="ques-ans none" id="page03">
-                                    <div class="question">
-                                        <span class="que">Q</span><span class="question-number">3.</span> What is your favourite fruit?
-                                    </div> <hr>
-                                    <div class="answer checkbox">
-                                        <label> 
-                                            <input type="checkbox" name="option1" value="option1" id="option1page03"><i class="fa icon-checkbox"></i><span class="options" id="text1page03">Mango</span>
-                                        </label><br>
-                                        <label> 
-                                            <input type="checkbox" name="option2" value="option2" id="option2page03"><i class="fa icon-checkbox"></i><span class="options" id="text2page03">Apple</span>
-                                        </label><br>
-                                        <label> 
-                                            <input type="checkbox" name="option3" value="option3" id="option3page03"><i class="fa icon-checkbox"></i><span class="options" id="text3page03">Fig</span>
-                                        </label><br>
-                                        <label> 
-                                            <input type="checkbox" name="option4" value="option4" id="option4page03"><i class="fa icon-checkbox"></i><span class="options" id="text4page03">Banana</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="ques-ans none" id="page04">
-                                    <div class="question">
-                                        <span class="que">Q</span><span class="question-number">4.</span> What is your name?
-                                    </div> <hr>
-                                    <div class="answer">
-                                        <textarea id="text1page04" name="subjective" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
-                                    </div>
-                                </div>
-                                
+                            <div class="quiz-card" id="addQuestions">
                             </div>
                             <div class="butn">
                                 <div class="row">
                                     <div class="col-sm-4">
-                                        <button class="btn btn-danger prev-btn prev" type="button">Previous</button>
+                                        <button id="previous" class="btn btn-danger prev-btn prev" type="button">Previous</button>
                                     </div>
                                     <div class="col-sm-4">
                                         <button class="btn btn-purple rev-btn mark" type="button">Mark For Review</button>
@@ -148,11 +80,7 @@
                             <div class="side-card-nav">
                                 <div class="panel panel-default ">
                                     <div class="panel-body">
-                                        <ul class="pagination test-questions">
-                                            <li><button id="displaypage01" class="test-ques que-not-answered" onclick="display('page01')">01</button></li>
-                                            <li><button id="displaypage02" class="test-ques que-not-attempted" onclick="display('page02')">02</button></li>
-                                            <li><button id="displaypage03" class="test-ques que-save" onclick="display('page03')">03</button></li>
-                                            <li><button id="displaypage04" class="test-ques que-mark" onclick="display('page04')">04</button></li>
+                                        <ul class="pagination test-questions" id="navigator">
                                         </ul>
                                     </div>
                                 </div>        

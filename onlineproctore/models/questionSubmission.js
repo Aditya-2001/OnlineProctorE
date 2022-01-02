@@ -19,6 +19,10 @@ const QuestionSubmission = new Schema({
     type: Boolean,
     default: false
   },
+  notAnswered: {
+    type: Boolean,
+    default: false
+  },
   mcq: {
     type: Boolean,
     default: true

@@ -71,11 +71,21 @@ exports.getCourseQuiz = async (req, res) => {
               await Submission.findOne({quiz: quizId, user: user._id}, async (err, submission) => {
                 if(err) return res.status(400).render('error/error');
                 if(!submission) return res.status(400).render('error/error');
-                if(!quiz.quizHeld && !submission.submitted && req.device.type == 'desktop'){
-                  return res.status(200).render('quiz/quiz', {quizId: quizId, quiz: quiz, submission: submission});
+                if(quiz.startDate <= Date.now() && Date.now() < quiz.endDate){
+                  if(!submission.submitted && req.device.type == 'desktop'){
+                    return res.status(200).render('quiz/quiz', {quizId: quizId, quiz: quiz, submission: submission});
+                  }
+                  else{
+                    return res.status(200).redirect('/dashboard/user/course/'+quiz.course._id);
+                  }
+                }
+                else if(Date.now() >= quiz.endDate){
+                  quiz.quizHeld = true;
+                  quiz.save();
+                  return res.status(200).render('error/error');
                 }
                 else{
-                  return res.status(400).render('error/error');
+                  return res.status(200).redirect('/dashboard/user/course/'+quiz.course._id);
                 }
               }).clone().catch(function(err){console.log(err)})
             }
