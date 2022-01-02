@@ -380,3 +380,16 @@ td{
         height: 110px; 
     }
 }
+.qtable{
+    width: 100%;
+}
+.quest{
+    width: 90%;
+}
+.marks{
+    font-size: 1rem;
+    width: 10%;
+    padding-top: 1%;
+    color: red;
+    text-align: right;
+}

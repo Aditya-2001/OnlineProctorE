@@ -42,8 +42,8 @@ async function getQuizQuestions(){
             else{
                 displayQuestion += ' none"';
             }
-            displayQuestion += 'id="' + questions[j]._id + '"><div class="question"><span class="que">Q</span><span class="question-number">';
-            displayQuestion += (i+1) + '.</span>' + questions[j].question + '</div> <hr><div class="answer';
+            displayQuestion += 'id="' + questions[j]._id + '"><div class="question"><table class="qtable"><tr><td class="quest"><span class="que">Q</span><span class="question-number">';
+            displayQuestion += (i+1) + '.</span>' + questions[j].question + '</td><td class="marks">MM:'+ questions[j].maximumMarks +'</td></tr></table></div> <hr><div class="answer';
             questionsType.set(questions[j]._id, questions[j].mcq);
             var submission = questionSubmissions.find( ({question}) => question._id === questions[j]._id);
             var flag = false;
