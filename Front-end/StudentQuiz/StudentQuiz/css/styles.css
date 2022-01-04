@@ -20,6 +20,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 1rem;
+    padding-bottom: 0;
     background-color: #fff;
     box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
 }
@@ -38,27 +39,18 @@
     padding-bottom: 10px ;
 }
 .side-card-nav{
-    height:fit-content;
+    height:78vh;
     border: solid 1px gray;
     border-radius: 10px;
     box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
     background-color: #fff;
     padding-bottom: 10px ;
 }
-.side-card-video{
-    margin-top: 10px; 
-    height: 33vh; 
-    padding: 10px;
-    border: solid 1px gray;
-    border-radius: 10px;
-    box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
-    background-color: #fff;
-}
 .panel-default{
     padding-top: 10px;
 }
 .panel-body{
-    height:40vh; 
+    height:75vh; 
     overflow-y:scroll;
 }
 .question{
@@ -334,7 +326,7 @@ td{
         height: 30vh !important;
     }
     .answer{
-        height: 30vh;
+        height: 40vh;
     }
 }
 @media (max-width:377px){
@@ -354,7 +346,7 @@ td{
     textarea{
         height: 40vh !important;
     }
-    .quiz-card{
+    .quiz-card,.side-card-nav{
         height:79vh;
     }
     .answer{
@@ -365,7 +357,7 @@ td{
     textarea{
         height: 35vh !important;
     }
-    .quiz-card{
+    .quiz-card,.side-card-nav{
         height:80vh;
     }
     .answer{
@@ -376,7 +368,7 @@ td{
     textarea{
         height: 30vh !important;
     }
-    .quiz-card{
+    .quiz-card,.side-card-nav{
         height:82vh;
     }
     .answer{
@@ -387,29 +379,40 @@ td{
     textarea{
         height: 100px !important;
     }
-    .quiz-card{
+    .quiz-card,.side-card-nav{
         height:275px;
-    }
-    .side-card-nav{
-        height:156px;
-    }
-    .side-card-video{
-        height: 110px; 
     }
     .answer{
         height: 100px;
+    }
+}
+@media (max-width:767px){
+    .side-card-nav{
+        height:fit-content;
+    }
+    .panel-body{
+        height:fit-content; 
+        overflow-y:scroll;
     }
 }
 .qtable{
     width: 100%;
 }
 .quest{
-    width: 90%;
+    width: 80%;
 }
 .marks{
     font-size: 1rem;
-    width: 10%;
+    width: 20%;
     padding-top: 1%;
-    color: red;
     text-align: right;
+}
+.marks-table{
+    float: right;
+}
+.marks-assigned-positive{
+    color: #5BB12F;
+}
+.marks-assigned-zero{
+    color: red;
 }
