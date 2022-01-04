@@ -10,5 +10,8 @@ module.exports ={
   'student' : 294,
   'ta' : 747,
   'faculty' : 960,
-  'staff' : 523
+  'staff' : 523,
+  'multipleFace': 239,
+  'mobile': 554,
+  'screen': 796
 };

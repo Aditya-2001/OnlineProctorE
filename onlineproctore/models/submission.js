@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
+const QuestionSubmission = require('./questionSubmission');
+const IllegalAttempt = require('./illegalAttempt');
 
 const Submission = new Schema({
   quiz: {
@@ -30,6 +32,38 @@ const Submission = new Schema({
   ipAddress: {
     type: String,
     default: ''
+  },
+  audioDetected: {
+    type: Number,
+    default: 0
+  },
+  browserSwitched: {
+    type: Number,
+    default: 0
+  },
+  multiplePerson: {
+    type: Number,
+    default: 0
+  },
+  noPerson: {
+    type: Number,
+    default: 0
+  },
+  mobileDetected: {
+    type: Number,
+    default: 0
+  },
+  screenShared: {
+    type: Boolean,
+    default: true
+  },
+  screenSharingTurnedOff: {
+    type: Number,
+    default: 0
+  },
+  usingSomeoneElseIP: {
+    type: Boolean,
+    default: false
   }},{
     timestamps: true
 })
@@ -38,6 +72,11 @@ Submission.post("remove", async function(res, next) {
   await QuestionSubmission.find({submission: this._id}, async (err, questionSubmissions) => {
     for await (let questionSubmission of questionSubmissions){
       questionSubmission.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await IllegalAttempt.find({submission: this._id}, async (err, illegalAttempts) => {
+    for await (let illegalAttempt of illegalAttempts){
+      illegalAttempt.remove();
     }
   }).clone().catch(function(err){console.log(err)});
   next();

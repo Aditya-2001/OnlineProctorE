@@ -3,6 +3,7 @@ const User = require("../../models/user");
 const Question = require('../../models/question');
 const QuestionSubmission = require('../../models/questionSubmission');
 const Submission = require('../../models/submission');
+const IllegalAttempt = require('../../models/illegalAttempt');
 
 exports.getQuestions = async (req, res) => {
   const quizId  = req.quizId;
@@ -71,5 +72,72 @@ exports.endTest = async (req, res) => {
         url: '/dashboard/user/course/'+submission.quiz.course._id
       });
     }).clone().catch(function(err){console.log(err)})
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.ipAddress = async (req, res) => {
+  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
+    if(submission){
+      submission.ipAddress = req.body.ip;
+      submission.save();
+      return res.status(204).send();
+    }
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.audio = async (req, res) => {
+  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
+    if(submission){
+      submission.audioDetected += 1;
+      submission.save();
+      return res.status(204).send();
+    }
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.windowBlurred = async (req, res) => {
+  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
+    if(submission){
+      submission.browserSwitched += 1;
+      submission.save();
+      return res.status(204).send();
+    }
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.screenSharingOff = async (req, res) => {
+  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
+    if(submission){
+      submission.screenSharingTurnedOff += 1;
+      submission.save();
+      return res.status(204).send();
+    }
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.tabChanged = async (req, res) => {
+  await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
+    if(illegalAttempts.length <= 40){
+      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+    }
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.mobileDetected = async (req, res) => {
+  await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
+    if(illegalAttempts.length <= 40){
+      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+    }
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.multipleFace = async (req, res) => {
+  await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
+    if(illegalAttempts.length <= 40){
+      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+    }
+    return res.status(204).send();
   }).clone().catch(function(err){console.log(err)})
 }

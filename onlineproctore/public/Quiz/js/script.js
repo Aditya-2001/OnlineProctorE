@@ -3,14 +3,15 @@ var questionsType = new Map();
 var optionsCount = new Map();
 
 window.onload = function() {
-    start();
+    sendIP();
+    AudioVideoDetection();
+    startSharing();
+    cocoSsd.load().then(function (loadedModel) {
+        model = loadedModel;
+        enableCam();
+    });
     getQuizQuestions();
 };
-async function start(){
-    let video = document.querySelector("#video");
-    let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    video.srcObject = stream;
-}
 
 async function getQuizQuestions(){
     var quizId = document.getElementById("quizId").value;
@@ -23,9 +24,6 @@ async function getQuizQuestions(){
         if(quiz.disablePrevious){
             $('#previous').attr("disabled", true);
         }
-        // console.log(quiz);
-        // console.log(questions);
-        // console.log(questionSubmissions);
         countDownDate = new Date(new Date(quiz.endDate).toString().slice(4,-31)).getTime();
         var questionCount = questions.length;
         var shuffleOrder = [];
@@ -70,7 +68,6 @@ async function getQuizQuestions(){
                 optionsCount.set(questions[j]._id, 1);
                 displayQuestion += '"><textarea id="text1' + questions[j]._id + '" name="subjective" onkeydown=';
                 displayQuestion += '"if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+\'\t\'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea></div></div>';
-                // console.log(displayQuestion);
             }
             $('#addQuestions').append(displayQuestion);
             if(!questions[j].mcq){
@@ -323,3 +320,279 @@ var myfunc = setInterval(function() {
         }
     }
 }, 1000);
+
+function sendIP(){
+    $.getJSON('https://api.db-ip.com/v2/free/self', function(data) {
+        ip=data["ipAddress"];
+        var submissionId = document.getElementById("submissionId").value;
+        var quizId = document.getElementById("quizId").value;
+        var data = {
+            submissionId: submissionId,
+            ip: ip
+        };
+        try{
+            axios.post(quizId + '/ipAddress', data);
+        }
+        catch(error){
+            console.log(error);
+        }
+    });
+}
+
+async function AudioVideoDetection(){
+    count=0;
+    try{
+        let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        audioDetection(stream);
+    }
+    catch{
+        if(count<3){
+            count++;
+            alert("No camera was found. You can give the test but this malpractie will be saved.")
+        }
+        return ;
+    }
+}
+function audioDetection(stream){
+    // These levels must be in increasing order.
+    level1=100;
+    level2=150;
+    level3=200;
+    // When audioCounter reaches maxCounter an illegal attempt will be saved
+    maxCounter=20;
+
+    audioCounter=0;
+    try{
+        audioContext = new AudioContext();
+        analyser = audioContext.createAnalyser();
+        microphone = audioContext.createMediaStreamSource(stream);
+        javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+
+        analyser.smoothingTimeConstant = 0.8;
+        analyser.fftSize = 1024;
+
+        microphone.connect(analyser);
+        analyser.connect(javascriptNode);
+        javascriptNode.connect(audioContext.destination);
+        javascriptNode.onaudioprocess = function() {
+            var array = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(array);
+            var values = 0;
+
+            var length = array.length;
+            for (var i = 0; i < length; i++) {
+                values += (array[i]);
+            }
+
+            var average = values / length;
+
+            soundIntensity=Math.round(average);
+            if(soundIntensity>level3){
+                audioCounter+=3;
+            }
+            else if(soundIntensity>level2){
+                audioCounter+=2;
+            }
+            else if(soundIntensity>level1){
+                audioCounter+=1;
+            }
+            if(audioCounter>=maxCounter){
+                audioCounter=0;
+                var submissionId = document.getElementById("submissionId").value;
+                var quizId = document.getElementById("quizId").value;
+                var data = {
+                    submissionId: submissionId
+                };
+                try{
+                    console.log('sending audio detection');
+                    axios.post(quizId + '/audio', data);
+                }
+                catch(error){
+                    console.log(error);
+                }
+            }
+        }
+    }
+    catch{
+        alert("No microphone was found. You can give the test but this malpractie will be saved.")
+    }
+}
+
+numberOfTimesWindowsTimedOut=0;
+const video1 = document.getElementById("video1");
+var givingTest = false;
+
+$(window).focus(function() {
+    givingTest = true;
+});
+$(window).blur(function() {
+    if(numberOfTimesWindowsTimedOut<3){
+        numberOfTimesWindowsTimedOut++;
+    }
+    connectWithScreenRecorder();
+    var submissionId = document.getElementById("submissionId").value;
+    var quizId = document.getElementById("quizId").value;
+    var data = {
+        submissionId: submissionId
+    };
+    givingTest = false;
+    try{
+        axios.post(quizId + '/windowBlurred', data);
+    }
+    catch(error){
+        console.log(error);
+    }
+});
+
+setInterval(() => {
+    if(givingTest == false){
+        connectWithScreenRecorder();
+    }
+}, 5000);
+
+screenSharingTry=0;
+totalTry=3;
+oneTimeCalled=true;
+async function startSharing() {
+    var displayMediaOptions = {
+      displaySurface: "monitor",
+    };
+    try{
+        video1.srcObject = await navigator.mediaDevices.getDisplayMedia(
+            displayMediaOptions
+        );
+        givingTest = true;
+    } 
+    catch (error) {
+        alert(error+"\nUnable to capture the screen. We will try again.")
+        startSharing();
+        return;
+    }
+    if(video1.srcObject.getVideoTracks()[0].getSettings().displaySurface!="monitor"){
+        stopSharing();
+        startSharing();
+        return ;
+    }
+    if(oneTimeCalled){
+        oneTimeCalled=false;
+        checkScreenSharing();
+    }
+}
+
+function connectWithScreenRecorder(){
+    let canvas = document.querySelector("#canvas1");
+    canvas.width  = screen.width;
+    canvas.height = screen.height;
+    if(video1.srcObject && video1.srcObject["active"]==true){
+        const context = canvas.getContext("2d");
+        context.drawImage(video1, 0, 0, 150, 150);
+        const frame = canvas.toDataURL();
+        var submissionId = document.getElementById("submissionId").value;
+        var quizId = document.getElementById("quizId").value;
+        var data = {
+            submissionId: submissionId,
+            frame: frame,
+            type: 796
+        };
+        try{
+            axios.post(quizId + '/tabChanged', data);
+        }
+        catch(error){
+            console.log(error);
+        }
+        return 0;
+    }
+}
+
+function stopSharing(){
+    let tracks = video1.srcObject.getTracks();
+    tracks.forEach((track) => track.stop());
+    video1.srcObject = null;
+}
+
+var notShared = true;
+function checkScreenSharing(){
+    setInterval(function() {
+        if(video1.srcObject["active"]==false){
+            var submissionId = document.getElementById("submissionId").value;
+            var quizId = document.getElementById("quizId").value;
+            var data = {
+                submissionId: submissionId
+            };
+            try{
+                axios.post(quizId + '/screenSharingOff', data);
+            }
+            catch(error){
+                console.log(error);
+            }
+            startSharing();
+        }
+    }, 5000);
+}
+
+const video = document.getElementById('video');
+const liveView = document.getElementById('liveView');
+var model = undefined;
+function enableCam() {
+    if (!model) {
+      return;
+    }
+    const constraints = {
+      video: true
+    };
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+      video.srcObject = stream;
+      video.addEventListener('loadeddata', predictWebcam);
+    });
+}
+
+function predictWebcam() {
+    model.detect(video).then(function (predictions) {
+        var count = 0;
+        let canvas = document.querySelector("#canvas");
+        canvas.width  = video.width;
+        canvas.height = video.height;
+        const context = canvas.getContext("2d");
+        context.drawImage(video, 0, 0, 150, 150);
+        const frame = canvas.toDataURL();
+        var submissionId = document.getElementById("submissionId").value;
+        var quizId = document.getElementById("quizId").value;
+        for (let n = 0; n < predictions.length; n++) {
+            if(predictions[n].score > 0.66){
+                if(predictions[n].class === 'cell phone'){
+                    var data = {
+                        submissionId: submissionId,
+                        frame: frame,
+                        type: 554
+                    };
+                    try{
+                        console.log('mobile');
+                        axios.post(quizId + '/mobileDetected', data);
+                    }
+                    catch(error){
+                        console.log(error);
+                    }
+                }
+                if(predictions[n].class === 'person'){
+                    count++;
+                }
+            }
+        }
+        if(count > 1){
+            var data = {
+                submissionId: submissionId,
+                frame: frame,
+                type: 239
+            };
+            try{
+                console.log('face');
+                axios.post(quizId + '/multipleFace', data);
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+        // Call this function again to keep predicting when the browser is ready.
+        window.requestAnimationFrame(predictWebcam);
+    });
+}

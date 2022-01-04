@@ -27,5 +27,5 @@ router.route('/changeCourseImage')
 router.use('/course/:course_id', authUserCourse, viewCourse);
 
 router.use('/quiz/:quiz_id', authUserQuiz, veiwQuiz);
-
+// /dashboard/faculty
 module.exports = router;
