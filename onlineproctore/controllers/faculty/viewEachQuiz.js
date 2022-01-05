@@ -9,7 +9,6 @@ const XLSX = require('xlsx');
 const path = require('path');
 const config = require('../../config');
 const Submission = require('../../models/submission');
-const QuestionSubmission = require('../../models/questionSubmission');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -267,4 +266,13 @@ exports.addMCQQuestion = async (req, res) => {
     if(!foundQuestion) newQuestion.save();
     return res.status(204).send();
   }).clone().catch(function(err){console.log(err)})
+}
+
+exports.viewDetailAnalysis = async (req, res) => {
+  const quizId = req.quizId;
+  await Quiz.findOne({_id: quizId}, async (err, quiz) => {
+    await Submission.find({quiz: quizId}, (err, submissions) => {
+      return res.status(200).render('faculty/viewDetailAnalysis', {quizId: quizId, quiz: quiz, submissions: submissions, page: quiz.quizName});
+    }).clone().catch(function(err){console.log(err)});
+  }).clone().catch(function(err){console.log(err)});
 }
