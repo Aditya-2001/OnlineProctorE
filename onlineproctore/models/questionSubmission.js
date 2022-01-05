@@ -41,6 +41,10 @@ const QuestionSubmission = new Schema({
   answerLocked: {
     type: Boolean,
     default: false
+  },
+  checked: {
+    type: Boolean,
+    default: false
   }},{
     timestamps: true
 })

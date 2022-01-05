@@ -75,14 +75,17 @@ exports.getCourseQuiz = async (req, res) => {
                   if(!submission.submitted && req.device.type == 'desktop'){
                     return res.status(200).render('quiz/quiz', {quizId: quizId, quiz: quiz, submission: submission});
                   }
+                  else if(submission.submitted){
+                    return res.status(200).render('quiz/viewQuiz', {quizId: quizId, quiz: quiz, submission: submission});
+                  }
                   else{
-                    return res.status(200).redirect('/dashboard/user/course/'+quiz.course._id);
+                    return res.status(200).render('error/error');
                   }
                 }
                 else if(Date.now() >= quiz.endDate){
                   quiz.quizHeld = true;
                   quiz.save();
-                  return res.status(200).render('error/error');
+                  return res.status(200).render('quiz/viewQuiz', {quizId: quizId, quiz: quiz, submission: submission});
                 }
                 else{
                   return res.status(200).redirect('/dashboard/user/course/'+quiz.course._id);

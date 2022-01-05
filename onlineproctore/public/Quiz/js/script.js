@@ -258,7 +258,9 @@ function submitPaper(){
     };
     try{
         var response = axios.post(quizId + '/submit', data);
-        window.location.href = response.url;
+        response.then( result => {
+            window.location.href = result.data.url;
+        })
     }
     catch(error){
         console.log(error);
@@ -313,7 +315,9 @@ var myfunc = setInterval(function() {
         };
         try{
             var response = axios.post(quizId + '/endTest', data);
-            window.location.href = response.url;
+            response.then( result => {
+                window.location.href = result.data.url;
+            })
         }
         catch(error){
             console.log(error);
