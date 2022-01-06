@@ -2,62 +2,63 @@ const express = require('express');
 const router = express.Router();
 const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, addWrittenQuestion, deleteQuiz, addMCQQuestion, viewDetailAnalysis} = require('../../controllers/faculty/viewEachQuiz');
 const {getQuestions, markAnswer, submit, endTest, ipAddress, audio, windowBlurred, screenSharingOff, tabChanged, mobileDetected, multipleFace} = require('../../controllers/studentTa/quiz');
+const {authFacultyTaQuiz, authStudentQuiz} = require('../../controllers/studentTa/courses');
 
 router.route('/')
   .get(getCourseQuiz);
 
 router.route('/addQuestions')
-  .post(uploadExcelFile.single('excelFile'), addQuestions)
+  .post([uploadExcelFile.single('excelFile'), authFacultyTaQuiz], addQuestions)
 
 router.route('/hideQuiz')
-  .get(hideQuiz)
+  .get(authFacultyTaQuiz, hideQuiz)
 
 router.route('/viewDetailAnalysis')
-  .get(viewDetailAnalysis)
+  .get(authFacultyTaQuiz, viewDetailAnalysis)
 
 router.route('/disablePrevious')
-  .get(disablePrevious)
+  .get(authFacultyTaQuiz, disablePrevious)
 
 router.route('/addWrittenQuestion')
-  .post(addWrittenQuestion)
+  .post(authFacultyTaQuiz, addWrittenQuestion)
 
 router.route('/addMCQQuestion')
-  .post(addMCQQuestion)
+  .post(authFacultyTaQuiz, addMCQQuestion)
 
 router.route('/deleteQuiz')
-  .post(deleteQuiz)
+  .post(authFacultyTaQuiz, deleteQuiz)
 
 router.route('/getQuestions')
-  .get(getQuestions)
+  .get(authStudentQuiz, getQuestions)
 
 router.route('/markAnswer')
-  .post(markAnswer);
+  .post(authStudentQuiz, markAnswer);
 
 router.route('/submit')
-  .post(submit);
+  .post(authStudentQuiz, submit);
 
 router.route('/endTest')
-  .post(endTest);
+  .post(authStudentQuiz, endTest);
 
 router.route('/ipAddress')
-  .post(ipAddress);
+  .post(authStudentQuiz, ipAddress);
 
 router.route('/audio')
-  .post(audio);
+  .post(authStudentQuiz, audio);
 
 router.route('/windowBlurred')
-  .post(windowBlurred);
+  .post(authStudentQuiz, windowBlurred);
 
 router.route('/screenSharingOff')
-  .post(screenSharingOff);
+  .post(authStudentQuiz, screenSharingOff);
 
 router.route('/tabChanged')
-  .post(tabChanged);
+  .post(authStudentQuiz, tabChanged);
 
 router.route('/mobileDetected')
-  .post(mobileDetected);
+  .post(authStudentQuiz, mobileDetected);
 
 router.route('/multipleFace')
-  .post(multipleFace);
+  .post(authStudentQuiz, multipleFace);
 
 module.exports = router;

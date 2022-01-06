@@ -5,6 +5,7 @@ const Quiz = require('../../models/quiz');
 const path = require('path');
 const fs = require('fs');
 const { removeFile } = require("../../functions");
+const config = require('../../config');
 
 exports.authUserCourse = async (req, res, next) => {
   const {course_id} = req.params;
@@ -97,4 +98,66 @@ exports.changeCourseImage = async(req,res) => {
     removeFile(path.resolve(__dirname, '../../'+req.file.path));
     return res.status(200).redirect('/dashboard');
   }).clone().catch(function(err){ console.log(err)});
+}
+
+exports.authFacultyTaCourse = async (req, res, next) => {
+  const courseId = req.course_id;
+  await User.findByToken(req.cookies.auth, async (err, user) => {
+    await Course.findOne({_id: courseId, instructors: {$all: [user._id]}}, async (err, course) => {
+      if(course){
+        next();
+      }
+      else{
+        await Enrollment.findOne({course: courseId, user: user._id}, (err, enrollment) => {
+          if(enrollment && enrollment.accountType == config.ta){
+            next();
+          }
+          else{
+            return res.status(400).render('error/error');
+          }
+        }).clone().catch(function(err){ console.log(err)});
+      }
+    }).clone().catch(function(err){ console.log(err)});
+  })
+}
+
+exports.authFacultyTaQuiz = async (req, res, next) => {
+  const quizId = req.quizId;
+  await User.findByToken(req.cookies.auth, async (err, user) => {
+    await Quiz.findOne({_id: quizId}, async (err, quiz) => {
+      const courseId = quiz.course._id;
+      await Course.findOne({_id: courseId, instructors: {$all: [user._id]}}, async (err, course) => {
+        if(course){
+          next();
+        }
+        else{
+          await Enrollment.findOne({course: courseId, user: user._id}, (err, enrollment) => {
+            if(enrollment && enrollment.accountType == config.ta){
+              next();
+            }
+            else{
+              return res.status(400).render('error/error');
+            }
+          }).clone().catch(function(err){ console.log(err)});
+        }
+      }).clone().catch(function(err){ console.log(err)});
+    }).clone().catch(function(err){ console.log(err)});
+  })
+}
+
+exports.authStudentQuiz = async (req, res, next) => {
+  const quizId = req.quizId;
+  await User.findByToken(req.cookies.auth, async (err, user) => {
+    await Quiz.findOne({_id: quizId}, async (err, quiz) => {
+      const courseId = quiz.course._id;
+      await Enrollment.findOne({course: courseId, user: user._id}, (err, enrollment) => {
+        if(enrollment && enrollment.accountType == config.student){
+          next();
+        }
+        else{
+          return res.status(400).render('error/error');
+        }
+      }).clone().catch(function(err){ console.log(err)});
+    }).clone().catch(function(err){ console.log(err)});
+  })
 }
