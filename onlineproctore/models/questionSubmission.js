@@ -45,7 +45,29 @@ const QuestionSubmission = new Schema({
   checked: {
     type: Boolean,
     default: false
-  }},{
+  },
+  webSource: {
+    plagiarismPercent: {
+      type: Number,
+      default: 0
+    },
+    urls: [{
+      type: String,
+      default: ''
+    }]
+  },
+  studentPlagiarism: [{
+    text: {
+      type: String
+    },
+    username: {
+      type: String
+    },
+    percent: {
+      type: Number,
+      default: 0
+    }
+  }]},{
     timestamps: true
 })
 

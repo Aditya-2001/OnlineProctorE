@@ -99,6 +99,36 @@ $("#createCourseQuiz").submit(async function (e) {
   }
 })
 
+async function generateScore(){
+  var quizId = document.getElementById("quizId").value;
+  try{
+    await axios.get(quizId+'/generateScore');
+    location.reload();
+  }catch(error){
+    console.log(error.response);
+  }
+}
+
+async function generateSimilarityReport(){
+  var quizId = document.getElementById("quizId").value;
+  try{
+    await axios.get(quizId+'/generateSimilarityReport');
+    location.reload();
+  }catch(error){
+    console.log(error.response);
+  }
+}
+
+async function generatePlagiarismReport(){
+  var quizId = document.getElementById("quizId").value;
+  try{
+    await axios.get(quizId+'/generatePlagiarismReport');
+    location.reload();
+  }catch(error){
+    console.log(error.response);
+  }
+}
+
 function validateQuiz(){
   var startDate = new Date(document.getElementById("start_date").value);
   var endDate = new Date(document.getElementById("end_date").value);

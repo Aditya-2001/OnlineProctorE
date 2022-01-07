@@ -5,6 +5,7 @@ const mongooseAutopopulate = require('mongoose-autopopulate');
 const IllegalAttempt = new Schema({
   submission: {
     type: Schema.Types.ObjectId,
+    ref: 'Submission',
     required: true,
     autopopulate: true
   },

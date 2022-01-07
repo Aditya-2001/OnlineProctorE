@@ -25,7 +25,11 @@ const Submission = new Schema({
     type: Boolean,
     default: false
   },
-  score: {
+  mcqScore: {
+    type: Number,
+    default: 0
+  },
+  writtenScore: {
     type: Number,
     default: 0
   },

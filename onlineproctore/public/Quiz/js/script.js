@@ -596,6 +596,18 @@ function predictWebcam() {
                 console.log(error);
             }
         }
+        else if(count == 0){
+            var data = {
+                submissionId: submissionId,
+            };
+            try{
+                console.log('face');
+                axios.post(quizId + '/noPerson', data);
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
         // Call this function again to keep predicting when the browser is ready.
         window.requestAnimationFrame(predictWebcam);
     });

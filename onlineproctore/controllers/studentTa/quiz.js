@@ -20,6 +20,11 @@ exports.getQuestions = async (req, res) => {
           }
           setTimeout(() => {
             QuestionSubmission.find({submission: submission._id}, async (err, questionSubmissions) => {
+              if(quiz.startDate > Date.now()){
+                return res.status(400).json({
+                  message: 'Unauthorized Access to Quiz Questions'
+                });
+              }
               return res.status(200).json({
                 quizId: quizId,
                 quiz: quiz,
@@ -116,28 +121,48 @@ exports.screenSharingOff = async (req, res) => {
 }
 
 exports.tabChanged = async (req, res) => {
-  await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
-    if(illegalAttempts.length <= 40){
-      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
-    }
-    return res.status(204).send();
+  await Submission.findOne({submission: req.body.submissionId}, async (err, submission) => {
+    submission.browserSwitched += 1;
+    submission.save();
+    await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
+      if(illegalAttempts.length <= 40){
+        await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+      }
+      return res.status(204).send();
+    }).clone().catch(function(err){console.log(err)})
   }).clone().catch(function(err){console.log(err)})
 }
 
 exports.mobileDetected = async (req, res) => {
-  await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
-    if(illegalAttempts.length <= 40){
-      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
-    }
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)})
+  await Submission.findOne({submission: req.body.submissionId}, async (err, submission) => {
+    submission.mobileDetected += 1;
+    submission.save();
+    await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
+      if(illegalAttempts.length <= 40){
+        await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+      }
+      return res.status(204).send();
+    }).clone().catch(function(err){console.log(err)})
+  }).clone().catch(function(err){console.log(err)})  
 }
 
 exports.multipleFace = async (req, res) => {
-  await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
-    if(illegalAttempts.length <= 40){
-      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
-    }
+  await Submission.findOne({submission: req.body.submissionId}, async (err, submission) => {
+    submission.multiplePerson += 1;
+    submission.save();
+    await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
+      if(illegalAttempts.length <= 40){
+        await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+      }
+      return res.status(204).send();
+    }).clone().catch(function(err){console.log(err)})
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.noPerson = async (req, res) => {
+  await Submission.findOne({submission: req.body.submissionId}, async (err, submission) => {
+    submission.noPerson += 1;
+    submission.save();
     return res.status(204).send();
   }).clone().catch(function(err){console.log(err)})
 }

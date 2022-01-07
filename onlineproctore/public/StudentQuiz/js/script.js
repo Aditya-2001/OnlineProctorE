@@ -64,7 +64,8 @@ async function getQuizQuestions(){
                     }
                     displayQuestion += ' disabled><i class="fa icon-checkbox"></i><span class="options" id="text' + (k+1) + questions[j]._id + '">' + questions[j].options[o] + '</span>';
                     if(submission.checked){
-                        if(submission.optionsMarked.includes(questions[j].options[o]) && questions[j].correctOptions.includes(questions[j].options[o])){
+                        // submission.optionsMarked.includes(questions[j].options[o]) && 
+                        if(questions[j].correctOptions.includes(questions[j].options[o])){
                             displayQuestion += '<i class="icon fa fa-check text-success fa-fw " title="Correct" aria-label="Correct"></i>';
                         }
                         else if(submission.optionsMarked.includes(questions[j].options[o])){

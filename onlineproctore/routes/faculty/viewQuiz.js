@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, addWrittenQuestion, deleteQuiz, addMCQQuestion, viewDetailAnalysis} = require('../../controllers/faculty/viewEachQuiz');
-const {getQuestions, markAnswer, submit, endTest, ipAddress, audio, windowBlurred, screenSharingOff, tabChanged, mobileDetected, multipleFace} = require('../../controllers/studentTa/quiz');
+const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, generateScore, generateSimilarityReport, generatePlagiarismReport, addWrittenQuestion, deleteQuiz, deleteIllegalAttempts, addMCQQuestion, viewDetailAnalysis} = require('../../controllers/faculty/viewEachQuiz');
+const {getQuestions, markAnswer, submit, endTest, ipAddress, audio, windowBlurred, screenSharingOff, tabChanged, mobileDetected, multipleFace, noPerson} = require('../../controllers/studentTa/quiz');
 const {authFacultyTaQuiz, authStudentQuiz} = require('../../controllers/studentTa/courses');
 
 router.route('/')
@@ -19,6 +19,15 @@ router.route('/viewDetailAnalysis')
 router.route('/disablePrevious')
   .get(authFacultyTaQuiz, disablePrevious)
 
+router.route('/generateScore')
+  .get(authFacultyTaQuiz, generateScore)
+
+router.route('/generateSimilarityReport')
+  .get(authFacultyTaQuiz, generateSimilarityReport)
+
+router.route('/generatePlagiarismReport')
+  .get(authFacultyTaQuiz, generatePlagiarismReport)
+
 router.route('/addWrittenQuestion')
   .post(authFacultyTaQuiz, addWrittenQuestion)
 
@@ -27,6 +36,9 @@ router.route('/addMCQQuestion')
 
 router.route('/deleteQuiz')
   .post(authFacultyTaQuiz, deleteQuiz)
+
+router.route('/deleteIllegalAttempts')
+  .post(authFacultyTaQuiz, deleteIllegalAttempts)
 
 router.route('/getQuestions')
   .get(authStudentQuiz, getQuestions)
@@ -60,5 +72,8 @@ router.route('/mobileDetected')
 
 router.route('/multipleFace')
   .post(authStudentQuiz, multipleFace);
+
+router.route('/noPerson')
+  .post(authStudentQuiz, noPerson);
 
 module.exports = router;

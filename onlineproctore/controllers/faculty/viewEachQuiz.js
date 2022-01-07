@@ -3,12 +3,18 @@ const User = require('../../models/user');
 const Course = require('../../models/course');
 const Question = require('../../models/question');
 const Enrollment = require('../../models/enrollment');
+const IllegalAttempt = require('../../models/illegalAttempt');
+const QuestionSubmission = require('../../models/questionSubmission');
 const multer = require('multer');
 const {removeFile} = require('../../functions');
 const XLSX = require('xlsx');
 const path = require('path');
 const config = require('../../config');
 const Submission = require('../../models/submission');
+const {answerSimilarity} = require('../../queues/answerSimilarity');
+const {webPlagiarism} = require('../../queues/webPlagiarism');
+const axios = require('axios');
+const FormData = require('form-data');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -55,9 +61,19 @@ exports.getCourseQuiz = async (req, res) => {
       if(err) return res.status(400).render('error/error');
       if(req.cookies.accountType == config.faculty){
         if(quiz.quizHeld){
-          return res.status(200).render('faculty/AfterExam', {quizId: quizId, quiz: quiz, questions: questions, page: quiz.quizName});
+          await Submission.find({quiz: quizId}, (err, submissions) => {
+            return res.status(200).render('faculty/AfterExam', {
+              quizId: quizId, 
+              quiz: quiz, 
+              questions: questions, 
+              page: quiz.quizName,
+              submissions: submissions
+            });
+          }).clone().catch(function(err){console.log(err)})
         }
-        return res.status(200).render('faculty/BeforeExam', {quizId: quizId, quiz: quiz, questions: questions, page: quiz.quizName});
+        else{
+          return res.status(200).render('faculty/BeforeExam', {quizId: quizId, quiz: quiz, questions: questions, page: quiz.quizName});
+        }
       }
       else{
         await User.findByToken(req.cookies.auth, async (err, user) => {
@@ -275,4 +291,120 @@ exports.viewDetailAnalysis = async (req, res) => {
       return res.status(200).render('faculty/viewDetailAnalysis', {quizId: quizId, quiz: quiz, submissions: submissions, page: quiz.quizName});
     }).clone().catch(function(err){console.log(err)});
   }).clone().catch(function(err){console.log(err)});
+}
+
+exports.deleteIllegalAttempts = async (req, res) => {
+  const quizId = req.quizId;
+  const confirmation = req.body.confirmation;
+  await Quiz.findOne({_id: quizId}, async (err, quiz) => {
+    if(err) return res.status(400).render('error/error');
+    if(!quiz) return res.status(400).render('error/error');
+    if(confirmation == quiz.quizName){
+      await Submission.find({quiz: quizId}, async (err, submissions) => {
+        for await (let submission of submissions){
+          await IllegalAttempt.findOne({submission: submission._id}, (err, illegalAttempt) => {
+            if(illegalAttempt)
+              illegalAttempt.remove();
+          }).clone().catch(function(err){console.log(err)})
+        }
+        quiz.illegalAttemptsPresent = false;
+        quiz.save();
+        return res.status(200).redirect(req.get('referer'));
+      }).clone().catch(function(err){console.log(err)})
+    }
+    else{
+      return res.status(200).redirect(req.get('referer'));
+    }
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.generateScore = async (req, res) => {
+  const quizId = req.quizId;
+  await Submission.find({quiz: quizId}, async (err, submissions) => {
+    for await (let submission of submissions){
+      submission.mcqScore = 0;
+      var marks = 0;
+      await Question.find({quiz: quizId}, async (err, questions) => {
+        for await (let question of questions) {
+          if(question.mcq){
+            await QuestionSubmission.findOne({submission: submission._id, question: question._id}, async (err, questionSubmission) => {
+              if(questionSubmission){
+                var count = 0;
+                var wrong = false;
+                for await (let option of questionSubmission.optionsMarked){
+                  if(question.correctOptions.includes(option)){
+                    count += 1;
+                  }
+                  else{
+                    wrong = true;
+                    break;
+                  }
+                }
+                var questionMarks = 0;
+                if(wrong){
+                  questionMarks = question.negativeMarking;
+                }
+                else{
+                  if(count == question.correctOptions.length){
+                    questionMarks = question.maximumMarks;
+                  }
+                  else{
+                    if(question.markingScheme){
+                      questionMarks = (question.maximumMarks*count)/question.correctOptions.length;
+                    }
+                  }
+                }
+                questionSubmission.marksObtained = questionMarks;
+                questionSubmission.checked = true;
+                questionSubmission.save();
+                submission.mcqScore += questionMarks;
+                submission.save();
+              }
+            }).clone().catch(function(err){console.log(err)})
+          }
+        }
+      }).clone().catch(function(err){console.log(err)})
+    }
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.generateSimilarityReport = async (req, res) => {
+  const quizId = req.quizId;
+  await Submission.find({quiz: quizId}, async (err, submissions) => {
+    for await (let submission of submissions){
+      await QuestionSubmission.find({submission: submission._id}, async (err, questionSubmissions) => {
+        for await(let questionSubmission of questionSubmissions){
+          if(questionSubmission && !questionSubmission.mcq && questionSubmission.textfield !== ''){
+            answerSimilarity.add({id: questionSubmission._id});
+          }
+        }
+      }).clone().catch(function(err){console.log(err)})
+    }
+    await Quiz.findOne({_id: quizId}, (err, quiz) => {
+      quiz.studentAnswersMatched = true;
+      quiz.save();
+      return res.status(204).send();
+    }).clone().catch(function(err){console.log(err)})
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.generatePlagiarismReport = async (req, res) => {
+  const quizId = req.quizId;
+  await Submission.find({quiz: quizId}, async (err, submissions) => {
+    for await (let submission of submissions){
+      await QuestionSubmission.find({submission: submission._id}, async (err, questionSubmissions) => {
+        for await (let questionSubmission of questionSubmissions){
+          if(questionSubmission && !questionSubmission.mcq && questionSubmission.textfield !== ''){
+            webPlagiarism.add({id: questionSubmission._id});
+          }
+        }
+      }).clone().catch(function(err){console.log(err)})
+    }
+    await Quiz.findOne({_id: quizId}, (err, quiz) => {
+      quiz.webDetectionDone = true;
+      quiz.save();
+      return res.status(204).send();
+    }).clone().catch(function(err){console.log(err)})
+  }).clone().catch(function(err){console.log(err)})
 }

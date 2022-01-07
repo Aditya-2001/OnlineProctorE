@@ -54,6 +54,10 @@ const Quiz = new Schema({
   disablePrevious: {
     type: Boolean,
     default: false
+  },
+  illegalAttemptsPresent: {
+    type: Boolean,
+    default: true
   }},{
     timestamps: true
 })
@@ -68,7 +72,7 @@ Quiz.post("remove", async function(res, next) {
     for await (let submission of submissions){
       submission.remove();
     }
-  })
+  }).clone().catch(function(err){console.log(err)});
   next();
 });
 
