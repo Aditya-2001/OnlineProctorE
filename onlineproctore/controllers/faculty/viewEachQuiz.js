@@ -109,9 +109,19 @@ exports.getCourseQuiz = async (req, res) => {
             }
             else{
               if(quiz.quizHeld){
-                return res.status(200).render('studentTa/AfterExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser, questions: questions, page: quiz.quizName});
+                await Submission.find({quiz: quizId}, (err, submissions) => {
+                  return res.status(200).render('studentTa/AfterExam', {quizId: quizId, 
+                    quiz: quiz, 
+                    enrolledUser: enrolledUser, 
+                    questions: questions, 
+                    page: quiz.quizName,
+                    submissions: submissions
+                  });
+                }).clone().catch(function(err){console.log(err)})
               }
-              return res.status(200).render('studentTa/BeforeExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser, questions: questions, page: quiz.quizName});
+              else{
+                return res.status(200).render('studentTa/BeforeExam', {quizId: quizId, quiz: quiz, enrolledUser: enrolledUser, questions: questions, page: quiz.quizName});
+              }
             }
           }).clone().catch(function(err){console.log(err)})
         })
