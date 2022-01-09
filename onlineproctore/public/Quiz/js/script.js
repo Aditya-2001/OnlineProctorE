@@ -485,8 +485,8 @@ async function startSharing() {
 
 function connectWithScreenRecorder(){
     let canvas = document.querySelector("#canvas1");
-    canvas.width  = screen.width;
-    canvas.height = screen.height;
+    canvas.width  = 150;
+    canvas.height = 150;
     if(video1.srcObject && video1.srcObject["active"]==true){
         const context = canvas.getContext("2d");
         context.drawImage(video1, 0, 0, 150, 150);
@@ -554,8 +554,8 @@ function predictWebcam() {
     model.detect(video).then(function (predictions) {
         var count = 0;
         let canvas = document.querySelector("#canvas");
-        canvas.width  = video.width;
-        canvas.height = video.height;
+        canvas.width  = 150;
+        canvas.height = 150;
         const context = canvas.getContext("2d");
         context.drawImage(video, 0, 0, 150, 150);
         const frame = canvas.toDataURL();

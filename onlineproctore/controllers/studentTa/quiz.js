@@ -121,7 +121,7 @@ exports.screenSharingOff = async (req, res) => {
 }
 
 exports.tabChanged = async (req, res) => {
-  await Submission.findOne({submission: req.body.submissionId}, async (err, submission) => {
+  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
     submission.browserSwitched += 1;
     submission.save();
     await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
@@ -134,7 +134,7 @@ exports.tabChanged = async (req, res) => {
 }
 
 exports.mobileDetected = async (req, res) => {
-  await Submission.findOne({submission: req.body.submissionId}, async (err, submission) => {
+  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
     submission.mobileDetected += 1;
     submission.save();
     await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
@@ -147,7 +147,7 @@ exports.mobileDetected = async (req, res) => {
 }
 
 exports.multipleFace = async (req, res) => {
-  await Submission.findOne({submission: req.body.submissionId}, async (err, submission) => {
+  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
     submission.multiplePerson += 1;
     submission.save();
     await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
@@ -160,7 +160,7 @@ exports.multipleFace = async (req, res) => {
 }
 
 exports.noPerson = async (req, res) => {
-  await Submission.findOne({submission: req.body.submissionId}, async (err, submission) => {
+  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
     submission.noPerson += 1;
     submission.save();
     return res.status(204).send();

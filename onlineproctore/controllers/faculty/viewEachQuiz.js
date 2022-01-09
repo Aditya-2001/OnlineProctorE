@@ -60,6 +60,10 @@ exports.getCourseQuiz = async (req, res) => {
     await Question.find({quiz: quizId}, async (err, questions) => {
       if(err) return res.status(400).render('error/error');
       if(req.cookies.accountType == config.faculty){
+        if(Date.now() >= quiz.endDate){
+          quiz.quizHeld = true;
+          quiz.save();
+        }
         if(quiz.quizHeld){
           await Submission.find({quiz: quizId}, (err, submissions) => {
             return res.status(200).render('faculty/AfterExam', {
@@ -352,7 +356,7 @@ exports.generateScore = async (req, res) => {
                 }
                 var questionMarks = 0;
                 if(wrong){
-                  questionMarks = question.negativeMarking;
+                  questionMarks = -question.negativeMarking;
                 }
                 else{
                   if(count == question.correctOptions.length){

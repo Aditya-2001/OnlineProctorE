@@ -174,3 +174,10 @@ $("#uploadMarks").submit(async function (e) {
 function exit(){
 	window.location.href = location.href.slice(0, location.href.indexOf('submission')-1);
 }
+
+function setText(current, currentText, similar, similarUser){
+	document.getElementById("currentUser").innerHTML = current;
+	document.getElementById("currentUser1").innerHTML = currentText;
+	document.getElementById("similarWith").innerHTML = similar;
+	document.getElementById("similarWith1").innerHTML = similarUser;
+}
