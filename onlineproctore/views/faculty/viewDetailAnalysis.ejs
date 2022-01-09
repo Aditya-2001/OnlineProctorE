@@ -34,7 +34,7 @@
                                 <tr>
                                   <td> <%= submission.user.username %> </td>
                                   <% if(quiz.quizHeld){ %>
-                                    <td><a href="#">view</a></td>
+                                    <td><a href=<%= 'viewDetailAnalysis/submission/' + submission._id %>>view</a></td>
                                     <td><%= submission.mcqScore + submission.writtenScore %></td>
                                   <% }else{ %>
                                     <td><i class="material-icons">visibility</i></td>

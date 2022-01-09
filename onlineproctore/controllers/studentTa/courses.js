@@ -145,6 +145,32 @@ exports.authFacultyTaQuiz = async (req, res, next) => {
   })
 }
 
+exports.authFacultyTaQuizAnalysis = async (req, res, next) => {
+  const quizId = req.quizId;
+  const {submissionId} = req.params;
+  req.submissionId = submissionId;
+  await User.findByToken(req.cookies.auth, async (err, user) => {
+    await Quiz.findOne({_id: quizId}, async (err, quiz) => {
+      const courseId = quiz.course._id;
+      await Course.findOne({_id: courseId, instructors: {$all: [user._id]}}, async (err, course) => {
+        if(course){
+          next();
+        }
+        else{
+          await Enrollment.findOne({course: courseId, user: user._id}, (err, enrollment) => {
+            if(enrollment && enrollment.accountType == config.ta){
+              next();
+            }
+            else{
+              return res.status(400).render('error/error');
+            }
+          }).clone().catch(function(err){ console.log(err)});
+        }
+      }).clone().catch(function(err){ console.log(err)});
+    }).clone().catch(function(err){ console.log(err)});
+  })
+}
+
 exports.authStudentQuiz = async (req, res, next) => {
   const quizId = req.quizId;
   await User.findByToken(req.cookies.auth, async (err, user) => {

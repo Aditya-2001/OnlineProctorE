@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, generateScore, generateSimilarityReport, generatePlagiarismReport, addWrittenQuestion, deleteQuiz, deleteIllegalAttempts, addMCQQuestion, viewDetailAnalysis} = require('../../controllers/faculty/viewEachQuiz');
 const {getQuestions, markAnswer, submit, endTest, ipAddress, audio, windowBlurred, screenSharingOff, tabChanged, mobileDetected, multipleFace, noPerson} = require('../../controllers/studentTa/quiz');
-const {authFacultyTaQuiz, authStudentQuiz} = require('../../controllers/studentTa/courses');
+const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
+const {getUserSubmission, updateMarks, getIllegalActivities} = require('../../controllers/studentTa/detailAnalysis');
 
 router.route('/')
   .get(getCourseQuiz);
@@ -15,6 +16,15 @@ router.route('/hideQuiz')
 
 router.route('/viewDetailAnalysis')
   .get(authFacultyTaQuiz, viewDetailAnalysis)
+
+router.route('/viewDetailAnalysis/submission/:submissionId')
+  .get(authFacultyTaQuizAnalysis, getUserSubmission)
+
+router.route('/viewDetailAnalysis/submission/:submissionId/updateMarks')
+  .post(authFacultyTaQuizAnalysis, updateMarks)
+
+router.route('/viewDetailAnalysis/submission/:submissionId/illegalActivities')
+  .get(authFacultyTaQuizAnalysis, getIllegalActivities)
 
 router.route('/disablePrevious')
   .get(authFacultyTaQuiz, disablePrevious)
