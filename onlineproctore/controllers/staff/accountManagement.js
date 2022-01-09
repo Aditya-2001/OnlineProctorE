@@ -15,15 +15,12 @@ exports.createAccount = (req, res) => {
         var password = generator.generate({length: 10, numbers: true, symbols: true, excludeSimilarCharacters: true, exclude: "\"\'"});
         var username = account.Username;
         var email = account.Email;
-        var data = {username: username, password: password, email: email};
+        var data = {username: username, password: password, email: email, name: ''};
         if(account["Account Type"].toLowerCase() === "student"){
           data.student = true;
         }
         else if(account["Account Type"].toLowerCase() === "staff"){
           data.staff = true;
-        }
-        else if(account["Account Type"].toLowerCase() === "ta"){
-          data.ta = true;
         }
         else if(account["Account Type"].toLowerCase() === "faculty"){
           data.faculty = true;

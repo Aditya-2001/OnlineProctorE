@@ -6,59 +6,21 @@
             <p class="card-category">Password must be strong with minimum 8 characters and atleast 1 special character.</p>
             </div>
             <div class="modal-body">
-            <form enctype="multipart/form-data" method="POST" id="form">
-                <input type="hidden" name="csrfmiddlewaretoken" value="g1g7E7RBQamUWdopQPUHvfL5sWIEiWxJERoXQzPRbWSFFfNS34TLBKiMgRUcSbJv">
-                    <p id="myerror" style="color: red;"></p>
-                    <br>
-                    <div class="form-group">
-                        <label>New Password</label><br>
-                        <input type="password" class="form-control" name="password1" id="password1" placeholder="Enter new password">
-                    </div><br>
-                    <div class="form-group">
-                        <label>Confirm Password</label><br>
-                        <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm password">
-                    </div><br>
-                    <button type="submit" id="change_password_button" class="btn btn-primary pull-right">Update Password</button>
-                    <div class="clearfix"></div>
-                </form>
-            </div>
-        </div>
-    </div>
-  </div>
-  <div class="modal fade" id="modal33" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable-centered modal-md" role="document">
-    <div class="modal-content card">
-        <div class="card-header card-header-green">
-        <h4 class="card-title">View Profile</h4>
-        <p class="card-category">You have only view permission for email and username and edit permission for first name and last name.</p>
-        </div>
-        <div class="modal-body">
-        <form action="#" enctype="multipart/form-data" method="POST">
-            <input type="hidden" name="csrfmiddlewaretoken" value="CmrF5PcgYweIojiGVuzK94sH2Btddn29V6FPfNP6wMmon1XhotLTBFRRCVZe2VON">
+              <form id="form">
+                <p id="setError" style="color: red;"></p>
                 <br>
                 <div class="form-group">
-                    <label>Email address</label>
-                    <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Email" value=aditya.agg2001@gmail.com readonly>
-                    <small class="form-text text-muted">This email was allocated by staff.</small>
+                    <label>New Password</label><br>
+                    <input type="password" class="form-control" name="password1" id="password1" placeholder="Enter new password">
                 </div><br>
                 <div class="form-group">
-                    <label>Roll Number</label>
-                    <input class="form-control" type="text" placeholder="Username" value=faculty readonly>
-                    <small class="form-text text-muted">This roll number was allocated by staff.</small>
+                    <label>Confirm Password</label><br>
+                    <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm above written password">
                 </div><br>
-                <div class="form-group">
-                    <label>First Name</label>
-                    <input class="form-control" type="text" placeholder="Enter your first name" value="Aditya" name="first_name">
-                </div><br>
-                <div class="form-group">
-                    <label>Last Name</label>
-                    <input class="form-control" type="text" placeholder="Enter your last name" value="Aggarwal" name="last_name">
-                </div><br>
-                <button type="submit" id="profile_button" class="btn btn-primary pull-right">Update Profile</button>
-                <div class="clearfix"></div>
-            </form>
+                <input type="submit" id="profile_button" class="btn btn-primary pull-right" value="Update Password"/>
+              </form>
+            </div>
         </div>
-    </div>
     </div>
   </div>
 </div>

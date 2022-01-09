@@ -26,6 +26,7 @@ var staff = require('./routes/staff/staff');
 var faculty = require('./routes/faculty/faculty');
 var studentTa = require('./routes/studentTa/studentTa');
 var userRedirect = require('./routes/userRedirect');
+var passwordProfile = require('./routes/login_logout/passwordProfile');
 
 var app = express();
 
@@ -54,6 +55,7 @@ app.use('/dashboard', userRedirect);
 app.use('/dashboard/user', studentTa);
 app.use('/dashboard/faculty', faculty);
 app.use('/dashboard/staff', staff);
+app.use('/update', passwordProfile);
 
 // oncontextmenu='return false' to be added in body tag at last
 

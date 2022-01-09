@@ -10,8 +10,8 @@ exports.register = async (req, res) => {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
+    name: '',
     student: JSON.parse(req.body.student),
-    ta: JSON.parse(req.body.ta),
     faculty: JSON.parse(req.body.faculty),
     staff: JSON.parse(req.body.staff)
   });
@@ -183,4 +183,43 @@ exports.changePassword = async (req,res) => {
   }catch(err){
     console.log(err);
   }
+}
+
+exports.passwordChange = async (req, res) => {
+  try{
+    await User.findByToken(req.cookies.auth, (err, user) => {
+      if(user){
+        user.password = req.body.password1;
+        user.save();
+        return res.status(200).json({
+          redirect: '/users/logout'
+        });
+      }
+      else{
+        return res.status(204).send();
+      }
+    })
+  }catch(err){
+    console.log(err);
+  }
+}
+
+exports.passwordChangePage = async (req, res) => {
+  return res.status(200).render('faculty/Password', {page: 'Password Change'});
+}
+
+exports.profileDisplay = async (req, res) => {
+  await User.findByToken(req.cookies.auth, async (err, user) => {
+    return res.status(200).render('faculty/Profile', {page: 'Page', user: user});
+  })
+}
+
+exports.profileChange = async (req, res) => {
+  await User.findByToken(req.cookies.auth, async (err, user) => {
+    user.name = req.body.name;
+    user.save();
+    return res.status(200).json({
+      redirect: '/dashboard'
+    });
+  })
 }
