@@ -2,7 +2,7 @@ const Queue = require("bull");
 const sendEmailQueue = new Queue("Send-Email-Queue");
 const nodemailer = require('nodemailer');
 const config = require('../config');
-const NUM_WORKERS = 5;
+const NUM_WORKERS = 1;
 
 const transporter = nodemailer.createTransport({
   service: config.emailService,

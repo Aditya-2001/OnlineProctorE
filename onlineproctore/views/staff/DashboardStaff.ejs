@@ -31,13 +31,12 @@
               <h4 class="modal-title">Add Students and TA's</h4>
             </div>
             <div class="modal-body">
-                <h5 style="padding-bottom: 12px"><b>Please follow the instructions to add new Students or TA's in a genunine manner.</b></h5>
+                <h5 style="padding-bottom: 12px"><b>Please follow the instructions to add new users in a genunine manner.</b></h5>
                 <p style="padding-bottom: 10px">1. Only EXCEL files are allowed. <a href="/DashboardStaff/downloads/sample_new_accounts.xlsx" download>Sample Excel File</a></p>
                 <p style="padding-bottom: 10px">2. There could be multiple columns, there order does not matter, for example - email can be given in the column after or before username but inside email column, only email should be there.</p>
                 <p style="padding-bottom: 10px">3. If any duplicate entry is found, then first copy will be taken to create account.</p>
                 <p style="padding-bottom: 10px">4. Compulsory Columns are : Email, Username, Account Type. Account type can be "Student", "Faculty", "Staff" or "TA". Column Names should be in title case.</p>
-                <p style="padding-bottom: 10px">5. Teaching Assistant are also students so there will be 2 handles for them.</p>
-                <p style="padding-bottom: 10px">6. An auto-generated password would be sent to th email address, which will also contain account type and other login credentials.</p>
+                <p style="padding-bottom: 10px">5. An auto-generated password would be sent to the email address, which will also contain account type and other login credentials.</p>
 
                 <form class="form-inline" id="formadduserstaff" action="/dashboard/staff/users/add" method="POST" enctype="multipart/form-data">
                     <div class="mb-2">

@@ -17,15 +17,15 @@ $("#form").submit(async function (e) {
 })
 
 function validate() {
-  password1 = document.getElementById('password1').value
-  password2 = document.getElementById('password2').value
+  var password1 = document.getElementById('password1').value
+  var password2 = document.getElementById('password2').value
   if(password1=="" || password2==""){
     document.getElementById("setError").innerHTML="Password must not be empty."
     fader('#setError')
     return false;
   }
   if (password1 != password2) {
-    document.getElementById("setError").innerHTML = "Both the passwords are diferent";
+    document.getElementById("setError").innerHTML = "Both the passwords are different";
     fader('#setError')
     return false;
   } else {
