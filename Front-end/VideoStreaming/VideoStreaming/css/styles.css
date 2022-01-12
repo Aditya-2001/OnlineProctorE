@@ -1,0 +1,85 @@
+.heading{
+    font-family: "Kaushan Script","Helvetica Neue",Helvetica,Arial,cursive;
+    color: #5BB12F;
+    font-size: 2rem;
+    line-height: 1.5;
+}
+.nav-name{
+    font-family:cursive;
+    color: #5BB12F;
+    font-size: 0.75rem;
+    /* text-align: right; */
+    line-height: 1.5;
+}
+.info{
+    float: right;
+}
+.nbar{
+    position: relative;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background-color: #fff;
+    box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
+}
+.start{
+    font-weight: 800;
+}
+.side-card-video{
+    margin-top: 10px; 
+    /* height: fit-content;  */
+    padding: 10px 10px 5px 10px;
+    border: solid 1px gray;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
+    background-color: #fff;
+}
+.none{
+    display: none;
+}
+#end{
+    color: red;
+}
+.message{
+    font-size: 0.75rem;
+}
+
+.table td{
+    border-width: 0;
+}
+
+.info-tab{
+    display: inline; 
+    padding-right: 10px;
+}
+.right-tab{
+    float: right;
+}
+td{
+    margin-right: 10px;
+}
+.col-apna-6{
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+@media (min-width: 800px){
+    .col-apna-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+@media (max-width: 575px){
+    .nbar{
+        text-align:center;
+    }
+    .nav-name{
+        text-align: center;
+    }
+    .info{
+        float: unset;
+    }
+}
