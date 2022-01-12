@@ -37,7 +37,7 @@
                                     <td><a href=<%= 'viewDetailAnalysis/submission/' + submission._id %>>view</a></td>
                                     <td><%= submission.mcqScore + submission.writtenScore %></td>
                                   <% }else{ %>
-                                    <td><i class="material-icons">visibility</i></td>
+                                    <td><a href="<%= 'viewDetailAnalysis/viewStream/submission/' + submission._id %>"><i class="material-icons">visibility</i></a></td>
                                   <% } %>
                                   <td><%= submission.browserSwitched %></td>
                                   <td><%= submission.mobileDetected %></td>

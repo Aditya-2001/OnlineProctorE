@@ -13,6 +13,58 @@ window.onload = function() {
     getQuizQuestions();
 };
 
+function createPeer() {
+    const peer = new RTCPeerConnection({
+        iceServers: [
+            {
+                urls: "stun:stun.stunprotocol.org"
+            }
+        ]
+    });
+    peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer);
+    return peer;
+}
+
+function createScreenPeer() {
+    const peer = new RTCPeerConnection({
+        iceServers: [
+            {
+                urls: "stun:stun.stunprotocol.org"
+            }
+        ]
+    });
+    peer.onnegotiationneeded = () => handleNegotiationNeededScreenEvent(peer);
+    return peer;
+}
+
+async function handleNegotiationNeededScreenEvent(peer) {
+    const offer = await peer.createOffer();
+    await peer.setLocalDescription(offer);
+    var quizId = document.getElementById("quizId").value;
+    var submissionId = document.getElementById("submissionId").value;
+    const payload = {
+        sdp: peer.localDescription,
+        submissionId: submissionId
+    };
+    const { data } = await axios.post(quizId + '/viewDetailAnalysis/uploadScreenStream/submission/' + submissionId, payload);
+    const desc = new RTCSessionDescription(data.sdp);
+    peer.setRemoteDescription(desc).catch(e => console.log(e));
+}
+
+async function handleNegotiationNeededEvent(peer) {
+    const offer = await peer.createOffer();
+    await peer.setLocalDescription(offer);
+    var quizId = document.getElementById("quizId").value;
+    var submissionId = document.getElementById("submissionId").value;
+    const payload = {
+        sdp: peer.localDescription,
+        submissionId: submissionId
+    };
+    const { data } = await axios.post(quizId + '/viewDetailAnalysis/uploadCameraStream/submission/' + submissionId, payload);
+    const desc = new RTCSessionDescription(data.sdp);
+    peer.setRemoteDescription(desc).catch(e => console.log(e));
+}
+
 async function getQuizQuestions(){
     var quizId = document.getElementById("quizId").value;
     console.log('function called');
@@ -342,12 +394,17 @@ function sendIP(){
         }
     });
 }
-
+const video = document.getElementById('video');
+const liveView = document.getElementById('liveView');
+let localStream;
 async function AudioVideoDetection(){
     count=0;
     try{
-        let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        audioDetection(stream);
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        video.srcObject = localStream;
+        const peer = createPeer();
+        localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+        audioDetection(localStream);
     }
     catch{
         if(count<3){
@@ -462,9 +519,12 @@ async function startSharing() {
       displaySurface: "monitor",
     };
     try{
-        video1.srcObject = await navigator.mediaDevices.getDisplayMedia(
+        let localStream = await navigator.mediaDevices.getDisplayMedia(
             displayMediaOptions
         );
+        video1.srcObject = localStream;
+        const peer = createScreenPeer();
+        localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
         givingTest = true;
     } 
     catch (error) {
@@ -534,20 +594,13 @@ function checkScreenSharing(){
     }, 5000);
 }
 
-const video = document.getElementById('video');
-const liveView = document.getElementById('liveView');
 var model = undefined;
 function enableCam() {
     if (!model) {
       return;
     }
-    const constraints = {
-      video: true
-    };
-    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-      video.srcObject = stream;
-      video.addEventListener('loadeddata', predictWebcam);
-    });
+    video.addEventListener('loadeddata', predictWebcam);
+    // predictWebcam();
 }
 
 function predictWebcam() {
@@ -578,6 +631,7 @@ function predictWebcam() {
                     }
                 }
                 if(predictions[n].class === 'person'){
+                    console.log('face');
                     count++;
                 }
             }
@@ -589,19 +643,19 @@ function predictWebcam() {
                 type: 239
             };
             try{
-                console.log('face');
+                console.log('multiple face');
                 axios.post(quizId + '/multipleFace', data);
             }
             catch(error){
                 console.log(error);
             }
         }
-        else if(count == 0){
+        else if(count === 0){
             var data = {
                 submissionId: submissionId,
             };
             try{
-                console.log('face');
+                console.log('no person');
                 axios.post(quizId + '/noPerson', data);
             }
             catch(error){

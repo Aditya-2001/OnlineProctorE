@@ -30,6 +30,7 @@
     "randomstring": "^1.2.1",
     "request": "^2.88.2",
     "string-similarity": "^4.0.4",
+    "wrtc": "^0.4.7",
     "xlsx": "^0.17.4"
   },
   "devDependencies": {

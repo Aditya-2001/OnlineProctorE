@@ -4,6 +4,7 @@ const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, 
 const {getQuestions, markAnswer, submit, endTest, ipAddress, audio, windowBlurred, screenSharingOff, tabChanged, mobileDetected, multipleFace, noPerson} = require('../../controllers/studentTa/quiz');
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
 const {getUserSubmission, updateMarks, getIllegalActivities} = require('../../controllers/studentTa/detailAnalysis');
+const {uploadStudentCameraStream, viewStudentStream, getStudentCameraStream, uploadStudentScreenStream, getStudentScreenStream} = require('../../controllers/quizStream/stream');
 
 router.route('/')
   .get(getCourseQuiz);
@@ -16,6 +17,21 @@ router.route('/hideQuiz')
 
 router.route('/viewDetailAnalysis')
   .get(authFacultyTaQuiz, viewDetailAnalysis)
+
+router.route('/viewDetailAnalysis/uploadCameraStream/submission/:submissionId')
+  .post(authStudentQuiz, uploadStudentCameraStream)
+
+router.route('/viewDetailAnalysis/uploadScreenStream/submission/:submissionId')
+  .post(authStudentQuiz, uploadStudentScreenStream)
+
+router.route('/viewDetailAnalysis/viewStream/submission/:submissionId')
+  .get(authFacultyTaQuizAnalysis, viewStudentStream)
+
+router.route('/viewDetailAnalysis/viewCameraStream/submission/:submissionId')
+  .post(authFacultyTaQuizAnalysis, getStudentCameraStream)
+
+router.route('/viewDetailAnalysis/viewScreenStream/submission/:submissionId')
+  .post(authFacultyTaQuizAnalysis, getStudentScreenStream)
 
 router.route('/viewDetailAnalysis/submission/:submissionId')
   .get(authFacultyTaQuizAnalysis, getUserSubmission)
