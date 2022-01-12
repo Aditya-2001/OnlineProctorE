@@ -48,14 +48,16 @@ function createScreenPeer() {
 }
 
 async function handleNegotiationNeededScreenEvent(peer) {
-    const offer = await peer.createOffer();
-    await peer.setLocalDescription(offer);
-    const payload = {
-        sdp: peer.localDescription
-    };
-    const { data } = await axios.post(window.location.href.slice(0,window.location.href.indexOf('/viewStream')) + '/viewScreenStream/submission/' + submissionId, payload);
-    const desc = new RTCSessionDescription(data.sdp);
-    peer.setRemoteDescription(desc).catch(e => console.log(e));
+    setTimeout(async ()=>{
+        const offer = await peer.createOffer();
+        await peer.setLocalDescription(offer);
+        const payload = {
+            sdp: peer.localDescription
+        };
+        const { data } = await axios.post(window.location.href.slice(0,window.location.href.indexOf('/viewStream')) + '/viewScreenStream/submission/' + submissionId, payload);
+        const desc = new RTCSessionDescription(data.sdp);
+        peer.setRemoteDescription(desc).catch(e => console.log(e));
+    }, 1000);
 }
 
 function handleScreenTrackEvent(e) {
