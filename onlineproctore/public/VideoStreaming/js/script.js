@@ -2,6 +2,7 @@
 function view(){
     const peer = createPeer();
     peer.addTransceiver("video", { direction: "recvonly" });
+    peer.addTransceiver("audio", { direction: "recvonly" });
     const peerScreen = createScreenPeer();
     peerScreen.addTransceiver("video", { direction: "recvonly" });
     $('#stop').css("display", "unset");
