@@ -72,6 +72,15 @@ td{
     padding-left: 15px;
     margin-bottom: 10px;
 }
+@media (max-width: 910px){
+    .tab-resp{
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+}
 @media (min-width: 800px){
     .col-apna-6 {
         flex: 0 0 50%;
