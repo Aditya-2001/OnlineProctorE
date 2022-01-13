@@ -25,7 +25,9 @@ exports.getStudentCameraStream = async (req, res) => {
     const id = req.submissionId;
     const desc = new webrtc.RTCSessionDescription(body.sdp);
     await peer.setRemoteDescription(desc);
-    cameraStream[id].getTracks().forEach(track => peer.addTrack(track, cameraStream[id]));
+    if(cameraStream[id]){
+      cameraStream[id].getTracks().forEach(track => peer.addTrack(track, cameraStream[id]));
+    }
     const answer = await peer.createAnswer();
     await peer.setLocalDescription(answer);
     const payload = {
@@ -80,7 +82,9 @@ exports.getStudentScreenStream = async (req, res) => {
       const id = req.submissionId;
       const desc = new webrtc.RTCSessionDescription(body.sdp);
       await peer.setRemoteDescription(desc);
-      screenStream[id].getTracks().forEach(track => peer.addTrack(track, screenStream[id]));
+      if(screenStream[id]){
+        screenStream[id].getTracks().forEach(track => peer.addTrack(track, screenStream[id]));
+      }
       const answer = await peer.createAnswer();
       await peer.setLocalDescription(answer);
       const payload = {
@@ -88,7 +92,7 @@ exports.getStudentScreenStream = async (req, res) => {
       }
       res.json(payload);
     }, 1000);
-  }catch{
+  }catch(e){
     res.json({sdp: 1});
   }
 }

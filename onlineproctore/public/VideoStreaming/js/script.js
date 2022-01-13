@@ -1,10 +1,16 @@
 // var countDownDate = new Date("Jan 01, 2022 20:47:00").getTime();
-window.onload = function() {
+function view(){
     const peer = createPeer();
     peer.addTransceiver("video", { direction: "recvonly" });
     const peerScreen = createScreenPeer();
     peerScreen.addTransceiver("video", { direction: "recvonly" });
+    $('#stop').css("display", "unset");
+    $('#view').css("display", "none");
 };
+
+function stop(){
+    window.location.href = window.location.href.slice(0,window.location.href.indexOf('/viewStream'));
+}
 
 function createPeer() {
     const peer = new RTCPeerConnection({
@@ -104,6 +110,7 @@ var myfunc = setInterval(function() {
 
 var state=false;
 $('#video').attr("width","100%");
+const videoHeight = $('#video').outerHeight();
 $( '#video' ).click(function(){
     if(document.body.clientWidth>=800 && document.body.clientWidth<=1100){
         if(state){
@@ -129,10 +136,10 @@ $( '#video' ).click(function(){
     }
 });
 var state2=false;
-$('#screen').attr("width","100%");
+$('#screen').attr("width", "100%");
 $( '#screen' ).click(function(){
     if(document.body.clientWidth>=800 && document.body.clientWidth<=1100){
-        if(state){
+        if(state2){
             $(this).attr("width","100%");
             $(this).attr("height","100%");
             $('#column2').addClass("col-apna-6");
@@ -141,7 +148,7 @@ $( '#screen' ).click(function(){
             $('#videoCard2').css("z-index","0");
             $(this).css("z-index","0");
             $('#column1').css("display","unset");
-            state = false;
+            state2 = false;
         }else{
             $('#column2').removeClass("col-apna-6");
             $('#videoCard2').attr("width",document.body.clientWidth);
@@ -150,7 +157,7 @@ $( '#screen' ).click(function(){
             $('#videoCard2').css("z-index","1");
             $(this).css("z-index","1");
             $('#column1').css("display","none");
-            state = true;
+            state2 = true;
         }
     }
 });

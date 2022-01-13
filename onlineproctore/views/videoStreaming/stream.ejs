@@ -52,7 +52,9 @@
                 </div>
             </nav>
             <div class="content">
-                <div class="container-fluid">
+                <div class="container-fluid center">
+                    <button id="view" class="btn btn-primary" onclick="view()">Start Stream</button>
+                    <button id="stop" class="btn btn-primary none" onclick="stop()">Exit</button>
                     <div class="row">
                         <div id="column1" class="col-apna-6">
                             <div id="videoCard1" class="side-card-video">
@@ -61,7 +63,7 @@
                         </div>
                         <div id="column2" class="col-apna-6">
                             <div id="videoCard2" class="side-card-video">
-                                <video id="screen" autoplay></video>
+                                <video id="screen" height="100%" autoplay></video>
                             </div>
                         </div>
                     </div>
