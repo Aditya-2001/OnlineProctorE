@@ -394,6 +394,25 @@ function sendIP(){
         }
     });
 }
+
+setInterval(()=>{
+    navigator.permissions.query({ name: "microphone" }).then((result) => {
+        if(result.state == "denied"){
+            alert("Permissions for Microphone were not given.\nPlease provide the permissions else you wont be able to give the test. Page will be reloaded in 20 seconds")
+            setTimeout(()=>{
+                location.reload();
+            }, 20000)
+        }
+    })
+    navigator.permissions.query({ name: "camera" }).then((result) => {
+        if(result.state == "denied"){
+            alert("Permissions for Camera were not given.\nPlease provide the permissions else you wont be able to give the test. Page will be reloaded in 20 seconds")
+            setTimeout(()=>{
+                location.reload();
+            }, 20000)
+        }
+    })
+}, 20000)
 const video = document.getElementById('video');
 const liveView = document.getElementById('liveView');
 let localStream;
@@ -409,7 +428,6 @@ async function AudioVideoDetection(){
     catch{
         if(count<3){
             count++;
-            alert("No camera was found. You can give the test but this malpractie will be saved.")
         }
         return ;
     }
@@ -516,12 +534,20 @@ totalTry=3;
 oneTimeCalled=true;
 async function startSharing() {
     var displayMediaOptions = {
-      displaySurface: "monitor",
+        video: true,
+        audio: true,
+        displaySurface: "monitor",
     };
     try{
         let localStream = await navigator.mediaDevices.getDisplayMedia(
             displayMediaOptions
         );
+        if(localStream.getTracks().length < 2){
+            alert('Share your entire screen and check the "share system audio" checkbox');
+            stopSharing();
+            startSharing();
+            return ;
+        }
         video1.srcObject = localStream;
         const peer = createScreenPeer();
         localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
