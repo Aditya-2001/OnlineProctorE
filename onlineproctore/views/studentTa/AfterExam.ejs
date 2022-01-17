@@ -164,6 +164,7 @@
                                     <th class="mcq-table">Correct Options</th>
                                     <th class="mcq-table">Marking Scheme</th>
                                     <th class="mcq-table">Maximum Marks</th>
+                                    <th>Negative Marking</th>
                                     </thead>
                                     <tbody>
                                         <% questions.forEach(question => { %>
@@ -178,6 +179,7 @@
                                                   <td>No Partial Marking</td>
                                                 <% } %>
                                                 <td><%= question.maximumMarks %></td>
+                                                <td><%= question.negativeMarking %></td>
                                               </tr>
                                             <% } %>
                                         <% }) %>

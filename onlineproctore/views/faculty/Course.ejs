@@ -175,16 +175,18 @@
                   <div class="tab-content">
                     <div class="tab-pane  active show" id="studs">
                         <table class="dtBasicExample1 table table-hover table-striped table-sm tab-resp" width="100%">
-                            <thead class="text-warning">
+                            <thead class="text-warning" width="100%">
                               <tr><th>Username</th>
                               <th>Email Address</th>
+                              <th></th>
                             </tr></thead>
-                            <tbody>
+                            <tbody width="100%">
                               <% enrollments.forEach(enrollment => { %>
                                 <% if(enrollment.accountType == student){ %>
                                   <tr>
                                     <td><%= enrollment.user.username %></td>
                                     <td><%= enrollment.user.email %></td>
+                                    <td><i class="material-icons delete" onclick="deleteEnrollment('<%= enrollment._id %>')">delete</i></td>
                                   </tr>
                                 <% } %>
                               <% }); %>
@@ -194,8 +196,9 @@
                     <div class="tab-pane" id="tass">
                       <table class="dtBasicExample1 table table-hover table-striped table-sm tab-resp" width="100%">
                           <thead class="text-warning">
-                            <tr><th>Teaching Assistant Username</th>
+                            <tr><th>Username</th>
                             <th>Email Address</th>
+                            <th></th>
                           </tr></thead>
                           <tbody>
                             <% enrollments.forEach(enrollment => { %>
@@ -203,6 +206,7 @@
                                 <tr>
                                   <td><%= enrollment.user.username %></td>
                                   <td><%= enrollment.user.email %></td>
+                                  <td><i class="material-icons delete" onclick="deleteEnrollment('<%= enrollment._id %>')">delete</i></td>
                                 </tr>
                               <% } %>
                             <% }); %>
@@ -212,14 +216,18 @@
                     <div class="tab-pane" id="instructor">
                       <table class="dtBasicExample1 table table-hover table-striped table-sm tab-resp" width="100%">
                         <thead class="text-warning">
-                          <tr><th class="th-sm">Name</th>
+                          <tr><th class="th-sm">Username</th>
                           <th class="th-sm">Email</th>
+                          <th></th>
                         </tr></thead>
                         <tbody>
                           <% course.instructors.forEach(instructor => { %>
                             <tr>
                               <td><%= instructor.username %></td>
                               <td><%= instructor.email %></td>
+                              <% if(String(instructor._id) !== String(user._id)){ %>
+                                <td><i class="material-icons delete" onclick="deleteInstructor('<%= instructor._id %>')">delete</i></td>
+                              <% } %>
                             </tr>
                           <% }) %> 
                         </tbody>

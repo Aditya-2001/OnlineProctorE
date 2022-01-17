@@ -168,7 +168,6 @@ bottom: .5em;
 
 @media (max-width: 910px){
   .tab-resp{
-    display: block;
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -182,4 +181,20 @@ bottom: .5em;
 
 .blank{
     border-top: solid 1px #ddd !important;
+}
+
+.delete{
+  color: rgba(192, 10, 3, 0.795);
+}
+
+.delete:hover{
+  cursor: pointer;
+}
+
+.edit{
+  color: #5BB12F;
+}
+
+.edit:hover{
+  cursor: pointer;
 }

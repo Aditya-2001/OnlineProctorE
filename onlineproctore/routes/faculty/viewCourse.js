@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {getCourseDetails, uploadExcelFile, addMembers, 
   makeAnnouncement, createQuiz, changeHierarchy, deleteCourse, 
-  addSingleMember, viewAnnouncements} = require('../../controllers/faculty/viewEachCourse');
+  addSingleMember, viewAnnouncements, deleteEnrollment,
+  deleteInstructor} = require('../../controllers/faculty/viewEachCourse');
 
 const {authFacultyTaCourse} = require('../../controllers/studentTa/courses');
 
@@ -17,6 +18,12 @@ router.route('/add')
 
 router.route('/announce')
   .post(authFacultyTaCourse, makeAnnouncement)
+
+router.route('/deleteEnrollment')
+  .post(authFacultyTaCourse, deleteEnrollment)
+
+router.route('/deleteInstructor')
+  .post(authFacultyTaCourse, deleteInstructor)
 
 router.route('/createquiz')
   .post(authFacultyTaCourse, createQuiz)

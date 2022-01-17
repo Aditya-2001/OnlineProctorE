@@ -15,18 +15,18 @@
 
  */
 
-(function() {
-  isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
+// (function() {
+//   isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
 
-  if (isWindows) {
-    // if we are on windows OS we activate the perfectScrollbar function
-    $('.sidebar .sidebar-wrapper, .main-panel, .main').perfectScrollbar();
+//   if (isWindows) {
+//     // if we are on windows OS we activate the perfectScrollbar function
+//     $('.sidebar .sidebar-wrapper, .main-panel, .main').perfectScrollbar();
 
-    $('html').addClass('perfect-scrollbar-on');
-  } else {
-    $('html').addClass('perfect-scrollbar-off');
-  }
-})();
+//     $('html').addClass('perfect-scrollbar-on');
+//   } else {
+//     $('html').addClass('perfect-scrollbar-off');
+//   }
+// })();
 
 
 var breakCards = true;
@@ -550,9 +550,9 @@ md = {
     $calendar.fullCalendar({
       viewRender: function(view, element) {
         // We make sure that we activate the perfect scrollbar when the view isn't on Month
-        if (view.name != 'month') {
-          $(element).find('.fc-scroller').perfectScrollbar();
-        }
+        // if (view.name != 'month') {
+        //   $(element).find('.fc-scroller').perfectScrollbar();
+        // }
       },
       header: {
         left: 'title',

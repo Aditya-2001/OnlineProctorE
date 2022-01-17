@@ -78,6 +78,7 @@ exports.getCourseDetails = async (req,res) => {
               if(!enrolledUser){
                 await Course.findOne({_id: course_id}, (err, course) => {
                   return res.status(200).render('faculty/Course', {
+                    user: user,
                     course_id: course_id,
                     course: course,
                     enrollments: enrollment,
@@ -92,6 +93,7 @@ exports.getCourseDetails = async (req,res) => {
               if(enrolledUser){
                 if(enrolledUser.accountType == config.ta){
                   return res.status(200).render('studentTa/Course', {
+                    user: user,
                     course_id: course_id,
                     enrolledUser: enrolledUser,
                     enrollments: enrollment,
@@ -104,6 +106,10 @@ exports.getCourseDetails = async (req,res) => {
                 }
                 else{
                   for await (let quizz of quiz){
+                    if(Date.now() >= quizz.endDate){
+                      quizz.quizHeld = true;
+                      quizz.save();
+                    }
                     await Submission.exists({quiz: quizz._id, user: user._id}, async (err, submission) => {
                       if(!submission){
                         await Submission.create({quiz: quizz._id, user: user._id});
@@ -112,6 +118,7 @@ exports.getCourseDetails = async (req,res) => {
                   }
                   await Submission.find({user: user._id}, async (err, submissions) => {
                     return res.status(200).render('studentTa/CourseStudent', {
+                      user: user,
                       course_id: course_id,
                       enrolledUser: enrolledUser,
                       announcements: announcement,
@@ -306,5 +313,25 @@ exports.viewAnnouncements = async (req, res) => {
       announcements: announcements,
       page: 'Announcements'
     });
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.deleteEnrollment = async (req, res) => {
+  await Enrollment.findOne({_id: req.body.id}, async (err, enrollment) => {
+    enrollment.remove();
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.deleteInstructor = async (req, res) => {
+  await Course.findOne({_id: req.course_id}, async (err, course) => {
+    for(let i=0; i<course.instructors.length; i++){
+      if(String(course.instructors[i]._id) === req.body.id){
+        course.instructors.splice(i,1);
+        course.save();
+        break;
+      }
+    }
+    return res.status(204).send();
   }).clone().catch(function(err){console.log(err)});
 }

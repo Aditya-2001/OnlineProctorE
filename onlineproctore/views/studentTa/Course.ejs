@@ -184,6 +184,9 @@
                             <thead class="text-warning">
                               <tr><th>Username</th>
                               <th>Email Address</th>
+                              <% if(enrolledUser.headTa){ %>
+                                <th></th>
+                              <% } %>
                             </tr></thead>
                             <tbody>
                               <% enrollments.forEach(enrollment => { %>
@@ -191,6 +194,9 @@
                                   <tr>
                                     <td><%= enrollment.user.username %></td>
                                     <td><%= enrollment.user.email %></td>
+                                    <% if(enrolledUser.headTa){ %>
+                                      <td><i class="material-icons delete" onclick="deleteEnrollment('<%= enrollment._id %>')">delete</i></td>
+                                    <% } %>
                                   </tr>
                                 <% } %>
                               <% }); %>
@@ -202,6 +208,9 @@
                             <thead class="text-warning">
                               <tr><th>Teaching Assistant Username</th>
                               <th>Email Address</th>
+                              <% if(enrolledUser.headTa){ %>
+                                <th></th>
+                              <% } %>
                             </tr></thead>
                             <tbody>
                               <% enrollments.forEach(enrollment => { %>
@@ -209,6 +218,11 @@
                                   <tr>
                                     <td><%= enrollment.user.username %></td>
                                     <td><%= enrollment.user.email %></td>
+                                    <% if(enrolledUser.headTa){ %>
+                                      <% if(String(enrolledUser.user._id) !== String(enrollment.user._id)){ %>
+                                        <td><i class="material-icons delete" onclick="deleteEnrollment('<%= enrollment._id %>')">delete</i></td>
+                                      <% } %>
+                                    <% } %>
                                   </tr>
                                 <% } %>
                               <% }); %>

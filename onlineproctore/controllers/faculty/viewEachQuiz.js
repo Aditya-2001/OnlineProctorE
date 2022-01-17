@@ -269,6 +269,7 @@ exports.addMCQQuestion = async (req, res) => {
   const question = req.body.question;
   const maximumMarks = req.body.maximumMarks;
   const partialMarking = req.body.markingScheme;
+  var negativeMarking = 0;
   var markingScheme = true;
   if(partialMarking.toLowerCase() === "no"){
     markingScheme = false;
@@ -282,12 +283,19 @@ exports.addMCQQuestion = async (req, res) => {
     options.push(req.body.option3);
   if(req.body.option4)
     options.push(req.body.option4);
+  if(req.body.option5)
+    options.push(req.body.option5);
+  if(req.body.option6)
+    options.push(req.body.option6);
+  if(req.body.negativeMarking)
+    negativeMarking = req.body.negativeMarking;
   var correctOptions = [];
   String(req.body.correctOptions).split(',').forEach(option => {
     correctOptions.push(String(options[parseInt(option)-1]));
   })
   var mcqQuestion = {quiz: quizId, question: question, maximumMarks: maximumMarks,
-    mcq: true, options: options, correctOptions: correctOptions, markingScheme: markingScheme};
+    mcq: true, options: options, correctOptions: correctOptions, markingScheme: markingScheme,
+    negativeMarking: negativeMarking};
   const newQuestion = new Question(mcqQuestion);
   console.log(newQuestion);
   await Question.findOne(mcqQuestion, (err, foundQuestion) => {
@@ -421,4 +429,83 @@ exports.generatePlagiarismReport = async (req, res) => {
       return res.status(204).send();
     }).clone().catch(function(err){console.log(err)})
   }).clone().catch(function(err){console.log(err)})
+}
+
+exports.deleteQuestion = async (req, res) => {
+  await Question.findOne({_id: req.body.id}, async (err, question) => {
+    question.remove();
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.editMCQQuestion = async (req, res) => {
+  console.log(req.body);
+  const questionId = req.body.questionId;
+  const questionText = req.body.question;
+  const maximumMarks = req.body.maximumMarks;
+  const partialMarking = req.body.markingScheme;
+  var negativeMarking = 0;
+  var markingScheme = true;
+  if(partialMarking.toLowerCase() === "no"){
+    markingScheme = false;
+  }
+  var options = [];
+  if(req.body.option1)
+    options.push(req.body.option1);
+  if(req.body.option2)
+    options.push(req.body.option2);
+  if(req.body.option3)
+    options.push(req.body.option3);
+  if(req.body.option4)
+    options.push(req.body.option4);
+  if(req.body.option5)
+    options.push(req.body.option5);
+  if(req.body.option6)
+    options.push(req.body.option6);
+  if(req.body.negativeMarking)
+    negativeMarking = req.body.negativeMarking;
+  var correctOptions = [];
+  String(req.body.correctOptions).split(',').forEach(option => {
+    correctOptions.push(String(options[parseInt(option)-1]));
+  })
+  await Question.findOne({_id: questionId}, (err, question) => {
+    console.log(question);
+    question.question = questionText;
+    question.maximumMarks = maximumMarks;
+    question.options = options;
+    question.correctOptions = correctOptions;
+    question.markingScheme = markingScheme;
+    question.negativeMarking = negativeMarking;
+    question.save();
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.editWrittenQuestion = async (req, res) => {
+  const questionId = req.body.questionId;
+  const quizQuestion = req.body.question;
+  const maximumMarks = req.body.maximumMarks;
+  var note = req.body.note;
+  if(note == undefined){
+    note = '';
+  }
+  await Question.findOne({_id: questionId}, (err, question) => {
+    question.question = quizQuestion;
+    question.note = note;
+    question.maximumMarks = maximumMarks;
+    question.save();
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.editCourseQuiz = async (req, res) => {
+  const quizId = req.quizId;
+  const startDate = req.body.startDate;
+  const endDate = req.body.endDate;
+  await Quiz.findOne({_id: quizId}, (err, quiz) => {
+    quiz.startDate = startDate;
+    quiz.endDate = endDate;
+    quiz.save();
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)});
 }

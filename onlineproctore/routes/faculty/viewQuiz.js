@@ -1,10 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const {getCourseQuiz, addQuestions, uploadExcelFile, hideQuiz, disablePrevious, generateScore, generateSimilarityReport, generatePlagiarismReport, addWrittenQuestion, deleteQuiz, deleteIllegalAttempts, addMCQQuestion, viewDetailAnalysis} = require('../../controllers/faculty/viewEachQuiz');
-const {getQuestions, markAnswer, submit, endTest, ipAddress, audio, windowBlurred, screenSharingOff, tabChanged, mobileDetected, multipleFace, noPerson} = require('../../controllers/studentTa/quiz');
+const {getCourseQuiz, addQuestions, uploadExcelFile, 
+  hideQuiz, disablePrevious, generateScore, 
+  generateSimilarityReport, generatePlagiarismReport, 
+  addWrittenQuestion, deleteQuiz, deleteIllegalAttempts, 
+  addMCQQuestion, viewDetailAnalysis, deleteQuestion,
+  editMCQQuestion, editWrittenQuestion, editCourseQuiz} = require('../../controllers/faculty/viewEachQuiz');
+
+const {getQuestions, markAnswer, submit, endTest, 
+  ipAddress, audio, windowBlurred, screenSharingOff, 
+  tabChanged, mobileDetected, multipleFace, noPerson} = require('../../controllers/studentTa/quiz');
+
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
+
 const {getUserSubmission, updateMarks, getIllegalActivities} = require('../../controllers/studentTa/detailAnalysis');
-const {uploadStudentCameraStream, viewStudentStream, getStudentCameraStream, uploadStudentScreenStream, getStudentScreenStream} = require('../../controllers/quizStream/stream');
+
+const {uploadStudentCameraStream, viewStudentStream, 
+  getStudentCameraStream, uploadStudentScreenStream, 
+  getStudentScreenStream} = require('../../controllers/quizStream/stream');
 
 router.route('/')
   .get(getCourseQuiz);
@@ -60,8 +73,20 @@ router.route('/addWrittenQuestion')
 router.route('/addMCQQuestion')
   .post(authFacultyTaQuiz, addMCQQuestion)
 
+router.route('/editMCQQuestion')
+  .post(authFacultyTaQuiz, editMCQQuestion)
+
+router.route('/editWrittenQuestion')
+  .post(authFacultyTaQuiz, editWrittenQuestion)
+
+router.route('/editCourseQuiz')
+  .post(authFacultyTaQuiz, editCourseQuiz)
+
 router.route('/deleteQuiz')
   .post(authFacultyTaQuiz, deleteQuiz)
+
+router.route('/deleteQuestion')
+  .post(authFacultyTaQuiz, deleteQuestion)
 
 router.route('/deleteIllegalAttempts')
   .post(authFacultyTaQuiz, deleteIllegalAttempts)

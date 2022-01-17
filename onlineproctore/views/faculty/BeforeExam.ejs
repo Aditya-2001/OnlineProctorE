@@ -131,8 +131,22 @@
                 </div>
               </div>
             </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-alert card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">access_time_filled</i>
+                  </div>
+                  <p class="card-category">Timing</p>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal3" href="#" onclick="setDate('<%= quiz.startDate %>', '<%= quiz.endDate %>')">Change Quiz Timing</a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p></p>
           <div class="row">
             <div class="col-lg-12 col-md-12">
                 <div class="card">
@@ -170,23 +184,29 @@
                                     <thead class="text-warning">
                                     <th>Question</th>
                                     <th>Options</th>
-                                    <th class="mcq-table">Correct Options</th>
-                                    <th class="mcq-table">Marking Scheme</th>
-                                    <th class="mcq-table">Maximum Marks</th>
+                                    <th>Correct Options</th>
+                                    <th>Marking Scheme</th>
+                                    <th>Maximum Marks</th>
+                                    <th>Negative Marking</th>
+                                    <th>Edit</th>
+                                    <th></th>
                                     </thead>
                                     <tbody>
                                       <% questions.forEach(question => { %>
                                         <% if(question.mcq){ %>
                                           <tr>
                                             <td><%= question.question %></td>
-                                            <td><%= question.options %></td>
-                                            <td><%= question.correctOptions %></td>
+                                            <td><%= question.options.toString().split(',').join(', ') %></td>
+                                            <td><%= question.correctOptions.toString().split(',').join(', ') %></td>
                                             <% if(question.markingScheme){ %>
                                               <td>Partial Marking</td>
                                             <% } else{ %>
                                               <td>No Partial Marking</td>
                                             <% } %>
                                             <td><%= question.maximumMarks %></td>
+                                            <td><%= question.negativeMarking %></td>
+                                            <td><i class="material-icons edit" data-toggle="modal" onclick="editMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal40">edit</i></td>
+                                            <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
                                           </tr>
                                         <% } %>
                                       <% }) %>
@@ -199,6 +219,8 @@
                                     <th>Question</th>
                                     <th></th>
                                     <th>Maximum Marks</th>
+                                    <th>Edit</th>
+                                    <th></th>
                                     </thead>
                                     <tbody>
                                       <% questions.forEach(question => { %>
@@ -207,6 +229,8 @@
                                             <td><%= question.question %></td>
                                             <td></td>
                                             <td><%= question.maximumMarks %></td>
+                                            <td><i class="material-icons edit" data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal41">edit</i></td>
+                                            <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
                                           </tr>
                                         <% } %>
                                       <% }) %>
@@ -259,35 +283,45 @@
                 <form id="addMCQQuestion">
                     <div class="form-group">
                       <label class="bmd-label-floating">Type the question below</label>
-                      <textarea class="form-control" name="question" id="question_written" rows="4" required></textarea>
+                      <textarea class="form-control" name="question" autocomplete="off" id="question_written" rows="4" required></textarea>
                     </div>
                     <div class="form-group">
                         <label class="bmd-label-floating">Maximum Marks for the question</label>
-                      <input type="number" class="form-control" name="maximumMarks" required>
+                      <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required>
+                    </div><br>
+                    <div class="form-group">
+                      <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Option 1">
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control" name="option1" placeholder="Enter Option 1">
+                      <input type="text" class="form-control" autocomplete="off" name="option2" placeholder="Enter Option 2">
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control" name="option2" placeholder="Enter Option 2">
+                      <input type="text" class="form-control" autocomplete="off" name="option3" placeholder="Enter Option 3">
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control" name="option3" placeholder="Enter Option 3">
+                      <input type="text" class="form-control" autocomplete="off" name="option4" placeholder="Enter Option 4">
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control" name="option4" placeholder="Enter Option 4">
+                      <input type="text" class="form-control" autocomplete="off" name="option5" placeholder="Enter Option 5">
                     </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control" autocomplete="off" name="option6" placeholder="Enter Option 6">
+                    </div><br>
                     <div class="form-group">
                       <label class="bmd-label">Enter Correct Options</label><br>
-                      <input type="text" class="form-control" name="correctOptions" placeholder="Correct Options Number. eg: 1,2">
-                    </div>
+                      <input type="text" class="form-control" autocomplete="off" name="correctOptions" placeholder="Correct Options Number. eg: 1,2">
+                    </div><br>
                     <div class="form-group">
                       <label class="bmd-label">Marking Scheme</label><br>
                       <select class="form-control" name="markingScheme">
                         <option value="Yes">Partial Marking</option>
                         <option value="No">No Partial Marking</option>
                       </select>
-                    </div>
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Negative Marking</label><br>
+                      <input type="number" class="form-control" autocomplete="off" name="negativeMarking" step="0.01" min="0" placeholder="Enter marks that will be awarded when answer is wrong">
+                    </div><br>
                     <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
                 </form>
             </div>
@@ -309,15 +343,15 @@
                       <div class="form-group">
                         <input type="text" id="quizId" value="<%= quizId %>" hidden/>
                         <label class="bmd-label-floating">Type the question below</label>
-                        <textarea class="form-control" name="question" id="question_written" rows="4" required></textarea>
+                        <textarea class="form-control" name="question" id="question_written" autocomplete="off" rows="4" required></textarea>
                       </div>
                       <div class="form-group">
                         <label class="bmd-label-floating">Add a note regarding Question if you wish</label>
-                        <textarea class="form-control" name="note" id="question_note" rows="2"></textarea>
+                        <textarea class="form-control" name="note" id="question_note" autocomplete="off" rows="2"></textarea>
                       </div>
                       <div class="form-group">
                           <label class="bmd-label-floating">Maximum Marks for the question</label>
-                          <input type="number" class="form-control" name="maximumMarks" required/>
+                          <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required/>
                         </div>
                         <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
                   </form>
@@ -337,7 +371,7 @@
                   <form id="deleteQuiz" action= <%= quizId + '/deleteQuiz' %> method="POST">
                     <div class="form-group">
                       <label class="bmd-label">Enter "<b><%= quizId %></b>" to delete this quiz</label><br>
-                      <input type="text" class="form-control" id="random_string" name="confirmation" required/>
+                      <input type="text" class="form-control" id="random_string" autocomplete="off" name="confirmation" required/>
                     </div>
                       <input type="submit" id="quiz_button" class="btn btn-primary pull-right" value="Delete Quiz"/>
                   </form>
@@ -345,6 +379,116 @@
             </div>
           </div>
         </div>
-
+        <!-- Modal edit mcq question -->
+        <div class="modal fade" id="modal40" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content card">
+              <div class="card-header card-header-green">
+                <h4 class="modal-title">Edit MCQ Question</h4>
+              </div>
+              <div class="modal-body">
+                <form id="editMCQQuestion">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Edit the question below</label><br>
+                      <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" required></textarea>
+                    </div>
+                    <input type="text" name="questionId" id="mcqQuestionId" hidden/>
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Edit Maximum Marks</label><br>
+                      <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="mcqMarks" step="0.01" required/>
+                    </div><br>
+                    <div class="form-group">
+                      <input type="text" class="form-control" autocomplete="off" name="option1" id="mcqOption1" placeholder="Edit Option 1"/>
+                    </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control" autocomplete="off" name="option2" id="mcqOption2" placeholder="Edit Option 2"/>
+                    </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control" autocomplete="off" name="option3" id="mcqOption3" placeholder="Edit Option 3"/>
+                    </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control" autocomplete="off" name="option4" id="mcqOption4" placeholder="Edit Option 4"/>
+                    </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control" autocomplete="off" name="option5" id="mcqOption5" placeholder="Edit Option 5"/>
+                    </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control" autocomplete="off" name="option6" id="mcqOption6" placeholder="Edit Option 6"/>
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Edit Correct Options</label><br>
+                      <input type="text" class="form-control" autocomplete="off" name="correctOptions" id="mcqCorrectOptions" placeholder="Correct Options Number. eg: 1,2"/>
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Marking Scheme</label><br>
+                      <select class="form-control" name="markingScheme">
+                        <option value="Yes" id="yes">Partial Marking</option>
+                        <option value="No" id="no">No Partial Marking</option>
+                      </select>
+                    </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Negative Marking</label><br>
+                      <input type="number" class="form-control" autocomplete="off" name="negativeMarking" min="0" step="0.01" id="mcqNegativeMarking" placeholder="Enter marks that will be awarded when answer is wrong"/>
+                    </div><br>
+                    <input type="submit" class="btn btn-primary pull-right" value="Edit Question"/>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal edit written -->
+        <div class="modal fade" id="modal41" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+            <div class="modal-content card">
+              <div class="card-header card-header-green">
+                <h4 class="modal-title">Edit written type question</h4>
+              </div>
+              <div class="modal-body">
+                  <form id="editWrittenQuestion">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Edit the question below</label><br>
+                        <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" required></textarea>
+                      </div>
+                      <input type="text" name="questionId" id="writtenQuestionId" hidden/>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Add a note regarding Question if you wish</label><br>
+                        <textarea class="form-control" name="note" id="writtenQuestionNote" autocomplete="off" rows="2"></textarea>
+                      </div>
+                      <div class="form-group">
+                          <label class="bmd-label-floating">Maximum Marks for the question</label><br>
+                          <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="writtenQuestionMarks" step="0.01" required/>
+                        </div>
+                        <input type="submit" class="btn btn-primary pull-right" value="Edit Question"/>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal 3 -->
+        <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+            <div class="modal-content card">
+              <div class="card-header card-header-green">
+                <h4 class="modal-title">Quiz Manager</h4>
+              </div>
+              <div class="modal-body">
+                  <div class="login-error-message" style="text-align: center; color: red; text-shadow: 1px 1px 2px red;">
+                    <p id="setError"></p>
+                  </div>
+                  <form id="editCourseQuiz">
+                      <div class="form-group">
+                        <label class="bmd-label">Start Datetime of Quiz</label><br>
+                        <input type="datetime-local" class="form-control" id="start_date" name="startDate" required>
+                      </div>
+                      <div class="form-group">
+                        <label class="bmd-label">End Datetime of Quiz</label><br>
+                        <input type="datetime-local" class="form-control" id="end_date" name="endDate" required>
+                      </div>
+                      <input type="submit" id="course_button" class="btn btn-primary pull-right" value="Edit Time"/>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 <%- include('./baseEjs/footer')%>
