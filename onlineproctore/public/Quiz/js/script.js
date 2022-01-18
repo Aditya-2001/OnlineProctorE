@@ -307,19 +307,22 @@ $(document).ready(function(){
 
 function submitPaper(){
     nextOrPrevQuestion();
-    var submissionId = document.getElementById("submissionId").value;
-    var quizId = document.getElementById("quizId").value;
-    var data = {
-        submissionId: submissionId
-    };
-    try{
-        var response = axios.post(quizId + '/submit', data);
-        response.then( result => {
-            window.location.href = result.data.url;
-        })
-    }
-    catch(error){
-        console.log(error);
+    var result = confirm("Are you sure you want to submit?");
+    if (result) {
+        var submissionId = document.getElementById("submissionId").value;
+        var quizId = document.getElementById("quizId").value;
+        var data = {
+            submissionId: submissionId
+        };
+        try{
+            var response = axios.post(quizId + '/submit', data);
+            response.then( result => {
+                window.location.href = result.data.url;
+            })
+        }
+        catch(error){
+            console.log(error);
+        }
     }
 }
 
