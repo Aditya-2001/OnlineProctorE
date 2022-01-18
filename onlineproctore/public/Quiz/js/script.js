@@ -107,7 +107,7 @@ async function getQuizQuestions(){
                 for(var k=0; k<optionsCount.get(questions[j]._id)-1; k++){
                     var o = optionsOrder[Math.floor(Math.random() * (optionsCount.get(questions[j]._id)-k-1))];
                     optionsOrder.splice(optionsOrder.indexOf(o), 1);
-                    displayQuestion += '<label><input type="checkbox" name="option' + (k+1) + '" value="option' + (k+1) + '" id="option' + (k+1) + questions[j]._id + '"';
+                    displayQuestion += '<label><input class="disable" type="checkbox" name="option' + (k+1) + '" value="option' + (k+1) + '" id="option' + (k+1) + questions[j]._id + '"';
                     if(submission.optionsMarked.includes(questions[j].options[o])){
                         displayQuestion += ' checked';
                         flag = true;
@@ -118,7 +118,7 @@ async function getQuizQuestions(){
             }
             else{
                 optionsCount.set(questions[j]._id, 1);
-                displayQuestion += '"><textarea id="text1' + questions[j]._id + '" name="subjective" onkeydown=';
+                displayQuestion += '"><textarea class="disable" id="text1' + questions[j]._id + '" name="subjective" onkeydown=';
                 displayQuestion += '"if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+\'\t\'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea></div></div>';
             }
             $('#addQuestions').append(displayQuestion);
@@ -130,7 +130,7 @@ async function getQuizQuestions(){
                     flag=true;
                 }
             }
-            var navigation = '<li><button id="display' + questions[j]._id + '" class="test-ques ';
+            var navigation = '<li><button id="display' + questions[j]._id + '" class="test-ques disable ';
             if(submission.markedForReview){
                 navigation += 'que-mark';
             }
@@ -170,6 +170,7 @@ async function getQuizQuestions(){
     }
 
 }
+
 function nextOrPrevQuestion() {
     // console.log($('.quiz-card').find('.ques-ans.active')[0].id);
     var submissionId = document.getElementById("submissionId").value;
@@ -188,7 +189,7 @@ function nextOrPrevQuestion() {
                 markedAnswer.push($(textId)[0].innerHTML);
             }
         }
-        document.getElementById('display'+questionId).classList=['test-ques'];
+        document.getElementById('display'+questionId).classList='test-ques disable';
         if(count == 0){
             document.getElementById('display'+questionId).classList.add('que-not-answered');
             notAnswered = true;
@@ -201,7 +202,7 @@ function nextOrPrevQuestion() {
     else{
         markedAnswer = $.trim($("#text1"+questionId).val());
         // console.log(document.getElementById('text1'+questionId).value);
-        document.getElementById('display'+questionId).classList=['test-ques'];
+        document.getElementById('display'+questionId).classList='test-ques disable';
         if(markedAnswer == ''){
             document.getElementById('display'+questionId).classList.add('que-not-answered');
             notAnswered = true;
@@ -230,6 +231,7 @@ function nextOrPrevQuestion() {
         console.log(error);
     }
 }
+
 function markQuestion() {
     // console.log($('.quiz-card').find('.ques-ans.active')[0].id);
     var submissionId = document.getElementById("submissionId").value;
@@ -248,12 +250,12 @@ function markQuestion() {
                 markedAnswer.push($(textId)[0].innerHTML);
             }
         }
-        document.getElementById('display'+questionId).classList='test-ques que-mark';
+        document.getElementById('display'+questionId).classList='test-ques disable que-mark';
         // console.log($('.quiz-card').find('.ques-ans.active').find('.answer')[0].childNodes[1].childNodes[1].checked)
     }
     else{
         markedAnswer = $.trim($("#text1"+questionId).val());
-        document.getElementById('display'+questionId).classList='test-ques que-mark';
+        document.getElementById('display'+questionId).classList='test-ques disable que-mark';
     }
     var answerLocked = false;
     if($('#previous').attr("disabled")){
@@ -275,6 +277,7 @@ function markQuestion() {
         console.log(error);
     }
 }
+
 $(document).ready(function(){
     $('.next').click(function(){
         nextOrPrevQuestion();
@@ -301,6 +304,7 @@ $(document).ready(function(){
         submitPaper();
     })
 })
+
 function submitPaper(){
     nextOrPrevQuestion();
     var submissionId = document.getElementById("submissionId").value;
@@ -318,6 +322,7 @@ function submitPaper(){
         console.log(error);
     }
 }
+
 async function display(id){
     nextOrPrevQuestion();
     $('.quiz-card').find('.ques-ans.active').addClass('none');
@@ -325,6 +330,19 @@ async function display(id){
     document.getElementById(id).classList.add('active');
     document.getElementById(id).classList.remove('none');
 }
+
+setInterval(()=>{
+    fetch('https://www.google.com', {
+        method: 'GET',
+        mode: 'no-cors',
+    }).then((result) => {
+
+    }).catch(e => {
+        alert('You are not connected to Internet.');
+        location.reload();
+    })
+}, 1000);
+
 // Run myfunc every second
 var myfunc = setInterval(function() {
     var now = new Date().getTime();
@@ -360,6 +378,7 @@ var myfunc = setInterval(function() {
         document.getElementById("secs").innerHTML = ""
         document.getElementById("end").innerHTML = "TIME UP!!";
         nextOrPrevQuestion();
+        $('.disable').attr('disabled', true);
         var submissionId = document.getElementById("submissionId").value;
         var quizId = document.getElementById("quizId").value;
         var data = {
@@ -413,6 +432,7 @@ setInterval(()=>{
         }
     })
 }, 20000)
+
 const video = document.getElementById('video');
 const liveView = document.getElementById('liveView');
 let localStream;
@@ -432,6 +452,7 @@ async function AudioVideoDetection(){
         return ;
     }
 }
+
 function audioDetection(stream){
     // These levels must be in increasing order.
     level1=100;
@@ -649,7 +670,7 @@ function predictWebcam() {
                         type: 554
                     };
                     try{
-                        console.log('mobile');
+                        // console.log('mobile');
                         axios.post(quizId + '/mobileDetected', data);
                     }
                     catch(error){
@@ -657,7 +678,7 @@ function predictWebcam() {
                     }
                 }
                 if(predictions[n].class === 'person'){
-                    console.log('face');
+                    // console.log('face');
                     count++;
                 }
             }
@@ -669,7 +690,7 @@ function predictWebcam() {
                 type: 239
             };
             try{
-                console.log('multiple face');
+                // console.log('multiple face');
                 axios.post(quizId + '/multipleFace', data);
             }
             catch(error){
@@ -681,7 +702,7 @@ function predictWebcam() {
                 submissionId: submissionId,
             };
             try{
-                console.log('no person');
+                // console.log('no person');
                 axios.post(quizId + '/noPerson', data);
             }
             catch(error){

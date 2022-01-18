@@ -242,7 +242,7 @@
                 <form action= <%= quizId + '/deleteIllegalAttempts' %> method="POST">
                   <div class="form-group">
                     <label class="bmd-label">Enter "<b><%= quiz.quizName %></b>" to delete this quiz</label><br>
-                    <input type="text" class="form-control" id="random_string" name="confirmation" required>
+                    <input type="text" class="form-control" id="random_string" autocomplete="off" name="confirmation" required>
                   </div>
                   <input type="submit" id="quiz_button1" class="btn btn-primary pull-right" value="Delete Proofs"/>
                 </form>
@@ -262,7 +262,7 @@
                 <form id="deleteQuiz" action= <%= quizId + '/deleteQuiz' %> method="POST">
                     <div class="form-group">
                       <label class="bmd-label">Enter "<b><%= quizId %></b>" to delete this quiz</label><br>
-                      <input type="text" class="form-control" id="random_string" name="confirmation" required/>
+                      <input type="text" class="form-control" id="random_string" autocomplete="off" name="confirmation" required/>
                     </div>
                       <input type="submit" id="quiz_button" class="btn btn-primary pull-right" value="Delete Quiz"/>
                 </form>
