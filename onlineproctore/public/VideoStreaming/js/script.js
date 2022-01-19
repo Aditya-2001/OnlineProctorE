@@ -19,6 +19,12 @@ function createPeer() {
         iceServers: [
             {
                 urls: "stun:stun.stunprotocol.org"
+            },
+            {
+                urls: ['turn:turn.bistri.com:80'],
+                credential: 'homeo',
+                username: 'homeo',
+                credentialType: 'password'
             }
         ]
     });
@@ -47,6 +53,12 @@ function createScreenPeer() {
         iceServers: [
             {
                 urls: "stun:stun.stunprotocol.org"
+            },
+            {
+                urls: ['turn:turn.bistri.com:80'],
+                credential: 'homeo',
+                username: 'homeo',
+                credentialType: 'password'
             }
         ]
     });

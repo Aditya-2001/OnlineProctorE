@@ -1,3 +1,6 @@
+if(document.cookie.includes('isAuth=true')){
+  window.location = '/dashboard';
+}
 $("#form").submit(async function (e) {
   e.preventDefault();
   var serializedData = $(this).serialize();

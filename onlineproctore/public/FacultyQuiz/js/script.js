@@ -176,8 +176,10 @@ function exit(){
 }
 
 function setText(current, currentText, similar, similarUser){
+	console.log(current);
+	console.log(currentText);
 	document.getElementById("currentUser").innerHTML = current;
-	document.getElementById("currentUser1").innerHTML = currentText;
+	document.getElementById("currentUser1").value = currentText;
 	document.getElementById("similarWith").innerHTML = similar;
-	document.getElementById("similarWith1").innerHTML = similarUser;
+	document.getElementById("similarWith1").value = similarUser;
 }

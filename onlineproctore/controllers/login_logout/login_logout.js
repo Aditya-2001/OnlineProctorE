@@ -26,10 +26,7 @@ exports.login = (req,res) => {
       message: "Unable to Log you in"
     });
     if(user){
-      return res.status(400).json({
-        success: false,
-        message: "You are already logged in"
-      });
+      return res.status(200).json({redirect: '/dashboard'});
     }
     else{
       User.findOne({'username': req.body.username}, (err, user) => {
@@ -210,7 +207,7 @@ exports.passwordChangePage = async (req, res) => {
 
 exports.profileDisplay = async (req, res) => {
   await User.findByToken(req.cookies.auth, async (err, user) => {
-    return res.status(200).render('faculty/Profile', {page: 'Page', user: user});
+    return res.status(200).render('faculty/Profile', {page: 'Dashboard', user: user});
   })
 }
 

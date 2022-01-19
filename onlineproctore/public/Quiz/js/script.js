@@ -18,6 +18,12 @@ function createPeer() {
         iceServers: [
             {
                 urls: "stun:stun.stunprotocol.org"
+            },
+            {
+                urls: ['turn:turn.bistri.com:80'],
+                credential: 'homeo',
+                username: 'homeo',
+                credentialType: 'password'
             }
         ]
     });
@@ -30,6 +36,12 @@ function createScreenPeer() {
         iceServers: [
             {
                 urls: "stun:stun.stunprotocol.org"
+            },
+            {
+                urls: ['turn:turn.bistri.com:80'],
+                credential: 'homeo',
+                username: 'homeo',
+                credentialType: 'password'
             }
         ]
     });
@@ -566,13 +578,13 @@ async function startSharing() {
         let localStream = await navigator.mediaDevices.getDisplayMedia(
             displayMediaOptions
         );
+        video1.srcObject = localStream;
         if(localStream.getTracks().length < 2){
             alert('Share your entire screen and check the "share system audio" checkbox');
             stopSharing();
             startSharing();
             return ;
         }
-        video1.srcObject = localStream;
         const peer = createScreenPeer();
         localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
         givingTest = true;
@@ -594,10 +606,10 @@ async function startSharing() {
 }
 
 function connectWithScreenRecorder(){
-    let canvas = document.querySelector("#canvas1");
-    canvas.width  = 150;
-    canvas.height = 150;
     if(video1.srcObject && video1.srcObject["active"]==true){
+        let canvas = document.querySelector("#canvas1");
+        canvas.width  = 150;
+        canvas.height = 150;
         const context = canvas.getContext("2d");
         context.drawImage(video1, 0, 0, 150, 150);
         const frame = canvas.toDataURL();

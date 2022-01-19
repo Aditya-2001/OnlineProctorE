@@ -235,7 +235,7 @@
                                                 </div>
                                             </div><hr>
                                             <div class="" style="height: fit-content;">
-                                                <form id="uploadMarks" style="padding-bottom: 30px; padding-right: 10px; height: fit-content;">
+                                                <form action="<%= submission._id + '/updateMarks' %>" method="POST" style="padding-bottom: 30px; padding-right: 10px; height: fit-content;">
                                                     <div style="float: right;">
                                                         <input type="text" name="submissionId" id="submissionId" value="<%= submission._id %>" hidden/>
                                                         <input type="text" name="questionSubmissionId" id="questionSubmissionId" value="<%= questionSubmissions[i]._id %>" hidden/>
@@ -265,15 +265,15 @@
                   <form action="#" method="POST" enctype="multipart/form-data">
                     <h5><b id="currentUser"></b> (Current)</h5>
                     <div class="answer">
-                        <div class="sub-answer" id="currentUser1"> 
+                        <textarea class="sub-answer" id="currentUser1" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"> 
                             
-                        </div>
+                        </textarea>
                     </div> <br> <hr>
                     <h5>Answer similar with student <b id="similarWith"></b></h5>
                     <div class="answer">
-                        <div class="sub-answer2" id="similarWith1">
+                        <textarea class="sub-answer2" id="similarWith1" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}">
 
-                        </div>
+                        </textarea>
                     </div>
                   </form>
               </div>

@@ -31,7 +31,7 @@ exports.updateMarks = async (req, res) => {
       questionSubmission.checked = true;
       questionSubmission.save();
       submission.save();
-      return res.status(204).send();
+      return res.status(200).redirect(req.get('referer'));
     }).clone().catch(function(err){console.log(err)})
   }).clone().catch(function(err){console.log(err)})
 }

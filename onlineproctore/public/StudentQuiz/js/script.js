@@ -34,7 +34,7 @@ async function getQuizQuestions(){
             displayQuestion += (i+1) + '.</span>' + questions[j].question + '</td><td class="marks"><table class="marks-table"><tr><td>MM:'+ questions[j].maximumMarks +'</td></tr><tr><td>';
             if(submission.checked){
                 displayQuestion += 'Marks: <span class="marks-assigned-';
-                if(submission.marksObtained == 0){
+                if(submission.marksObtained <= 0){
                     displayQuestion += 'zero"> 0';
                 }
                 else{

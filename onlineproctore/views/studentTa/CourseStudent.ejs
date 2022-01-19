@@ -27,7 +27,7 @@
                 <div class="card-body">
                   <div class="tab-content">
                     <div class="tab-pane active show" id="announce">
-                        <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
+                        <table class="dtBasicExample table table-hover table-striped table-lg tab-resp2" width="100%">
                             <thead class="text-warning">
                                 <tr><th>Subject</th>
                                 <th>Date</th>
@@ -45,13 +45,14 @@
                         </table>  
                     </div>
                     <div class="tab-pane" id="quizes">
-                      <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
+                      <table class="dtBasicExample table table-hover table-striped table-lg tab-resp2" width="100%">
                         <thead class="text-warning">
                           <tr><th>Exam</th>
                           <th>Start Date</th>
                           <th>Start Time</th>
                           <th>End Date</th>
                           <th>End Time</th>
+                          <th> </th>
                           <th> </th>
                         </tr></thead>
                         <tbody>
@@ -84,11 +85,34 @@
                                   </a>
                                 </td>
                               <% } %>
+                              <td>
+                                <a data-toggle="modal" data-target="#modal100" href="#"><i class="material-icons">info_outline</i></a>
+                              </td>
                             </tr>
                             <% } %>
                           <% }) %>
                         </tbody>
                       </table>
+                        <div class="modal fade" id="modal100" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+                            <div class="modal-content card">
+                              <div class="card-header card-header-green">
+                                <h4 class="modal-title" style="font-size: 1.5rem;"><b>Instructions</b></h4>
+                                <hr>
+                                <h5 style="float: right; font-size: 1rem;">Please follow the given instructions</h5>
+                              </div>
+                              <div class="modal-body">
+                                  <p style="padding-bottom: 10px">1. Please Wait 1-2 minutes (depending upon your internet connection and system hardware capabilities) as it may take time to load the models.</p>
+                                  <p style="padding-bottom: 10px">2. You have to allow both Camera and Microphone to continue to give the test.</p>
+                                  <p style="padding-bottom: 10px">3. You have to share your entire screen and enable the <b>"share system audio"</b> checkbox.</p>
+                                  <p style="padding-bottom: 10px">4. Do not change Tab or Browser while giving the test.</p>
+                                  <p style="padding-bottom: 10px">5. Do not speak or leave your seat while giving the test.</p>
+                                  <p style="padding-bottom: 10px">6. Do not copy paste answers from your friends or any other publicly available sources.</p>
+                                  <p style="padding-bottom: 10px">7. Do not use Mobile phones.</p>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
                     </div>
                   </div>
                 </div>

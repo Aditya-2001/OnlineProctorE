@@ -167,11 +167,29 @@ bottom: .5em;
 }
 
 @media (max-width: 910px){
+  .tab-resp2{
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
   .tab-resp{
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+}
+
+@media (max-width: 700px){
+  .tab-resp{
+    display: block;
+  }
+}
+
+@media (max-width: 444px){
+  .tab-resp2{
+    display: block;
   }
 }
 

@@ -19,6 +19,12 @@ exports.getStudentCameraStream = async (req, res) => {
       iceServers: [
         {
           urls: "stun:stun.stunprotocol.org"
+        },
+        {
+          urls: ['turn:turn.bistri.com:80'],
+          credential: 'homeo',
+          username: 'homeo',
+          credentialType: 'password'
         }
       ]
     });
@@ -46,6 +52,12 @@ exports.uploadStudentCameraStream = async (req, res) => {
       iceServers: [
         {
           urls: "stun:stun.stunprotocol.org"
+        },
+        {
+          urls: ['turn:turn.bistri.com:80'],
+          credential: 'homeo',
+          username: 'homeo',
+          credentialType: 'password'
         }
       ]
     });
@@ -76,6 +88,12 @@ exports.getStudentScreenStream = async (req, res) => {
         iceServers: [
           {
             urls: "stun:stun.stunprotocol.org"
+          },
+          {
+            urls: ['turn:turn.bistri.com:80'],
+            credential: 'homeo',
+            username: 'homeo',
+            credentialType: 'password'
           }
         ]
       });
@@ -104,6 +122,12 @@ exports.uploadStudentScreenStream = async (req, res) => {
       iceServers: [
         {
           urls: "stun:stun.stunprotocol.org"
+        },
+        {
+          urls: ['turn:turn.bistri.com:80'],
+          credential: 'homeo',
+          username: 'homeo',
+          credentialType: 'password'
         }
       ]
     });
