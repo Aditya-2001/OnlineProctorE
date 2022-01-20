@@ -6,7 +6,7 @@ module.exports ={
   'emailService': 'gmail',
   'baseEmail': '@iiita.ac.in',
   'projectName': 'OnlineProctorE',
-  'baseLink': 'https://localhost:3443',
+  'baseLink': 'https://onlineproctore.iiita.ac.in',
   'student' : 294,
   'ta' : 747,
   'faculty' : 960,

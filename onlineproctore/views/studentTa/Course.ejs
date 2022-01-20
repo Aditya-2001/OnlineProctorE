@@ -221,6 +221,8 @@
                                     <% if(enrolledUser.headTa){ %>
                                       <% if(String(enrolledUser.user._id) !== String(enrollment.user._id)){ %>
                                         <td><i class="material-icons delete" onclick="deleteEnrollment('<%= enrollment._id %>')">delete</i></td>
+                                      <% }else{ %>
+                                        <td> </td>
                                       <% } %>
                                     <% } %>
                                   </tr>

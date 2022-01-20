@@ -18,13 +18,9 @@ exports.getStudentCameraStream = async (req, res) => {
     const peer = new webrtc.RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.stunprotocol.org"
-        },
-        {
-          urls: ['turn:turn.bistri.com:80'],
-          credential: 'homeo',
-          username: 'homeo',
-          credentialType: 'password'
+          urls: 'turn:global.turn.twilio.com:443?transport=tcp',
+          username: 'c9bbd915c619c42dc39a17a48e9505cde4046edbd00b045957f33e9aee7f8674',
+          credential: 'aAyAqjZ6rgXcK0Ni6bsm/jKiJOdXMPnYYrKQWK6DgaI=',
         }
       ]
     });
@@ -51,13 +47,9 @@ exports.uploadStudentCameraStream = async (req, res) => {
     const peer = new webrtc.RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.stunprotocol.org"
-        },
-        {
-          urls: ['turn:turn.bistri.com:80'],
-          credential: 'homeo',
-          username: 'homeo',
-          credentialType: 'password'
+          urls: 'turn:global.turn.twilio.com:443?transport=tcp',
+          username: 'c9bbd915c619c42dc39a17a48e9505cde4046edbd00b045957f33e9aee7f8674',
+          credential: 'aAyAqjZ6rgXcK0Ni6bsm/jKiJOdXMPnYYrKQWK6DgaI=',
         }
       ]
     });
@@ -87,13 +79,9 @@ exports.getStudentScreenStream = async (req, res) => {
       const peer = new webrtc.RTCPeerConnection({
         iceServers: [
           {
-            urls: "stun:stun.stunprotocol.org"
-          },
-          {
-            urls: ['turn:turn.bistri.com:80'],
-            credential: 'homeo',
-            username: 'homeo',
-            credentialType: 'password'
+            urls: 'turn:global.turn.twilio.com:443?transport=tcp',
+            username: 'c9bbd915c619c42dc39a17a48e9505cde4046edbd00b045957f33e9aee7f8674',
+            credential: 'aAyAqjZ6rgXcK0Ni6bsm/jKiJOdXMPnYYrKQWK6DgaI=',
           }
         ]
       });
@@ -121,13 +109,9 @@ exports.uploadStudentScreenStream = async (req, res) => {
     const peer = new webrtc.RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.stunprotocol.org"
-        },
-        {
-          urls: ['turn:turn.bistri.com:80'],
-          credential: 'homeo',
-          username: 'homeo',
-          credentialType: 'password'
+          urls: 'turn:global.turn.twilio.com:443?transport=tcp',
+          username: 'c9bbd915c619c42dc39a17a48e9505cde4046edbd00b045957f33e9aee7f8674',
+          credential: 'aAyAqjZ6rgXcK0Ni6bsm/jKiJOdXMPnYYrKQWK6DgaI=',
         }
       ]
     });

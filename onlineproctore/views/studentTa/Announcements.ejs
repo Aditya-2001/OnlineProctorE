@@ -11,10 +11,12 @@
                     <form enctype="multipart/form-data" method="POST" id="form">
                         <table class="dtBasicExample table table-hover table-striped table-sm tab-resp" width="100%">
                             <thead class="text-warning">
-                                <tr><th>Subject</th>
-                                <th>Message</th>
+                              <tr>
+                                <th>Subject</th>
                                 <th>Date</th>
-                            </tr></thead>
+                                <th>Message</th>
+                              </tr>
+                            </thead>
                             <tbody>
                               <% announcements.forEach(announcement => { %>
                                 <td><%= announcement.subject %></td>

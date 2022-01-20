@@ -64,8 +64,12 @@
     padding: 5px 15px;
     font-size: 1.5rem;
 }
-.answer{
+.answer1{
     padding: 5px 35px;
+    line-height: 2;
+}
+.answer{
+    padding: 5px;
     line-height: 2;
 }
 .options{
@@ -152,6 +156,7 @@ a,a:hover,a:focus{
     float: right;
 }
 .sub-answer{
+    white-space: pre-wrap;
     width: 100%;
     height: fit-content;
     border: solid 1px #5BB12F;
@@ -161,6 +166,7 @@ a,a:hover,a:focus{
     padding: 10px;
 }
 .sub-answer2{
+    white-space: pre-wrap;
     width: 100%;
     height: fit-content;
     border: solid 1px #e11b0c;

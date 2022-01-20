@@ -227,7 +227,9 @@
                               <td><%= instructor.email %></td>
                               <% if(String(instructor._id) !== String(user._id)){ %>
                                 <td><i class="material-icons delete" onclick="deleteInstructor('<%= instructor._id %>')">delete</i></td>
-                              <% } %>
+                              <% }else{ %>
+                                <td> </td>
+                              <% }%>
                             </tr>
                           <% }) %> 
                         </tbody>

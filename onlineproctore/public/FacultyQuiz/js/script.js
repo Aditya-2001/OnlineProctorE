@@ -157,23 +157,17 @@ function page(num){
 	$(".container1" + num).pagify(12, ".single-item1");
 }
 
-$("#uploadMarks").submit(async function (e) {
-  e.preventDefault();
-  var serializedData = $(this).serialize();
-  var submissionId = document.getElementById("submissionId").value;
-	if(JSON.parse(JSON.stringify($(this).serializeArray()))[2].value == '')
-		return;
-  try{
-    await axios.post(submissionId + '/updateMarks', serializedData);
-    location.reload();
-  }catch(error){
-    console.log(error.response);
-  }
-})
 
 function exit(){
 	window.location.href = location.href.slice(0, location.href.indexOf('submission')-1);
 }
+// console.log(typeof(questionSubmissions));
+// questionSubmissions = JSON.parse(questionSubmissions);
+// submission = JSON.parse(submission);
+
+// for(let i=0; i<questionSubmissions.length(); i++){
+// 	console.log(questionSubmissions[i]);
+// }
 
 function setText(current, currentText, similar, similarUser){
 	console.log(current);
