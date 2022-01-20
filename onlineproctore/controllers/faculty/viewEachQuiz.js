@@ -509,3 +509,9 @@ exports.editCourseQuiz = async (req, res) => {
     return res.status(204).send();
   }).clone().catch(function(err){console.log(err)});
 }
+
+exports.viewStream = async (req, res) => {
+  await Submission.findOne({_id: req.submissionId}, (err, submission) => {
+    res.status(200).render('videoStreaming/stream', {submission: submission});
+  }).clone().catch(function(err){console.log(err)});
+}

@@ -1,80 +1,54 @@
 // var countDownDate = new Date("Jan 01, 2022 20:47:00").getTime();
-function view(){
-    const peer = createPeer();
-    peer.addTransceiver("video", { direction: "recvonly" });
-    peer.addTransceiver("audio", { direction: "recvonly" });
-    const peerScreen = createScreenPeer();
-    peerScreen.addTransceiver("video", { direction: "recvonly" });
-    peerScreen.addTransceiver("audio", { direction: "recvonly" });
-    $('#stop').css("display", "unset");
-    $('#view').css("display", "none");
+const socket = io();
+const videoGrid = document.getElementById('videoCard1');
+const videoGrid1 = document.getElementById('videoCard2');
+const myPeer = new Peer(undefined, {
+    path: '/peerjs',
+    host: '/',
+    port: '443'
+})
+const myPeerScreen = new Peer(undefined, {
+    path: '/peerjs',
+    host: '/',
+    port: '443'
+})
+myPeer.on('open', id => {
+    socket.emit('join-room1', ROOM_ID + '1', id);
+})
+myPeerScreen.on('open', id => {
+    socket.emit('join-room2', ROOM_ID + '2', id);
+})
+function viewCamera(){
+    socket.emit('camera-required');
+    let myVideoStream;
+    myPeer.on('call', call => {
+        call.answer(myVideoStream);
+        console.log('call recieved');
+        const video = document.getElementById('video');
+        call.on('stream', userVideoStream => {
+            console.log('stream recieved');
+            video.srcObject = userVideoStream;
+        })
+    })
+};
+
+function viewScreen(){
+    socket.emit('screen-required');
+    let myVideoStream;
+    myPeerScreen.on('call', call => {
+        call.answer(myVideoStream);
+        console.log('call recieved 2');
+        const video = document.getElementById('screen');
+        call.on('stream', userVideoStream => {
+            console.log('stream recieved 2');
+            video.srcObject = userVideoStream;
+        })
+    })
 };
 
 function stop(){
     window.location.href = window.location.href.slice(0,window.location.href.indexOf('/viewStream'));
 }
-
-function createPeer() {
-    const peer = new RTCPeerConnection({
-        iceServers: [
-            {
-                urls: 'turn:global.turn.twilio.com:443?transport=tcp',
-                username: 'c9bbd915c619c42dc39a17a48e9505cde4046edbd00b045957f33e9aee7f8674',
-                credential: 'aAyAqjZ6rgXcK0Ni6bsm/jKiJOdXMPnYYrKQWK6DgaI=',
-            }
-        ]
-    });
-    peer.ontrack = handleTrackEvent;
-    peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer);
-    return peer;
-}
-
-async function handleNegotiationNeededEvent(peer) {
-    const offer = await peer.createOffer();
-    await peer.setLocalDescription(offer);
-    const payload = {
-        sdp: peer.localDescription
-    };
-    const { data } = await axios.post(window.location.href.slice(0,window.location.href.indexOf('/viewStream')) + '/viewCameraStream/submission/' + submissionId, payload);
-    const desc = new RTCSessionDescription(data.sdp);
-    peer.setRemoteDescription(desc).catch(e => console.log(e));
-}
-
-function handleTrackEvent(e) {
-    document.getElementById("video").srcObject = e.streams[0];
-};
-
-function createScreenPeer() {
-    const peer = new RTCPeerConnection({
-        iceServers: [
-            {
-                urls: 'turn:global.turn.twilio.com:443?transport=tcp',
-                username: 'c9bbd915c619c42dc39a17a48e9505cde4046edbd00b045957f33e9aee7f8674',
-                credential: 'aAyAqjZ6rgXcK0Ni6bsm/jKiJOdXMPnYYrKQWK6DgaI=',
-            }
-        ]
-    });
-    peer.ontrack = handleScreenTrackEvent;
-    peer.onnegotiationneeded = () => handleNegotiationNeededScreenEvent(peer);
-    return peer;
-}
-
-async function handleNegotiationNeededScreenEvent(peer) {
-    setTimeout(async ()=>{
-        const offer = await peer.createOffer();
-        await peer.setLocalDescription(offer);
-        const payload = {
-            sdp: peer.localDescription
-        };
-        const { data } = await axios.post(window.location.href.slice(0,window.location.href.indexOf('/viewStream')) + '/viewScreenStream/submission/' + submissionId, payload);
-        const desc = new RTCSessionDescription(data.sdp);
-        peer.setRemoteDescription(desc).catch(e => console.log(e));
-    }, 1000);
-}
-
-function handleScreenTrackEvent(e) {
-    document.getElementById("screen").srcObject = e.streams[0];
-};
 
 // Run myfunc every second
 var myfunc = setInterval(function() {

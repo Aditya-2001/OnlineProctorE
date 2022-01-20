@@ -1,4 +1,5 @@
 const createError = require('http-errors');
+var debug = require('debug')('onlineproctore:server');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -8,6 +9,14 @@ const mongoose= require('mongoose');
 const device = require('express-device');
 const config = require('./config');
 const {auth} = require('./controllers/login_logout/authenticate');
+var app = express();
+
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+const { ExpressPeerServer } = require('peer');
+const peerServer = ExpressPeerServer(server, {
+  debug: true
+});
 
 mongoose.Promise=global.Promise;
 mongoose.connect(config.mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true}, function(err){
@@ -28,19 +37,11 @@ var studentTa = require('./routes/studentTa/studentTa');
 var userRedirect = require('./routes/userRedirect');
 var passwordProfile = require('./routes/login_logout/passwordProfile');
 
-var app = express();
-
-app.all('*', (req,res,next)=>{
-  if(req.secure){
-    return next();
-  }
-  res.redirect(307,'https://'+req.hostname+':'+app.get('secPort')+req.url);
-});
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use('/peerjs', peerServer);
 app.use(device.capture());
 app.use(logger('dev'));
 app.use(express.json());
@@ -59,20 +60,28 @@ app.use('/update', passwordProfile);
 
 // oncontextmenu='return false' to be added in body tag at last
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+io.on('connection', socket => {
+  socket.on('join-room1', (roomId, userId) => {
+    socket.join(roomId);
+    console.log('joined room 1');
+    socket.on('camera-required', () => {
+      socket.to(roomId).emit('camera-required', userId);
+    })
+    socket.on('disconnect', () => {
+      socket.to(roomId).emit('user-disconnected', userId);
+    });
+  });
+  socket.on('join-room2', (roomId, userId) => {
+    socket.join(roomId);
+    console.log('joined room 2');
+    socket.on('screen-required', () => {
+      socket.to(roomId).emit('screen-required', userId);
+    })
+  });
+})
+
+var port = process.env.PORT || 3000;
+var HOST = 'localhost';
+server.listen(port, HOST, () => {
+  console.log('server is listening on port:', port)
 });
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  return res.render('error/error', {authorized: true});
-});
-
-module.exports = app;

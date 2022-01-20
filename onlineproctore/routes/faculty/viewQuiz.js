@@ -5,7 +5,7 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   generateSimilarityReport, generatePlagiarismReport, 
   addWrittenQuestion, deleteQuiz, deleteIllegalAttempts, 
   addMCQQuestion, viewDetailAnalysis, deleteQuestion,
-  editMCQQuestion, editWrittenQuestion, editCourseQuiz} = require('../../controllers/faculty/viewEachQuiz');
+  editMCQQuestion, editWrittenQuestion, editCourseQuiz, viewStream} = require('../../controllers/faculty/viewEachQuiz');
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
@@ -14,10 +14,6 @@ const {getQuestions, markAnswer, submit, endTest,
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
 
 const {getUserSubmission, updateMarks, getIllegalActivities} = require('../../controllers/studentTa/detailAnalysis');
-
-const {uploadStudentCameraStream, viewStudentStream, 
-  getStudentCameraStream, uploadStudentScreenStream, 
-  getStudentScreenStream} = require('../../controllers/quizStream/stream');
 
 router.route('/')
   .get(getCourseQuiz);
@@ -31,23 +27,11 @@ router.route('/hideQuiz')
 router.route('/viewDetailAnalysis')
   .get(authFacultyTaQuiz, viewDetailAnalysis)
 
-router.route('/viewDetailAnalysis/uploadCameraStream/submission/:submissionId')
-  .post(authStudentQuiz, uploadStudentCameraStream)
-
-router.route('/viewDetailAnalysis/uploadScreenStream/submission/:submissionId')
-  .post(authStudentQuiz, uploadStudentScreenStream)
-
-router.route('/viewDetailAnalysis/viewStream/submission/:submissionId')
-  .get(authFacultyTaQuizAnalysis, viewStudentStream)
-
-router.route('/viewDetailAnalysis/viewCameraStream/submission/:submissionId')
-  .post(authFacultyTaQuizAnalysis, getStudentCameraStream)
-
-router.route('/viewDetailAnalysis/viewScreenStream/submission/:submissionId')
-  .post(authFacultyTaQuizAnalysis, getStudentScreenStream)
-
 router.route('/viewDetailAnalysis/submission/:submissionId')
   .get(authFacultyTaQuizAnalysis, getUserSubmission)
+
+router.route('/viewDetailAnalysis/viewStream/submission/:submissionId')
+  .get(authFacultyTaQuizAnalysis, viewStream)
 
 router.route('/viewDetailAnalysis/submission/:submissionId/updateMarks')
   .post(authFacultyTaQuizAnalysis, updateMarks)

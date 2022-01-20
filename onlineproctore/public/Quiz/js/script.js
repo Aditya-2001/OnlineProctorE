@@ -1,6 +1,10 @@
 var countDownDate;
 var questionsType = new Map();
 var optionsCount = new Map();
+const peers = {};
+const peersScreen = {};
+var socket;
+var myPeer, myPeerScreen;
 
 window.onload = function() {
     sendIP();
@@ -11,67 +15,31 @@ window.onload = function() {
         enableCam();
     });
     getQuizQuestions();
+    socket = io("/");
+    myPeer = new Peer(undefined, {
+        path: '/peerjs',
+        host: '/',
+        port: '443'
+    })
+    myPeerScreen = new Peer(undefined, {
+        path: '/peerjs',
+        host: '/',
+        port: '443'
+    })
+    myPeer.on('open', id => {
+        socket.emit('join-room1', ROOM_ID + '1', id);
+    })
+    myPeerScreen.on('open', id => {
+        socket.emit('join-room2', ROOM_ID + '2', id);
+    })
+    socket.on('user-disconnected', userId => {
+        if (peers[userId]) peers[userId].close()
+        if (peersScreen[userId]) peersScreen[userId].close()
+    })
 };
-
-function createPeer() {
-    const peer = new RTCPeerConnection({
-        iceServers: [
-            {
-                urls: 'turn:global.turn.twilio.com:443?transport=tcp',
-                username: 'c9bbd915c619c42dc39a17a48e9505cde4046edbd00b045957f33e9aee7f8674',
-                credential: 'aAyAqjZ6rgXcK0Ni6bsm/jKiJOdXMPnYYrKQWK6DgaI=',
-            }
-        ]
-    });
-    peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer);
-    return peer;
-}
-
-function createScreenPeer() {
-    const peer = new RTCPeerConnection({
-        iceServers: [
-            {
-                urls: 'turn:global.turn.twilio.com:443?transport=tcp',
-                username: 'c9bbd915c619c42dc39a17a48e9505cde4046edbd00b045957f33e9aee7f8674',
-                credential: 'aAyAqjZ6rgXcK0Ni6bsm/jKiJOdXMPnYYrKQWK6DgaI=',
-            }
-        ]
-    });
-    peer.onnegotiationneeded = () => handleNegotiationNeededScreenEvent(peer);
-    return peer;
-}
-
-async function handleNegotiationNeededScreenEvent(peer) {
-    const offer = await peer.createOffer();
-    await peer.setLocalDescription(offer);
-    var quizId = document.getElementById("quizId").value;
-    var submissionId = document.getElementById("submissionId").value;
-    const payload = {
-        sdp: peer.localDescription,
-        submissionId: submissionId
-    };
-    const { data } = await axios.post(quizId + '/viewDetailAnalysis/uploadScreenStream/submission/' + submissionId, payload);
-    const desc = new RTCSessionDescription(data.sdp);
-    peer.setRemoteDescription(desc).catch(e => console.log(e));
-}
-
-async function handleNegotiationNeededEvent(peer) {
-    const offer = await peer.createOffer();
-    await peer.setLocalDescription(offer);
-    var quizId = document.getElementById("quizId").value;
-    var submissionId = document.getElementById("submissionId").value;
-    const payload = {
-        sdp: peer.localDescription,
-        submissionId: submissionId
-    };
-    const { data } = await axios.post(quizId + '/viewDetailAnalysis/uploadCameraStream/submission/' + submissionId, payload);
-    const desc = new RTCSessionDescription(data.sdp);
-    peer.setRemoteDescription(desc).catch(e => console.log(e));
-}
 
 async function getQuizQuestions(){
     var quizId = document.getElementById("quizId").value;
-    console.log('function called');
     try{
         const response = await axios.get(quizId+'/getQuestions');
         const quiz = response.data.quiz;
@@ -448,8 +416,9 @@ async function AudioVideoDetection(){
     try{
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         video.srcObject = localStream;
-        const peer = createPeer();
-        localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+        socket.on('camera-required', userId => {
+            connectToNewUser(userId, localStream);
+        })
         audioDetection(localStream);
     }
     catch{
@@ -458,6 +427,15 @@ async function AudioVideoDetection(){
         }
         return ;
     }
+}
+function connectToNewUser(userId, stream) {
+    const call = myPeer.call(userId, stream);
+    peers[userId] = call;
+}
+
+function connectToScreenUser(userId, stream) {
+    const call = myPeerScreen.call(userId, stream);
+    peersScreen[userId] = call;
 }
 
 function audioDetection(stream){
@@ -577,8 +555,9 @@ async function startSharing() {
             startSharing();
             return ;
         }
-        const peer = createScreenPeer();
-        localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+        socket.on('screen-required', userId => {
+            connectToScreenUser(userId, localStream);
+        })
         givingTest = true;
     } 
     catch (error) {
