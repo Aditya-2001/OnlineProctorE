@@ -184,7 +184,7 @@
                               <% enrollments.forEach(enrollment => { %>
                                 <% if(enrollment.accountType == student){ %>
                                   <tr>
-                                    <td><%= enrollment.user.username %></td>
+                                    <td><%= enrollment.user.username.toUpperCase() %></td>
                                     <td><%= enrollment.user.email %></td>
                                     <td><i class="material-icons delete" onclick="deleteEnrollment('<%= enrollment._id %>')">delete</i></td>
                                   </tr>
@@ -204,7 +204,7 @@
                             <% enrollments.forEach(enrollment => { %>
                               <% if(enrollment.accountType == ta){ %>
                                 <tr>
-                                  <td><%= enrollment.user.username %></td>
+                                  <td><%= enrollment.user.username.toUpperCase() %></td>
                                   <td><%= enrollment.user.email %></td>
                                   <td><i class="material-icons delete" onclick="deleteEnrollment('<%= enrollment._id %>')">delete</i></td>
                                 </tr>
@@ -223,7 +223,7 @@
                         <tbody>
                           <% course.instructors.forEach(instructor => { %>
                             <tr>
-                              <td><%= instructor.username %></td>
+                              <td><%= instructor.username.toUpperCase() %></td>
                               <td><%= instructor.email %></td>
                               <% if(String(instructor._id) !== String(user._id)){ %>
                                 <td><i class="material-icons delete" onclick="deleteInstructor('<%= instructor._id %>')">delete</i></td>
@@ -396,7 +396,7 @@
                     <% enrollments.forEach(enrollment => { %>
                       <% if(enrollment.accountType == ta){ %>
                         <tr>
-                          <td><%= enrollment.user.username %></td>
+                          <td><%= enrollment.user.username.toUpperCase() %></td>
                           <td><%= enrollment.user.email %></td>
                           <% if(enrollment.headTa){ %>
                             <td>Yes</td>

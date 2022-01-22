@@ -32,7 +32,7 @@
                             <tbody>
                               <% submissions.forEach( submission => { %>
                                 <tr>
-                                  <td> <%= submission.user.username %> </td>
+                                  <td> <%= submission.user.username.toUpperCase() %> </td>
                                   <% if(quiz.quizHeld){ %>
                                     <td><a href=<%= 'viewDetailAnalysis/submission/' + submission._id %> class="btn btn-primary">view</a></td>
                                     <td><%= submission.mcqScore + submission.writtenScore %></td>

@@ -13,7 +13,7 @@ exports.createAccount = (req, res) => {
       const accounts = XLSX.utils.sheet_to_json(workbook.Sheets[i]);
       for await (let account of accounts){
         var password = generator.generate({length: 10, numbers: true, symbols: true, excludeSimilarCharacters: true, exclude: "\"\'"});
-        var username = account.Username;
+        var username = account.Username.toLowerCase();
         var email = account.Email;
         var data = {username: username, password: password, email: email, name: ''};
         if(account["Account Type"].toLowerCase() === "student"){

@@ -7,7 +7,7 @@ const path = require('path');
 
 exports.register = async (req, res) => {
   await registerationQueue.add({
-    username: req.body.username,
+    username: req.body.username.toLowerCase(),
     password: req.body.password,
     email: req.body.email,
     name: '',
@@ -20,6 +20,7 @@ exports.register = async (req, res) => {
 
 exports.login = (req,res) => {
   let token=req.cookies.auth;
+  req.body.username = req.body.username.toLowerCase();
   User.findByToken(token, (err,user)=>{
     if(err) return res.status(400).json({
       success: false,
@@ -94,7 +95,7 @@ exports.forgotPassword = async (req, res) => {
   email = '';
   username = '';
   try{
-    const user = await User.findOne({username: req.body.email});
+    const user = await User.findOne({username: req.body.email.toLowerCase()});
     if(!user){
       return res.status(400).json({success: false, message: 'Account Not Found'});
     }
@@ -113,7 +114,7 @@ exports.forgotPassword = async (req, res) => {
       tokenHash = user.tokenHash;
       link = config.baseLink+'/users/changepassword/'+accesstoken+'/'+tokenHash;
       ejs.renderFile(path.resolve(__dirname,'../../views/email/emailPasswordChange.ejs')
-      , {homepageUrl: config.baseLink, username: username, link: link}
+      , {homepageUrl: config.baseLink, username: username.toUpperCase(), link: link}
       , function(err, data){
         if (err) {
           console.log(err);

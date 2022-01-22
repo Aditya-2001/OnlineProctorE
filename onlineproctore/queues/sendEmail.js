@@ -4,12 +4,21 @@ const nodemailer = require('nodemailer');
 const config = require('../config');
 const NUM_WORKERS = 1;
 
+// const transporter = nodemailer.createTransport({
+//   service: config.emailService,
+//   auth: {
+//     user: config.email,
+//     pass: config.emailPassword
+//   }
+// });
+
 const transporter = nodemailer.createTransport({
-  service: config.emailService,
+  host: "smtp.sendgrid.net",
+  port: 587,
   auth: {
-    user: config.email,
-    pass: config.emailPassword
-  }
+    user: "apikey",
+    pass: "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",
+  },
 });
 
 function between(min, max) {  

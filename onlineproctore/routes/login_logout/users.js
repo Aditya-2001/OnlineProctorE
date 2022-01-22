@@ -10,7 +10,11 @@ router.post('/signup', register);
 
 
 router.route('/login')
-  .get((req, res) => res.render('login/login'))
+  .get((req, res) => {
+    if(req.cookies.isAuth)
+      return res.redirect('/dashboard');
+    res.render('login/login')
+  })
   .post(login);
 
 router.route('/forgotpassword')

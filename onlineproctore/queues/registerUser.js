@@ -33,7 +33,7 @@ registerationQueue.process(NUM_WORKERS, async ({data}) => {
         }
       }
       ejs.renderFile(path.resolve(__dirname,'../views/email/emailAccountCreation.ejs')
-        , {homepageUrl: config.baseLink, username: userdata.username, password: userdata.password}
+        , {homepageUrl: config.baseLink, username: userdata.username.toUpperCase(), password: userdata.password}
         , function(err, data){
           if (err) {
             console.log(err);

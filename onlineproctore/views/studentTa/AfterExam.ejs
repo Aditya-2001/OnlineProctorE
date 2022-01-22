@@ -216,7 +216,7 @@
                                     <tbody>
                                         <% submissions.forEach(submission => { %>
                                             <tr>
-                                                <td><%= submission.user.username %></td>
+                                                <td><%= submission.user.username.toUpperCase() %></td>
                                                 <td><%= submission.user.email %></td>
                                                 <td><%= submission.mcqScore + submission.writtenScore %></td>
                                             </tr>
