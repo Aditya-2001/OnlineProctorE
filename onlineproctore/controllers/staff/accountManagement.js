@@ -3,6 +3,7 @@ const XLSX = require('xlsx');
 const {registerationQueue} = require('../../queues/registerUser');
 const generator = require('generate-password');
 const { removeFile } = require('../../functions');
+const User = require('../../models/user');
 
 exports.createAccount = (req, res) => {
   const filePath = path.resolve(__dirname, '../../' + req.file.path);
@@ -32,4 +33,19 @@ exports.createAccount = (req, res) => {
   })();
   console.log(filePath);
   res.status(204).send();
+}
+
+exports.getAllAccounts = async (req, res) => {
+  await User.find({}, async (err, users) => {
+    await User.findByToken(req.cookies.auth, (err, user) => {
+      return res.status(200).render('staff/DashboardStaff', {users: users, staff: user});
+    })
+  }).clone().catch(function(err){console.log(err)})
+}
+
+exports.deleteUser = async (req, res) => {
+  await User.findOne({_id: req.body.id}, (err, user) => {
+    user.remove();
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)})
 }

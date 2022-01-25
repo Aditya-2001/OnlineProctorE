@@ -664,7 +664,7 @@ function predictWebcam() {
                     }
                 }
                 if(predictions[n].class === 'person'){
-                    // console.log('face');
+                    console.log('face');
                     count++;
                 }
             }

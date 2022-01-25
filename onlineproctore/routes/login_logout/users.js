@@ -5,7 +5,7 @@ const {login, logout, register,
 const {auth} = require('../../controllers/login_logout/authenticate');
 
 /* GET users listing. */
-router.post('/signup', register);
+router.post('/createMyOnlineProctorEAccount', register);
 
 
 

@@ -22,6 +22,112 @@
             </div>
             
           </div>
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-tabs card-header-green">
+                  <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                      <ul class="nav nav-tabs" data-tabs="tabs">
+                        <li class="nav-item col-md-4">
+                          <a class="nav-link col active show" href="#studs" data-toggle="tab">
+                            <i class="material-icons">person</i> Students
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item col-md-4">
+                          <a class="nav-link" href="#tass" data-toggle="tab">
+                            <i class="material-icons">supervisor_account</i> Faculty
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item col-md-4">
+                          <a class="nav-link" href="#instructor" data-toggle="tab">
+                            <i class="material-icons">manage_accounts</i> Staff
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane  active show" id="studs">
+                        <table class="dtBasicExample1 table table-hover table-striped table-sm tab-resp" width="100%">
+                            <thead class="text-warning" width="100%">
+                              <tr><th>Username</th>
+                              <th>Email Address</th>
+                              <th>Name</th>
+                              <th></th>
+                            </tr></thead>
+                            <tbody width="100%">
+                              <% users.forEach(user => { %>
+                                <% if(user.student){ %>
+                                  <tr>
+                                    <td><%= user.username.toUpperCase() %></td>
+                                    <td><%= user.email %></td>
+                                    <td><%= user.name %></td>
+                                    <td><i class="material-icons delete" onclick="deleteUser('<%= user._id %>')">delete</i></td>
+                                  </tr>
+                                <% } %>
+                              <% }); %>
+                            </tbody>
+                        </table>        
+                    </div>
+                    <div class="tab-pane" id="tass">
+                      <table class="dtBasicExample1 table table-hover table-striped table-sm tab-resp" width="100%">
+                          <thead class="text-warning">
+                            <tr><th>Username</th>
+                            <th>Email Address</th>
+                            <th>Name</th>
+                            <th></th>
+                          </tr></thead>
+                          <tbody>
+                            <% users.forEach(user => { %>
+                              <% if(user.faculty){ %>
+                                <tr>
+                                  <td><%= user.username.toUpperCase() %></td>
+                                  <td><%= user.email %></td>
+                                  <td><%= user.name %></td>
+                                  <td><i class="material-icons delete" onclick="deleteUser('<%= user._id %>')">delete</i></td>
+                                </tr>
+                              <% } %>
+                            <% }); %>
+                          </tbody>
+                      </table>              
+                    </div>
+                    <div class="tab-pane" id="instructor">
+                      <table class="dtBasicExample1 table table-hover table-striped table-sm tab-resp" width="100%">
+                        <thead class="text-warning">
+                          <tr><th class="th-sm">Username</th>
+                          <th class="th-sm">Email</th>
+                          <th>Name</th>
+                          <th></th>
+                        </tr></thead>
+                        <tbody>
+                          <% users.forEach(user => { %>
+                            <% if(user.staff){ %>
+                              <tr>
+                                <td><%= user.username.toUpperCase() %></td>
+                                <td><%= user.email %></td>
+                                <td><%= user.name %></td>
+                                <% if(String(user._id) !== String(staff._id)){ %>
+                                  <td><i class="material-icons delete" onclick="deleteUser('<%= user._id %>')">delete</i></td>
+                                <% }else{ %>
+                                  <td> </td>
+                                <% }%>
+                              </tr>
+                            <% } %>
+                          <% }) %> 
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- Modal 1 -->
       <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

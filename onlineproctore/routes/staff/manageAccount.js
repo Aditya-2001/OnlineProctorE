@@ -22,7 +22,7 @@ const excelFileFilter = (req, file, cb) => {
 const upload = multer({ storage: storage, fileFilter: excelFileFilter});
 
 const router = express.Router();
-const {createAccount} = require('../../controllers/staff/accountManagement');
+const {createAccount, deleteUser} = require('../../controllers/staff/accountManagement');
 
 router.use(bodyParser.json());
 
@@ -30,5 +30,8 @@ router.use(bodyParser.json());
 router.route('/add')
   .get((req, res) => res.status(200).json({sucess: 'true', message: '/dashboard/staff/users/add'}))
   .post(upload.single('excelFile'), createAccount)
+
+router.route('/deleteUser')
+  .post(deleteUser)
 
 module.exports = router;

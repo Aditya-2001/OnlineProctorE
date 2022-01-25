@@ -75,3 +75,12 @@ function submitForm() {
   frm.reset();
   return false;
 }
+
+async function deleteUser(id){
+  try{
+    await axios.post('/dashboard/staff/users/deleteUser', {id: id});
+    location.reload();
+  }catch(e){
+    console.log(e);
+  }
+}
