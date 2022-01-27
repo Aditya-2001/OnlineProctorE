@@ -76,7 +76,7 @@ router.route('/deleteIllegalAttempts')
   .post(authFacultyTaQuiz, deleteIllegalAttempts)
 
 router.route('/getQuestions')
-  .get(authStudentQuiz, getQuestions)
+  .post(authStudentQuiz, getQuestions)
 
 router.route('/markAnswer')
   .post(authStudentQuiz, markAnswer);

@@ -25,12 +25,26 @@ exports.getQuestions = async (req, res) => {
                   message: 'Unauthorized Access to Quiz Questions'
                 });
               }
-              return res.status(200).json({
-                quizId: quizId,
-                quiz: quiz,
-                questions: questions,
-                questionSubmissions: questionSubmissions
-              })
+              if(Date.now() >= quiz.endDate || submission.submitted){
+                return res.status(200).json({
+                  quizId: quizId,
+                  quiz: quiz,
+                  questions: questions,
+                  questionSubmissions: questionSubmissions,
+                  redirect: true,
+                  url: '/dashboard/user/course/'+quiz.course._id
+                })
+              }
+              else{
+                return res.status(200).json({
+                  quizId: quizId,
+                  quiz: quiz,
+                  questions: questions,
+                  questionSubmissions: questionSubmissions,
+                  redirect: false,
+                  url: ''
+                })
+              }
             }).clone().catch(function(err){console.log(err)});
           }, 200);
         }).clone().catch(function(err){console.log(err)})
