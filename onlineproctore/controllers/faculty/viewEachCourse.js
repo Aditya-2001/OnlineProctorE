@@ -110,11 +110,6 @@ exports.getCourseDetails = async (req,res) => {
                       quizz.quizHeld = true;
                       quizz.save();
                     }
-                    await Submission.exists({quiz: quizz._id, user: user._id}, async (err, submission) => {
-                      if(!submission){
-                        await Submission.create({quiz: quizz._id, user: user._id});
-                      }
-                    })
                   }
                   await Submission.find({user: user._id}, async (err, submissions) => {
                     return res.status(200).render('studentTa/CourseStudent', {

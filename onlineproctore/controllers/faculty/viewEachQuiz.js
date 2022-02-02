@@ -13,8 +13,7 @@ const config = require('../../config');
 const Submission = require('../../models/submission');
 const {answerSimilarity} = require('../../queues/answerSimilarity');
 const {webPlagiarism} = require('../../queues/webPlagiarism');
-const axios = require('axios');
-const FormData = require('form-data');
+const {generateStudentSubmission} = require('../../queues/generateStudentSubmission');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -60,6 +59,11 @@ exports.getCourseQuiz = async (req, res) => {
     await Question.find({quiz: quizId}, async (err, questions) => {
       if(err) return res.status(400).render('error/error');
       if(req.cookies.accountType == config.faculty){
+        await Enrollment.find({course: quiz.course._id, accountType: config.student}, async (err, enrollments) => {
+          for await (let enrollment of enrollments){
+            generateStudentSubmission.add({enrollmentId: enrollment._id, quizId: quiz._id});
+          }
+        }).clone().catch(function(err){console.log(err)})
         if(Date.now() >= quiz.endDate){
           quiz.quizHeld = true;
           quiz.save();
@@ -324,9 +328,10 @@ exports.deleteIllegalAttempts = async (req, res) => {
     if(confirmation == quiz.quizName){
       await Submission.find({quiz: quizId}, async (err, submissions) => {
         for await (let submission of submissions){
-          await IllegalAttempt.findOne({submission: submission._id}, (err, illegalAttempt) => {
-            if(illegalAttempt)
+          await IllegalAttempt.find({submission: submission._id}, async (err, illegalAttempts) => {
+            for await(let illegalAttempt of illegalAttempts){
               illegalAttempt.remove();
+            }
           }).clone().catch(function(err){console.log(err)})
         }
         quiz.illegalAttemptsPresent = false;
