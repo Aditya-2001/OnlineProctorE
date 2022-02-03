@@ -14,6 +14,8 @@ const Submission = require('../../models/submission');
 const {answerSimilarity} = require('../../queues/answerSimilarity');
 const {webPlagiarism} = require('../../queues/webPlagiarism');
 const {generateStudentSubmission} = require('../../queues/generateStudentSubmission');
+const Excel = require('exceljs');
+const AdmZip = require('adm-zip');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -518,5 +520,69 @@ exports.editCourseQuiz = async (req, res) => {
 exports.viewStream = async (req, res) => {
   await Submission.findOne({_id: req.submissionId}, (err, submission) => {
     res.status(200).render('videoStreaming/stream', {submission: submission});
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.downloadQuizResults = async (req, res) => {
+  await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
+    const fileName = quiz.quizName+'.zip';
+    const fileType = 'application/zip';
+    res.writeHead(200, {
+      'Content-Disposition': `attachment; filename="${fileName}"`,
+      'Transfer-Encoding': 'chunked',
+      'Content-Type': fileType,
+    });
+    const workbook = new Excel.Workbook();
+    var worksheet = workbook.addWorksheet(quiz.quizName);
+    await Question.find({quiz: quiz._id}, async (err, questions) => {
+      let header = ['UserName', 'Total Marks', 'Browser Switched', 'Multiple Person', 'Audio Detected', 'Mobile Detected', 'No Person'];
+      let questionPromises = questions.map(function(question, index) {
+        return new Promise(function(resolve) {
+          header.push('Q'+(index+1));
+          resolve();
+        })
+      })
+      Promise.all(questionPromises).then(async function(){
+        worksheet.addRow(header).commit();
+        await Submission.find({quiz: quiz._id}, async (err, submissions) => {
+          let submissionPromises = submissions.map(function(submission, index){
+            return new Promise(async function(resolve){
+              var username = submission.user.username;
+              var totalMarks = submission.mcqScore + submission.writtenScore;
+              var browserSwitched = submission.browserSwitched;
+              var multiplePerson = submission.multiplePerson;
+              var audioDetected = submission.audioDetected;
+              var mobileDetected = submission.mobileDetected;
+              var noPerson = submission.noPerson;
+              let row = [username, totalMarks, browserSwitched, multiplePerson, audioDetected, mobileDetected, noPerson];
+              let addQuestionPromises = questions.map(function(question, index){
+                return new Promise(async function(resolve){
+                  await QuestionSubmission.findOne({submission: submission._id, question: question._id}, async (err, questionSubmission) => {
+                    row.push(questionSubmission.marksObtained);
+                    resolve();
+                  }).clone().catch(function(err){console.log(err)});
+                });
+              });
+              Promise.all(addQuestionPromises).then(function(){
+                worksheet.addRow(row).commit();
+                resolve();
+              });
+            })
+          })
+          Promise.all(submissionPromises).then(async function(){
+            let excelFile = workbook.xlsx.writeFile('./'+quiz.quizName+'_'+quiz._id+'.xlsx');
+            excelFile.then(async () => {
+              var zip = new AdmZip();
+              await zip.addLocalFile(path.resolve(__dirname,'../../'+quiz.quizName+'_'+quiz._id+'.xlsx'));
+              var zipFileContents = await zip.toBuffer();
+              return res.end(zipFileContents);
+            })
+            .catch(err => {
+              console.log(err.message);
+            });
+          })
+        }).clone().catch(function(err){console.log(err)});
+      })
+    }).clone().catch(function(err){console.log(err)});
   }).clone().catch(function(err){console.log(err)});
 }

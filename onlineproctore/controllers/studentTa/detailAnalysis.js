@@ -12,9 +12,17 @@ exports.getUserSubmission = async (req, res) => {
           maxPlag = Math.max(questionSubmissions[i].webSource.plagiarismPercent, maxPlag);
         }
         if(present.length > 1){
+          for(let i=0; i<present.length; i++){
+            present[i].usingSomeoneElseIP = false;
+            present[i].save();
+          }
           return res.status(200).render('facultyQuiz/submission', {maxPlag: maxPlag, submission: submission, questionSubmissions: questionSubmissions, page: submission.user.username.toUpperCase(), unique: 'No'});
         }
         else{
+          for(let i=0; i<present.length; i++){
+            present[i].usingSomeoneElseIP = true;
+            present[i].save();
+          }
           return res.status(200).render('facultyQuiz/submission', {maxPlag: maxPlag, submission: submission, questionSubmissions: questionSubmissions, page: submission.user.username.toUpperCase(), unique: 'Yes'});
         }
       }).clone().catch(function(err){console.log(err)})

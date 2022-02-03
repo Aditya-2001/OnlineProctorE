@@ -9,6 +9,7 @@ const {removeFile} = require('../../functions');
 const Announcement = require("../../models/announcement");
 const Quiz = require("../../models/quiz");
 const Submission = require("../../models/submission");
+const Excel = require('exceljs');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -328,5 +329,50 @@ exports.deleteInstructor = async (req, res) => {
       }
     }
     return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.downloadCourseResults = async (req, res) => {
+  res.writeHead(200, {
+    'Content-Disposition': 'attachment; filename="results.xlsx"',
+    'Transfer-Encoding': 'chunked',
+    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  })
+  var workbook = new Excel.stream.xlsx.WorkbookWriter({ stream: res })
+  await Quiz.find({course: req.course_id}, (err, quizzes) => {
+    console.log(quizzes.length);
+    let promises = quizzes.map(function(quiz, index){
+      return new Promise(function (resolve){
+        var worksheet = workbook.addWorksheet(String(quiz.quizName))
+        let rows = [];
+        worksheet.addRow(['UserName', 'Total Marks', 'Browser Switched', 'Multiple Person', 'Audio Detected', 'Mobile Detected', 'No Person']).commit();
+        Submission.find({quiz: quiz._id}, (err, submissions) => {
+          console.log(submissions.length);
+          let promises1 = submissions.map(function (submission, index){
+            return new Promise(function (resolve){
+              var username = submission.user.username;
+              var totalMarks = submission.mcqScore + submission.writtenScore;
+              var browserSwitched = submission.browserSwitched;
+              var multiplePerson = submission.multiplePerson;
+              var audioDetected = submission.audioDetected;
+              var mobileDetected = submission.mobileDetected;
+              var noPerson = submission.noPerson;
+              rows.push([username, totalMarks, browserSwitched, multiplePerson, audioDetected, mobileDetected, noPerson]);
+              resolve();
+            })
+          })
+          Promise.all(promises1).then(function(){
+            for(let j=0; j<rows.length; j++){
+              worksheet.addRow(rows[j]).commit()
+            }
+            worksheet.commit();
+          })
+          resolve();
+        }).clone().catch(function(err){console.log(err)});
+      });
+    })
+    Promise.all(promises).then(function(){
+      workbook.commit()
+    })
   }).clone().catch(function(err){console.log(err)});
 }
