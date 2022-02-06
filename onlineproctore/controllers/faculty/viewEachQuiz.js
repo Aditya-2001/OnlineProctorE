@@ -241,7 +241,15 @@ exports.addWrittenQuestion = async (req, res) => {
   if(note == undefined){
     note = '';
   }
-  var writtenQuestion = {quiz: quizId, question: quizQuestion, maximumMarks: maximumMarks, note: note};
+  var count = 1;
+  var imageLinks = [];
+  while(req.body['imageLink'+count]){
+    if(req.body['imageLink'+count] != ''){
+      imageLinks.push(req.body['imageLink'+count]);
+      count += 1;
+    }
+  }
+  var writtenQuestion = {quiz: quizId, question: quizQuestion, maximumMarks: maximumMarks, note: note, imageLinks: imageLinks};
   const newQuestion = new Question(writtenQuestion);
   await Question.findOne(writtenQuestion, (err, foundQuestion) => {
     if(err) console.log(err);
@@ -283,18 +291,21 @@ exports.addMCQQuestion = async (req, res) => {
     markingScheme = false;
   }
   var options = [];
-  if(req.body.option1)
-    options.push(req.body.option1);
-  if(req.body.option2)
-    options.push(req.body.option2);
-  if(req.body.option3)
-    options.push(req.body.option3);
-  if(req.body.option4)
-    options.push(req.body.option4);
-  if(req.body.option5)
-    options.push(req.body.option5);
-  if(req.body.option6)
-    options.push(req.body.option6);
+  var count = 1;
+  while(req.body['option'+count]){
+    if(req.body['option'+count] != ''){
+      options.push(req.body['option'+count]);
+      count += 1;
+    }
+  }
+  count = 1;
+  var imageLinks = [];
+  while(req.body['imageLink'+count]){
+    if(req.body['imageLink'+count] != ''){
+      imageLinks.push(req.body['imageLink'+count]);
+      count += 1;
+    }
+  }
   if(req.body.negativeMarking)
     negativeMarking = req.body.negativeMarking;
   var correctOptions = [];
@@ -303,7 +314,7 @@ exports.addMCQQuestion = async (req, res) => {
   })
   var mcqQuestion = {quiz: quizId, question: question, maximumMarks: maximumMarks,
     mcq: true, options: options, correctOptions: correctOptions, markingScheme: markingScheme,
-    negativeMarking: negativeMarking};
+    negativeMarking: negativeMarking, imageLinks: imageLinks};
   const newQuestion = new Question(mcqQuestion);
   console.log(newQuestion);
   await Question.findOne(mcqQuestion, (err, foundQuestion) => {
@@ -448,7 +459,7 @@ exports.deleteQuestion = async (req, res) => {
 }
 
 exports.editMCQQuestion = async (req, res) => {
-  console.log(req.body);
+  console.log(req.body['option8']);
   const questionId = req.body.questionId;
   const questionText = req.body.question;
   const maximumMarks = req.body.maximumMarks;
@@ -459,18 +470,21 @@ exports.editMCQQuestion = async (req, res) => {
     markingScheme = false;
   }
   var options = [];
-  if(req.body.option1)
-    options.push(req.body.option1);
-  if(req.body.option2)
-    options.push(req.body.option2);
-  if(req.body.option3)
-    options.push(req.body.option3);
-  if(req.body.option4)
-    options.push(req.body.option4);
-  if(req.body.option5)
-    options.push(req.body.option5);
-  if(req.body.option6)
-    options.push(req.body.option6);
+  var count = 1;
+  while(req.body['option'+count]){
+    if(req.body['option'+count] != ''){
+      options.push(req.body['option'+count]);
+      count += 1;
+    }
+  }
+  count = 1;
+  var imageLinks = [];
+  while(req.body['imageLink'+count]){
+    if(req.body['imageLink'+count] != ''){
+      imageLinks.push(req.body['imageLink'+count]);
+      count += 1;
+    }
+  }
   if(req.body.negativeMarking)
     negativeMarking = req.body.negativeMarking;
   var correctOptions = [];
@@ -485,6 +499,7 @@ exports.editMCQQuestion = async (req, res) => {
     question.correctOptions = correctOptions;
     question.markingScheme = markingScheme;
     question.negativeMarking = negativeMarking;
+    question.imageLinks = imageLinks;
     question.save();
     return res.status(204).send();
   }).clone().catch(function(err){console.log(err)})
@@ -498,10 +513,19 @@ exports.editWrittenQuestion = async (req, res) => {
   if(note == undefined){
     note = '';
   }
+  var count = 1;
+  var imageLinks = [];
+  while(req.body['imageLink'+count]){
+    if(req.body['imageLink'+count] != ''){
+      imageLinks.push(req.body['imageLink'+count]);
+      count += 1;
+    }
+  }
   await Question.findOne({_id: questionId}, (err, question) => {
     question.question = quizQuestion;
     question.note = note;
     question.maximumMarks = maximumMarks;
+    question.imageLinks = imageLinks;
     question.save();
     return res.status(204).send();
   }).clone().catch(function(err){console.log(err)});

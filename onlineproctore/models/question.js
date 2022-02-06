@@ -18,6 +18,10 @@ const Question = new Schema({
     type: String,
     default: ''
   },
+  imageLinks: [{
+    type: String,
+    default: ''
+  }],
   maximumMarks: {
     type: Number,
     required: true
