@@ -68,6 +68,18 @@ function fader(ID){
   $(ID).delay(4000).fadeOut(4000)
 }
 
+function addImageLink(){
+  var n = $('#questionImages').children().length;
+  option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="imageLink'+(n+1)+'" placeholder="Enter Image Link '+(n+1)+'"></div>'
+  $('#questionImages').append(option);
+}
+
+function addWrittenImageLink(){
+  var n = $('#writtenQuestionImages').children().length;
+  option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="imageLink'+(n+1)+'" placeholder="Enter Image Link '+(n+1)+'"></div>'
+  $('#writtenQuestionImages').append(option);
+}
+
 function addOption(){
   var n = $('#questionOptions').children().length;
   option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="option'+(n+1)+'" placeholder="Enter Option '+(n+1)+'"></div>'
@@ -78,6 +90,17 @@ function removeOption(){
   var n = $('#questionOptions').children().length;
   for(let i=0; i<n-1; i++){
     $('#questionOptions').children().last().remove();
+  }
+  n = $('#questionImages').children().length;
+  for(let i=0; i<n-1; i++){
+    $('#questionImages').children().last().remove();
+  }
+}
+
+function removeImageLink(){
+  var n = $('#writtenQuestionImages').children().length;
+  for(let i=0; i<n-1; i++){
+    $('#writtenQuestionImages').children().last().remove();
   }
 }
 

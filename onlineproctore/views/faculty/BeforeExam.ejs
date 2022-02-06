@@ -45,7 +45,7 @@
                     </div>
                     <div class="card-footer">
                       <div class="stats">
-                        <a data-toggle="modal" data-target="#modal2" href="#">Add short/long question to quiz</a>
+                        <a data-toggle="modal" data-target="#modal2" href="#" onclick="removeImageLink()">Add short/long question to quiz</a>
                       </div>
                     </div>
                 </div>
@@ -277,7 +277,7 @@
           <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content card">
               <div class="card-header card-header-green">
-                <h4 class="modal-title">Add a mcq Question to quiz</h4>
+                <h4 class="modal-title">Add a MCQ Question to quiz</h4>
               </div>
               <div class="modal-body">
                 <form id="addMCQQuestion">
@@ -289,12 +289,19 @@
                         <label class="bmd-label-floating">Maximum Marks for the question</label>
                       <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required>
                     </div><br>
+                    <div id="questionImages">
+                      <div class="form-group">
+                        <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
+                      </div>
+                    </div>
+                    <input type="button" onclick="addImageLink()" class="btn btn-primary" value="Add Image Link"/>
+                    <br>
                     <div id="questionOptions">
                       <div class="form-group">
                         <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Option 1">
                       </div>
                     </div>
-                    <input type="button" onclick="addOption()" class="btn btn-primary pull-right" value="Add Option"/>
+                    <input type="button" onclick="addOption()" class="btn btn-primary" value="Add Option"/>
                     <br>
                     <div class="form-group">
                       <label class="bmd-label">Enter Correct Options</label><br>
@@ -341,8 +348,14 @@
                       <div class="form-group">
                           <label class="bmd-label-floating">Maximum Marks for the question</label>
                           <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required/>
+                      </div><br>
+                      <div id="writtenQuestionImages">
+                        <div class="form-group">
+                          <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
                         </div>
-                        <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
+                      </div>
+                      <input type="button" onclick="addWrittenImageLink()" class="btn btn-primary" value="Add Image Link"/>
+                      <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
                   </form>
               </div>
             </div>
