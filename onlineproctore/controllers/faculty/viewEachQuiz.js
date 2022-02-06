@@ -16,6 +16,8 @@ const {webPlagiarism} = require('../../queues/webPlagiarism');
 const {generateStudentSubmission} = require('../../queues/generateStudentSubmission');
 const Excel = require('exceljs');
 const AdmZip = require('adm-zip');
+const ejs = require('ejs');
+let pdf = require("html-pdf");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -575,7 +577,9 @@ exports.downloadQuizResults = async (req, res) => {
               var zip = new AdmZip();
               await zip.addLocalFile(path.resolve(__dirname,'../../'+quiz.quizName+'_'+quiz._id+'.xlsx'));
               var zipFileContents = await zip.toBuffer();
-              return res.end(zipFileContents);
+              res.end(zipFileContents);
+              removeFile(path.resolve(__dirname,'../../'+quiz.quizName+'_'+quiz._id+'.xlsx'))
+              return;
             })
             .catch(err => {
               console.log(err.message);
@@ -584,5 +588,77 @@ exports.downloadQuizResults = async (req, res) => {
         }).clone().catch(function(err){console.log(err)});
       })
     }).clone().catch(function(err){console.log(err)});
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.downloadStudentSubmissions = async (req, res) => {
+  await Submission.find({quiz: req.quizId}, async (err, submissions) => {
+    const fileName = 'submissions.zip';
+    const fileType = 'application/zip';
+    res.writeHead(200, {
+      'Content-Disposition': `attachment; filename="${fileName}"`,
+      'Transfer-Encoding': 'chunked',
+      'Content-Type': fileType,
+    });
+    var zip = new AdmZip();
+    let submissionGeneration = submissions.map(function(submission, index){
+      return new Promise(async function(resolve){
+        await QuestionSubmission.find({submission: submission._id}, async (err, questionSubmissions) => {
+          await Submission.find({quiz: submission.quiz._id, ipAddress: submission.ipAddress}, (err, present) => {
+            var maxPlag = 0;
+            for(let i=0; i < questionSubmissions.length; i++){
+              maxPlag = Math.max(questionSubmissions[i].webSource.plagiarismPercent, maxPlag);
+            }
+            var unique = 'No';
+            if(present.length > 1){
+              for(let i=0; i<present.length; i++){
+                present[i].usingSomeoneElseIP = false;
+                present[i].save();
+              }
+            }
+            else{
+              for(let i=0; i<present.length; i++){
+                present[i].usingSomeoneElseIP = true;
+                present[i].save();
+              }
+              unique = 'Yes';
+            }
+            ejs.renderFile(path.resolve(__dirname,'../../views/facultyQuiz/pdfSubmission.ejs'), {
+              maxPlag: maxPlag, 
+              submission: submission, 
+              questionSubmissions: questionSubmissions, 
+              page: submission.user.username.toUpperCase(), 
+              unique: unique
+            }, function(err, data){
+              let options = {
+                "height": "11.25in",
+                "width": "8.5in",
+                "header": {
+                  "height": "20mm"
+                },
+                "footer": {
+                  "height": "20mm",
+                },
+              };
+              pdf.create(data, options).toFile(submission.user.username.toUpperCase()+"_"+submission.quiz._id+".pdf", async function (err, data) {
+                if (err) {
+                  return res.status(204).send();
+                }
+                else {
+                  await zip.addLocalFile(path.resolve(__dirname,'../../'+submission.user.username.toUpperCase()+'_'+submission.quiz._id+'.pdf'));
+                  removeFile(path.resolve(__dirname,'../../'+submission.user.username.toUpperCase()+'_'+submission.quiz._id+'.pdf'));
+                  resolve();
+                }
+              });
+            })
+          }).clone().catch(function(err){console.log(err)})
+        }).clone().catch(function(err){console.log(err)})
+      })
+    })
+    Promise.all(submissionGeneration).then(async () => {
+      var zipFileContents = await zip.toBuffer();
+      res.end(zipFileContents);
+      return;
+    })
   }).clone().catch(function(err){console.log(err)});
 }

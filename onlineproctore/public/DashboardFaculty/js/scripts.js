@@ -68,6 +68,19 @@ function fader(ID){
   $(ID).delay(4000).fadeOut(4000)
 }
 
+function addOption(){
+  var n = $('#questionOptions').children().length;
+  option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="option'+(n+1)+'" placeholder="Enter Option '+(n+1)+'"></div>'
+  $('#questionOptions').append(option);
+}
+
+function removeOption(){
+  var n = $('#questionOptions').children().length;
+  for(let i=0; i<n-1; i++){
+    $('#questionOptions').children().last().remove();
+  }
+}
+
 $(document).ready(function () {
   $('.dtBasicExample').DataTable();
   $('.dtBasicExample1').DataTable();

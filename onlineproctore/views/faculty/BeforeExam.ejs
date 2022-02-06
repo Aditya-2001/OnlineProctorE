@@ -29,7 +29,7 @@
                     </div>
                     <div class="card-footer">
                       <div class="stats">
-                        <a data-toggle="modal" data-target="#modal1" href="#">Add MCQ Question to quizs</a>
+                        <a data-toggle="modal" data-target="#modal1" href="#" onclick="removeOption()">Add MCQ Question to quizs</a>
                       </div>
                     </div>
                 </div>
@@ -289,24 +289,13 @@
                         <label class="bmd-label-floating">Maximum Marks for the question</label>
                       <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required>
                     </div><br>
-                    <div class="form-group">
-                      <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Option 1">
+                    <div id="questionOptions">
+                      <div class="form-group">
+                        <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Option 1">
+                      </div>
                     </div>
-                    <div class="form-group">
-                      <input type="text" class="form-control" autocomplete="off" name="option2" placeholder="Enter Option 2">
-                    </div>
-                    <div class="form-group">
-                      <input type="text" class="form-control" autocomplete="off" name="option3" placeholder="Enter Option 3">
-                    </div>
-                    <div class="form-group">
-                      <input type="text" class="form-control" autocomplete="off" name="option4" placeholder="Enter Option 4">
-                    </div>
-                    <div class="form-group">
-                      <input type="text" class="form-control" autocomplete="off" name="option5" placeholder="Enter Option 5">
-                    </div>
-                    <div class="form-group">
-                      <input type="text" class="form-control" autocomplete="off" name="option6" placeholder="Enter Option 6">
-                    </div><br>
+                    <input type="button" onclick="addOption()" class="btn btn-primary pull-right" value="Add Option"/>
+                    <br>
                     <div class="form-group">
                       <label class="bmd-label">Enter Correct Options</label><br>
                       <input type="text" class="form-control" autocomplete="off" name="correctOptions" placeholder="Correct Options Number. eg: 1,2">
