@@ -135,11 +135,11 @@ $("#editWrittenQuestion").submit(async function (e) {
 
 async function setDate(startDate, endDate){
   startDate = new Date(startDate);
-  sdate = startDate.getFullYear()+"-"+("0" + startDate.getMonth()+1).slice(-2)+"-"+("0"+startDate.getDate()).slice(-2)+"T"+startDate.toString().slice(16,21);
+  sdate = startDate.getFullYear()+"-"+("0" + (startDate.getMonth()+1)).slice(-2)+"-"+("0"+startDate.getDate()).slice(-2)+"T"+startDate.toString().slice(16,21);
   console.log(sdate);
   document.getElementById("start_date").value = sdate;
   endDate = new Date(endDate);
-  edate = endDate.getFullYear()+"-"+("0" + endDate.getMonth()+1).slice(-2)+"-"+("0"+endDate.getDate()).slice(-2)+"T"+endDate.toString().slice(16,21);
+  edate = endDate.getFullYear()+"-"+("0" + (endDate.getMonth()+1)).slice(-2)+"-"+("0"+endDate.getDate()).slice(-2)+"T"+endDate.toString().slice(16,21);
   document.getElementById("end_date").value = edate;
 }
 

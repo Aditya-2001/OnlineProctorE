@@ -10,7 +10,7 @@ async function getQuizQuestions(){
     var quizId = document.getElementById("quizId").value;
     console.log('function called');
     try{
-        const response = await axios.get(quizId+'/getQuestions');
+        const response = await axios.post(quizId+'/getQuestions',{});
         const quiz = response.data.quiz;
         const questions = response.data.questions;
         const questionSubmissions = response.data.questionSubmissions;

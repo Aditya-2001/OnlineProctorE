@@ -185,12 +185,10 @@ exports.addQuestions = async (req, res) => {
             if(partialMarking.toLowerCase() === "no"){
               markingScheme = false;
             }
-            count = 1;
-            while(question["Option"+count]){
-              if(question["Option"+count] != ''){
-                options.push(String(question["Option"+count]));
-                count += 1;
-              }
+            var optionCount = 1;
+            while(String(question["Option"+optionCount])!= 'undefined'){
+              options.push(String(question["Option"+optionCount]));
+              optionCount += 1;
             }
             var correctOptions = [];
             String(question["Correct Options"]).split(',').forEach(option => {
