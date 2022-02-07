@@ -1,6 +1,10 @@
+let setHeight;
 window.onload = function() {
     // start();
     getQuizQuestions();
+    setHeight = setInterval(()=>{
+        $('#navigationBar').height($('#addQuestions').height());
+    }, 1000)
 };
 
 var questionsType = new Map();
@@ -44,7 +48,12 @@ async function getQuizQuestions(){
             else{
                 displayQuestion += '<span class="marks-assigned-zero"> Not Checked';
             }
-            displayQuestion += '</span></td></tr></table></td></tr></table></div><hr><div class="answer';
+            displayQuestion += '</span></td></tr></table></td></tr></table>';
+            displayQuestion += '<div style="text-align: center;">'
+            for(var ic=0; ic<questions[j].imageLinks.length; ic++){
+                displayQuestion += '<img class="questionImg" src="https://drive.google.com/uc?export=view&id='+questions[j].imageLinks[ic].split('/').reverse()[1]+'">';
+            }
+            displayQuestion += '</div></div> <hr><div class="answer';
             questionsType.set(questions[j]._id, questions[j].mcq);
             var flag = false;
             if(questions[j].mcq){
@@ -131,12 +140,16 @@ $(document).ready(function(){
         $('.quiz-card').find('.ques-ans.active').next().addClass('active');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('none');
         $('.quiz-card').find('.ques-ans.active').prev().removeClass('active');
+        clearInterval(setHeight);
+        $('#navigationBar').height($('#addQuestions').height());
     })
     $('.prev').click(function(){
         $('.quiz-card').find('.ques-ans.active').prev().removeClass('none');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('active');
         $('.quiz-card').find('.ques-ans.active').next().addClass('none');
         $('.quiz-card').find('.ques-ans.active').next().removeClass('active');
+        clearInterval(setHeight);
+        $('#navigationBar').height($('#addQuestions').height());
     })
 })
 async function display(id){

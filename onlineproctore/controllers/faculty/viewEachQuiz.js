@@ -18,6 +18,7 @@ const Excel = require('exceljs');
 const AdmZip = require('adm-zip');
 const ejs = require('ejs');
 let pdf = require("html-pdf");
+const axios = require('axios');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -564,6 +565,13 @@ exports.viewStream = async (req, res) => {
 }
 
 exports.downloadQuizResults = async (req, res) => {
+  // await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
+  //   await Question.find({quiz: quiz._id}, async (err, questions) => {
+  //     const response = await axios.get('https://drive.google.com/uc?export=view&id=1W9KY0Pd33L1XavWug8haqdOE17EMYT73',  { responseType: 'arraybuffer' })
+  //     const buffer = 'data:image/;base64,' + Buffer.from(response.data, "utf-8").toString('base64');
+  //     return res.render('facultyQuiz/questionPaper', {questions: questions, d: buffer});
+  //   }).clone().catch(function(err){console.log(err)});
+  // }).clone().catch(function(err){console.log(err)});
   await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
     const fileName = quiz.quizName+'.zip';
     const fileType = 'application/zip';
@@ -573,59 +581,108 @@ exports.downloadQuizResults = async (req, res) => {
       'Content-Type': fileType,
     });
     const workbook = new Excel.Workbook();
-    var worksheet = workbook.addWorksheet(quiz.quizName);
-    await Question.find({quiz: quiz._id}, async (err, questions) => {
-      let header = ['UserName', 'Total Marks', 'Browser Switched', 'Multiple Person', 'Audio Detected', 'Mobile Detected', 'No Person'];
-      let questionPromises = questions.map(function(question, index) {
-        return new Promise(function(resolve) {
-          header.push('Q'+(index+1));
-          resolve();
-        })
-      })
-      Promise.all(questionPromises).then(async function(){
-        worksheet.addRow(header).commit();
-        await Submission.find({quiz: quiz._id}, async (err, submissions) => {
-          let submissionPromises = submissions.map(function(submission, index){
-            return new Promise(async function(resolve){
-              var username = submission.user.username;
-              var totalMarks = submission.mcqScore + submission.writtenScore;
-              var browserSwitched = submission.browserSwitched;
-              var multiplePerson = submission.multiplePerson;
-              var audioDetected = submission.audioDetected;
-              var mobileDetected = submission.mobileDetected;
-              var noPerson = submission.noPerson;
-              let row = [username, totalMarks, browserSwitched, multiplePerson, audioDetected, mobileDetected, noPerson];
-              let addQuestionPromises = questions.map(function(question, index){
-                return new Promise(async function(resolve){
-                  await QuestionSubmission.findOne({submission: submission._id, question: question._id}, async (err, questionSubmission) => {
-                    row.push(questionSubmission.marksObtained);
-                    resolve();
-                  }).clone().catch(function(err){console.log(err)});
-                });
-              });
-              Promise.all(addQuestionPromises).then(function(){
-                worksheet.addRow(row).commit();
-                resolve();
-              });
+    var zip = new AdmZip();
+    let sets = quiz.setNames.map(function(set, index){
+      return new Promise(async function(resolve){
+        var worksheet = workbook.addWorksheet('Set '+set);
+        await Question.find({quiz: quiz._id, set: set}, async (err, questions) => {
+          let header = ['UserName', 'Total Marks', 'Set', 'Browser Switched', 'Multiple Person', 'Audio Detected', 'Mobile Detected', 'No Person'];
+          let questionPromises = questions.map(function(question, index) {
+            return new Promise(function(resolve) {
+              header.push('Q'+(index+1)+'('+question.maximumMarks+')');
+              resolve();
             })
           })
-          Promise.all(submissionPromises).then(async function(){
-            let excelFile = workbook.xlsx.writeFile('./'+quiz.quizName+'_'+quiz._id+'.xlsx');
-            excelFile.then(async () => {
-              var zip = new AdmZip();
-              await zip.addLocalFile(path.resolve(__dirname,'../../'+quiz.quizName+'_'+quiz._id+'.xlsx'));
-              var zipFileContents = await zip.toBuffer();
-              res.end(zipFileContents);
-              removeFile(path.resolve(__dirname,'../../'+quiz.quizName+'_'+quiz._id+'.xlsx'))
-              return;
-            })
-            .catch(err => {
-              console.log(err.message);
-            });
+          Promise.all(questionPromises).then(async function(){
+            worksheet.addRow(header).commit();
+            await Submission.find({quiz: quiz._id, set: set}, async (err, submissions) => {
+              let submissionPromises = submissions.map(function(submission, index){
+                return new Promise(async function(resolve){
+                  var username = submission.user.username;
+                  var totalMarks = submission.mcqScore + submission.writtenScore;
+                  var set = submission.set;
+                  var browserSwitched = submission.browserSwitched;
+                  var multiplePerson = submission.multiplePerson;
+                  var audioDetected = submission.audioDetected;
+                  var mobileDetected = submission.mobileDetected;
+                  var noPerson = submission.noPerson;
+                  let row = [username, totalMarks, set, browserSwitched, multiplePerson, audioDetected, mobileDetected, noPerson];
+                  let addQuestionPromises = questions.map(function(question, index){
+                    return new Promise(async function(resolve){
+                      await QuestionSubmission.findOne({submission: submission._id, question: question._id}, async (err, questionSubmission) => {
+                        row.push(questionSubmission.marksObtained);
+                        resolve();
+                      }).clone().catch(function(err){console.log(err)});
+                    });
+                  });
+                  Promise.all(addQuestionPromises).then(function(){
+                    worksheet.addRow(row).commit();
+                    resolve();
+                  });
+                })
+              })
+              Promise.all(submissionPromises).then(async function(){
+                var images = {};
+                let getImages = questions.map(async function(question, index){
+                  return new Promise(function(resolve){
+                    images[question._id] = [];
+                    let addImages = question.imageLinks.map(function(link, index){
+                      return new Promise(async function(resolve){
+                        const id = link.split('/').reverse()[1];
+                        const response = await axios.get('https://drive.google.com/uc?export=view&id='+id,  { responseType: 'arraybuffer' })
+                        const buffer = 'data:image/;base64,' + Buffer.from(response.data, "utf-8").toString('base64');
+                        images[question._id].push(buffer);
+                        resolve();
+                      })
+                    })
+                    Promise.all(addImages).then(function(){
+                      resolve();
+                    })
+                  })
+                })
+                Promise.all(getImages).then(function(){
+                  ejs.renderFile(path.resolve(__dirname,'../../views/facultyQuiz/questionPaper.ejs'), {
+                    questions: questions,
+                    images: images
+                  }, function(err, data){
+                    let options = {
+                      "height": "11.25in",
+                      "width": "8.5in",
+                      "header": {
+                        "height": "20mm"
+                      },
+                      "footer": {
+                        "height": "20mm",
+                      },
+                    };
+                    pdf.create(data, options).toFile(quiz.quizName+"_Set "+set+"_"+quiz._id+".pdf", async function (err, data) {
+                      if (err) {
+                        return res.status(204).send();
+                      }
+                      else {
+                        await zip.addLocalFile(path.resolve(__dirname,'../../'+quiz.quizName+'_Set '+set+'_'+quiz._id+'.pdf'));
+                        removeFile(path.resolve(__dirname,'../../'+quiz.quizName+'_Set '+set+'_'+quiz._id+'.pdf'));
+                        resolve();
+                      }
+                    });
+                  })
+                })
+              })
+            }).clone().catch(function(err){console.log(err)});
           })
         }).clone().catch(function(err){console.log(err)});
       })
-    }).clone().catch(function(err){console.log(err)});
+    })
+    Promise.all(sets).then(async function(){
+      let excelFile = workbook.xlsx.writeFile('./'+quiz.quizName+'_'+quiz._id+'.xlsx');
+      excelFile.then(async () => {
+        await zip.addLocalFile(path.resolve(__dirname,'../../'+quiz.quizName+'_'+quiz._id+'.xlsx'));
+        removeFile(path.resolve(__dirname,'../../'+quiz.quizName+'_'+quiz._id+'.xlsx'));
+        var zipFileContents = await zip.toBuffer();
+        res.end(zipFileContents);
+        return;
+      })
+    })
   }).clone().catch(function(err){console.log(err)});
 }
 
@@ -661,33 +718,54 @@ exports.downloadStudentSubmissions = async (req, res) => {
               }
               unique = 'Yes';
             }
-            ejs.renderFile(path.resolve(__dirname,'../../views/facultyQuiz/pdfSubmission.ejs'), {
-              maxPlag: maxPlag, 
-              submission: submission, 
-              questionSubmissions: questionSubmissions, 
-              page: submission.user.username.toUpperCase(), 
-              unique: unique
-            }, function(err, data){
-              let options = {
-                "height": "11.25in",
-                "width": "8.5in",
-                "header": {
-                  "height": "20mm"
-                },
-                "footer": {
-                  "height": "20mm",
-                },
-              };
-              pdf.create(data, options).toFile(submission.user.username.toUpperCase()+"_"+submission.quiz._id+".pdf", async function (err, data) {
-                if (err) {
-                  return res.status(204).send();
-                }
-                else {
-                  await zip.addLocalFile(path.resolve(__dirname,'../../'+submission.user.username.toUpperCase()+'_'+submission.quiz._id+'.pdf'));
-                  removeFile(path.resolve(__dirname,'../../'+submission.user.username.toUpperCase()+'_'+submission.quiz._id+'.pdf'));
+            var images = {};
+            let getImages = questionSubmissions.map(async function(questionSubmission, index){
+              return new Promise(function(resolve){
+                images[questionSubmission._id] = [];
+                let addImages = questionSubmission.question.imageLinks.map(function(link, index){
+                  return new Promise(async function(resolve){
+                    const id = link.split('/').reverse()[1];
+                    const response = await axios.get('https://drive.google.com/uc?export=view&id='+id,  { responseType: 'arraybuffer' })
+                    const buffer = 'data:image/;base64,' + Buffer.from(response.data, "utf-8").toString('base64');
+                    images[questionSubmission._id].push(buffer);
+                    resolve();
+                  })
+                })
+                Promise.all(addImages).then(function(){
                   resolve();
-                }
-              });
+                })
+              })
+            })
+            Promise.all(getImages).then(async function(){
+              ejs.renderFile(path.resolve(__dirname,'../../views/facultyQuiz/pdfSubmission.ejs'), {
+                maxPlag: maxPlag, 
+                submission: submission, 
+                questionSubmissions: questionSubmissions, 
+                page: submission.user.username.toUpperCase(), 
+                unique: unique,
+                images: images
+              }, function(err, data){
+                let options = {
+                  "height": "11.25in",
+                  "width": "8.5in",
+                  "header": {
+                    "height": "20mm"
+                  },
+                  "footer": {
+                    "height": "20mm",
+                  },
+                };
+                pdf.create(data, options).toFile(submission.user.username.toUpperCase()+"_"+submission.quiz._id+".pdf", async function (err, data) {
+                  if (err) {
+                    return res.status(204).send();
+                  }
+                  else {
+                    await zip.addLocalFile(path.resolve(__dirname,'../../'+submission.user.username.toUpperCase()+'_'+submission.quiz._id+'.pdf'));
+                    removeFile(path.resolve(__dirname,'../../'+submission.user.username.toUpperCase()+'_'+submission.quiz._id+'.pdf'));
+                    resolve();
+                  }
+                });
+              })
             })
           }).clone().catch(function(err){console.log(err)})
         }).clone().catch(function(err){console.log(err)})

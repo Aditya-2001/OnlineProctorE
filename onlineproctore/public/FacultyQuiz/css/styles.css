@@ -540,3 +540,7 @@ h4{
         margin-top: 0px !important;
     }
 }
+
+.questionImg{
+    width: calc(100% - 20rem); height: auto;
+}

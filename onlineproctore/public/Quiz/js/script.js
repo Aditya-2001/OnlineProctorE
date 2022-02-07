@@ -3,6 +3,7 @@ var optionsCount = new Map();
 const peers = {};
 const peersScreen = {};
 var socket;
+let setHeight;
 var myPeer, myPeerScreen;
 
 window.onload = function() {
@@ -57,35 +58,38 @@ window.onload = function() {
             }
         }
     }, 1000);
-    sendIP();
-    AudioVideoDetection();
-    startSharing();
-    cocoSsd.load().then(function (loadedModel) {
-        model = loadedModel;
-        enableCam();
-    });
+    // sendIP();
+    // AudioVideoDetection();
+    // startSharing();
+    // cocoSsd.load().then(function (loadedModel) {
+    //     model = loadedModel;
+    //     enableCam();
+    // });
     getQuizQuestions();
-    socket = io("/");
-    myPeer = new Peer(undefined, {
-        path: '/peerjs',
-        host: '/',
-        port: '443'
-    })
-    myPeerScreen = new Peer(undefined, {
-        path: '/peerjs',
-        host: '/',
-        port: '443'
-    })
-    myPeer.on('open', id => {
-        socket.emit('join-room1', ROOM_ID + '1', id);
-    })
-    myPeerScreen.on('open', id => {
-        socket.emit('join-room2', ROOM_ID + '2', id);
-    })
-    socket.on('user-disconnected', userId => {
-        if (peers[userId]) peers[userId].close()
-        if (peersScreen[userId]) peersScreen[userId].close()
-    })
+    setHeight = setInterval(()=>{
+        $('#navigationBar').height($('#addQuestions').height());
+    }, 1000)
+    // socket = io("/");
+    // myPeer = new Peer(undefined, {
+    //     path: '/peerjs',
+    //     host: '/',
+    //     port: '443'
+    // })
+    // myPeerScreen = new Peer(undefined, {
+    //     path: '/peerjs',
+    //     host: '/',
+    //     port: '443'
+    // })
+    // myPeer.on('open', id => {
+    //     socket.emit('join-room1', ROOM_ID + '1', id);
+    // })
+    // myPeerScreen.on('open', id => {
+    //     socket.emit('join-room2', ROOM_ID + '2', id);
+    // })
+    // socket.on('user-disconnected', userId => {
+    //     if (peers[userId]) peers[userId].close()
+    //     if (peersScreen[userId]) peersScreen[userId].close()
+    // })
 };
 
 async function getQuizQuestions(){
@@ -122,7 +126,12 @@ async function getQuizQuestions(){
                 displayQuestion += ' none"';
             }
             displayQuestion += 'id="' + questions[j]._id + '"><div class="question"><table class="qtable"><tr><td class="quest"><span class="que">Q</span><span class="question-number">';
-            displayQuestion += (i+1) + '.</span>' + questions[j].question + '</td><td class="marks">MM:'+ questions[j].maximumMarks +'</td></tr></table></div> <hr><div class="answer';
+            displayQuestion += (i+1) + '.</span>' + questions[j].question + '</td><td class="marks"><table class="marks-table"><tr><td>MM:'+ questions[j].maximumMarks +'</td></tr><tr><td><span class="marks-assigned-zero"> Neg. Marks:'+questions[j].negativeMarking+'</span></td></tr></table></td></tr></table>';
+            displayQuestion += '<div style="text-align: center;">'
+            for(var ic=0; ic<questions[j].imageLinks.length; ic++){
+                displayQuestion += '<img class="questionImg" src="https://drive.google.com/uc?export=view&id='+questions[j].imageLinks[ic].split('/').reverse()[1]+'">';
+            }
+            displayQuestion += '</div></div> <hr><div class="answer';
             questionsType.set(questions[j]._id, questions[j].mcq);
             var submission = questionSubmissions.find( ({question}) => question._id === questions[j]._id);
             var flag = false;
@@ -314,6 +323,8 @@ $(document).ready(function(){
         $('.quiz-card').find('.ques-ans.active').next().addClass('active');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('none');
         $('.quiz-card').find('.ques-ans.active').prev().removeClass('active');
+        clearInterval(setHeight);
+        $('#navigationBar').height($('#addQuestions').height());
     })
     $('.mark').click(function(){
         markQuestion();
@@ -321,6 +332,8 @@ $(document).ready(function(){
         $('.quiz-card').find('.ques-ans.active').next().addClass('active');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('none');
         $('.quiz-card').find('.ques-ans.active').prev().removeClass('active');
+        clearInterval(setHeight);
+        $('#navigationBar').height($('#addQuestions').height());
     })
     $('.prev').click(function(){
         nextOrPrevQuestion();
@@ -328,6 +341,8 @@ $(document).ready(function(){
         $('.quiz-card').find('.ques-ans.active').prev().addClass('active');
         $('.quiz-card').find('.ques-ans.active').next().addClass('none');
         $('.quiz-card').find('.ques-ans.active').next().removeClass('active');
+        clearInterval(setHeight);
+        $('#navigationBar').height($('#addQuestions').height());
     })
     $('.submit').click(function(){
         submitPaper();
