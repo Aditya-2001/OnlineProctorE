@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="./Quiz/img/logo.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= quiz.quizName %></title>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- CSS Files -->
+    <link href="./Quiz/css/material-dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./Quiz/css/styles.css">
+    <link rel="stylesheet" href="./Quiz/css/magiczoomplus.css">
+</head>
+<body class='snippet-body'>
+    <input id="quizId" name="quizId" value="<%= quizId %>" hidden/>
+    <input id="submissionId" name="submissionId" value="<%= submission._id %>" hidden/>
+    <div class="wrapper ">
+        <div class="main-panel">
+            <nav class="nbar">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a href="/"><h1 class="heading">OnlineProctorE</h1></a>
+                    </div>
+                    <div class="col-sm-6 nav-name">
+                        <div class="info">
+                            <table class="info-tab">
+                                <tr>
+                                    <td>
+                                        <span class="start">Username:</span> <%= submission.user.username.toUpperCase() %> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="start">Course:</span> <%= quiz.course.courseName %> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="start">Time Remaining:</span> <span id="hours"></span><span id="mins"></span><span id="secs"></span><span id="end"></span><br>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="right-tab">
+                                <tr>
+                                    <td>
+                                        <a class="btn btn-primary" data-toggle="modal" data-target="#modal1" href="#">Instructions</a>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger submit">Submit</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-9 col-md-8 quiz">
+                            <div class="quiz-card" id="addQuestions">
+                                <div class="ques-ans" id="page02">
+                                    <div class="question">
+                                        <span class="que">Q</span><span class="question-number">3.</span>
+                                        <div style="text-align: center;">
+                                            <img id="myimage" class="imagesQuestion" src="Quiz/q5.png" style="width: calc(100% - 1em); height: auto;">
+                                        </div>
+                                    </div> <hr>
+                                    <div class="answer checkbox">
+                                        <label> 
+                                            <input type="checkbox" name="option1" value="option1"><i class="fa icon-checkbox"></i><span class="options">ABDE</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option2" value="option2"><i class="fa icon-checkbox"></i><span class="options">ACE</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option3" value="option3"><i class="fa icon-checkbox"></i><span class="options">ABE</span>
+                                        </label><br>
+                                        <label> 
+                                            <input type="checkbox" name="option4" value="option4"><i class="fa icon-checkbox"></i><span class="options">ABCD</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="butn">
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <a class="btn btn-danger prev-btn" href="mcq2.html" role="button">Previous</a>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <a class="btn btn-purple rev-btn" href="#" role="button">Mark For Review</a>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <a class="btn btn-primary save-btn btn-save-answer" href="mcq2.html" >Save and Next</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 side">
+                            <div class="side-card-nav">
+                                <div class="panel panel-default ">
+                                    <div class="panel-body">
+                                        <ul class="pagination test-questions" id="navigator">
+                                        </ul>
+                                    </div>
+                                </div>        
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6" style="float: left;">
+                            <div class="side-card-video" style="float: left;">
+                                <video id="video" height="100%" width="100%" autoplay muted></video>
+                                <canvas id="canvas" width="800" height="680" hidden></canvas>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" style="float: right;">
+                            <div class="side-card-video" style="float: right;">
+                                <video id="video1" height="100%" width="100%" autoplay muted></video>
+                                <canvas id="canvas1" width="800" height="680" hidden></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+                  <div class="modal-content card">
+                    <div class="card-header card-header-green">
+                      <h4 class="modal-title" style="font-size: 1.5rem;"><b>Instructions</b></h4>
+                      <hr>
+                      <h5 style="float: right; font-size: 1rem;">Please follow the given instructions</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p style="padding-bottom: 10px">1. Please Wait 1-2 minutes (depending upon your internet connection and system hardware capabilities) as it may take time to load the models.</p>
+                        <p style="padding-bottom: 10px">2. You have to allow both Camera and Microphone to continue to give the test.</p>
+                        <p style="padding-bottom: 10px">3. You have to share your entire screen and enable the <b>"share system audio"</b> checkbox.</p>
+                        <p style="padding-bottom: 10px">4. Do not change Tab or Browser while giving the test.</p>
+                        <p style="padding-bottom: 10px">5. Do not speak or leave your seat while giving the test.</p>
+                        <p style="padding-bottom: 10px">6. Do not copy paste answers from your friends or any other publicly available sources.</p>
+                        <p style="padding-bottom: 10px">7. Do not use Mobile phones.</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+      </div>
+</body>
+<!-- <script>
+    const ROOM_ID = "<%= submission._id %>";
+    var countDownDate = "<%= new Date(quiz.endDate).toString().slice(4,-31) %>";
+    countDownDate = new Date(countDownDate).getTime();
+</script> -->
+<!-- <script defer src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script> -->
+<!-- <script defer src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script> -->
+<!-- <script defer src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script> -->
+<script defer src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- <script defer src="/Quiz/js/tf.js"></script> -->
+<!-- <script defer src="/Quiz/js/coco-ssd"></script> -->
+<!-- <script defer src="/Quiz/js/jquery.js"></script> -->
+<!-- <script defer src="/Quiz/js/core/popper.min.js"></script> -->
+<script defer src="./Quiz/js/jquery.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script defer src="./Quiz/js/script.js"></script>
+<script defer src="./Quiz/js/magiczoomplus.js"></script>
+</html>
