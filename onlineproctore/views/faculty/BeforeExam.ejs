@@ -146,6 +146,21 @@
                 </div>
               </div>
             </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-warning card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">animation_outlined</i>
+                  </div>
+                  <p class="card-category">Assign Set</p>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a href="<%= quizId + '/assignSets' %>">Assign Set to Students</a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="row">
             <div class="col-lg-12 col-md-12">
@@ -289,6 +304,10 @@
                         <label class="bmd-label-floating">Maximum Marks for the question</label>
                       <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required>
                     </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Enter the Set</label><br>
+                      <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                    </div><br>
                     <div id="questionImages">
                       <div class="form-group">
                         <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
@@ -305,7 +324,7 @@
                     <br>
                     <div class="form-group">
                       <label class="bmd-label">Enter Correct Options</label><br>
-                      <input type="text" class="form-control" autocomplete="off" name="correctOptions" placeholder="Correct Options Number. eg: 1,2">
+                      <input type="text" class="form-control" autocomplete="off" name="correctOptions" placeholder="Correct Options Number. eg: 1,2" required/>
                     </div><br>
                     <div class="form-group">
                       <label class="bmd-label">Marking Scheme</label><br>
@@ -348,6 +367,10 @@
                       <div class="form-group">
                           <label class="bmd-label-floating">Maximum Marks for the question</label>
                           <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required/>
+                      </div><br>
+                      <div class="form-group">
+                        <label class="bmd-label">Enter the Set</label><br>
+                        <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
                       </div><br>
                       <div id="writtenQuestionImages">
                         <div class="form-group">
@@ -399,6 +422,10 @@
                       <label class="bmd-label-floating">Edit Maximum Marks</label><br>
                       <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="mcqMarks" step="0.01" required/>
                     </div><br>
+                    <div class="form-group">
+                      <label class="bmd-label">Enter the Set</label><br>
+                      <input type="text" class="form-control" autocomplete="off" id="mcqSet" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                    </div><br>
                     <label class="bmd-label">Options</label>
                     <div id="editMCQQuestionOptions"></div>
                     <input type="button" onclick="addOptionInEditMode()" class="btn btn-primary" value="Add Option"/>
@@ -410,7 +437,7 @@
                     <br>
                     <div class="form-group">
                       <label class="bmd-label">Edit Correct Options</label><br>
-                      <input type="text" class="form-control" autocomplete="off" name="correctOptions" id="mcqCorrectOptions" placeholder="Correct Options Number. eg: 1,2"/>
+                      <input type="text" class="form-control" autocomplete="off" name="correctOptions" id="mcqCorrectOptions" placeholder="Correct Options Number. eg: 1,2" required/>
                     </div><br>
                     <div class="form-group">
                       <label class="bmd-label">Marking Scheme</label><br>
@@ -452,6 +479,10 @@
                           <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="writtenQuestionMarks" step="0.01" required/>
                       </div>
                       <br>
+                      <div class="form-group">
+                        <label class="bmd-label">Enter the Set</label><br>
+                        <input type="text" class="form-control" autocomplete="off" id="writtenSet" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                      </div><br>
                       <label class="bmd-label">Image Links</label>
                       <div id="editWrittenQuestionImageLink"></div>
                       <input type="button" onclick="addImageLinkInWrittenEditMode()" class="btn btn-primary" value="Add Image Links"/>

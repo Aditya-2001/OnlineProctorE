@@ -17,6 +17,10 @@ const Submission = new Schema({
     required: true,
     autopopulate: true
   },
+  set: {
+    type: String,
+    default: ''
+  },
   submitted: {
     type: Boolean,
     default: false
