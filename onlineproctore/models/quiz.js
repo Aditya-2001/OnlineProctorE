@@ -15,6 +15,14 @@ const Quiz = new Schema({
     type: String,
     required: true
   },
+  setCount: {
+    type: Number,
+    default: 0
+  },
+  setNames: [{
+    type: String,
+    default: ''
+  }],
   labQuiz: {
     type: Boolean,
     default: false
