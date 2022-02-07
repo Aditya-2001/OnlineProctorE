@@ -38,7 +38,8 @@ body{
     padding:10px 15px;
 }
 .quiz-card{
-    height:78vh;
+    min-height:78vh;
+    height: fit-content;
     border: solid 1px gray;
     border-radius: 10px;
     box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
@@ -46,7 +47,8 @@ body{
     padding-bottom: 10px ;
 }
 .side-card-nav{
-    height:78vh;
+    min-height:78vh;
+    height: fit-content;
     border: solid 1px gray;
     border-radius: 10px;
     box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
@@ -324,7 +326,7 @@ body{
 }
 textarea{
     width: 100%;
-    height: 45vh !important;
+    min-height: 38vh !important;
     border-radius: 10px;
     box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
     background-color: #8bf15836;
@@ -344,7 +346,7 @@ td{
         float: unset;
     }
     textarea{
-        height: 30vh !important;
+        min-height: 23vh !important;
     }
     .answer{
         height: 30vh;
@@ -352,7 +354,7 @@ td{
 }
 @media (max-width:377px){
     textarea{
-        height: 25vh !important;
+        min-height: 18vh !important;
     }
     .answer{
         height: 25vh;
@@ -365,7 +367,7 @@ td{
 }
 @media (max-height: 500px){
     textarea{
-        height: 40vh !important;
+        height: 33vh !important;
     }
     .quiz-card{
         height:79vh;
@@ -376,7 +378,7 @@ td{
 }
 @media (max-height: 430px){
     textarea{
-        height: 35vh !important;
+        height: 28vh !important;
     }
     .quiz-card{
         height:80vh;
@@ -387,7 +389,7 @@ td{
 }
 @media (max-height: 360px){
     textarea{
-        height: 30vh !important;
+        height: 23vh !important;
     }
     .quiz-card{
         height:82vh;
@@ -439,4 +441,8 @@ td{
 .card.card-rotate.bg-green .front,
 .card.card-rotate.bg-green .back {
   background: linear-gradient(60deg, #5BB12F, #5BB12F);
+}
+
+.questionImg{
+    width: calc(100% - 1em); height: auto;
 }

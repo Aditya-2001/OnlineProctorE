@@ -137,6 +137,11 @@
                                                         </td>
                                                     </tr>
                                                 </table>
+                                                <div style="text-align: center;">
+                                                <% for(let ic=0; ic<questionSubmissions[i].question.imageLinks.length; ic++){ %>
+                                                    <img class="questionImg" src="<%= 'https://drive.google.com/uc?export=view&id=' + questionSubmissions[i].question.imageLinks[ic].split('/').reverse()[1] %>">
+                                                <% } %>
+                                                </div>
                                             </div> <hr>
                                             <div class="answer1 checkbox">
                                                 <% for(var j=0; j<questionSubmissions[i].question.options.length; j++){ %>
@@ -191,6 +196,11 @@
                                                         </td>
                                                     </tr>
                                                 </table>
+                                                <div style="text-align: center;">
+                                                    <% for(let ic=0; ic<questionSubmissions[i].question.imageLinks.length; ic++){ %>
+                                                        <img class="questionImg" src="<%= 'https://drive.google.com/uc?export=view&id=' + questionSubmissions[i].question.imageLinks[ic].split('/').reverse()[1] %>">
+                                                    <% } %>
+                                                </div>
                                             </div> <hr>
                                             <div class="answer1">
                                                 <div class="sub-answer"><%= questionSubmissions[i].textfield %></div>

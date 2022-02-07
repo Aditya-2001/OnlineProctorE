@@ -88,6 +88,11 @@
                                                         </td>
                                                     </tr>
                                                 </table>
+                                                <div style="text-align: center;">
+                                                    <% for(let ic=0; ic<images[questionSubmissions[i]._id].length; ic++){ %>
+                                                        <img class="questionImg" src="<%= images[questionSubmissions[i]._id][ic] %>" >
+                                                    <% } %>
+                                                </div>
                                             </div> <hr>
                                             <div class="answer1 checkbox">
                                                 <% for(var j=0; j<questionSubmissions[i].question.options.length; j++){ %>
@@ -142,6 +147,11 @@
                                                         </td>
                                                     </tr>
                                                 </table>
+                                                <div style="text-align: center;">
+                                                    <% for(let ic=0; ic<images[questionSubmissions[i]._id].length; ic++){ %>
+                                                        <img class="questionImg" src="<%= images[questionSubmissions[i]._id][ic] %>" >
+                                                    <% } %>
+                                                </div>
                                             </div> <hr>
                                             <div class="answer1">
                                                 <div class="sub-answer"><%= questionSubmissions[i].textfield %></div>
@@ -203,12 +213,6 @@
                                                         </ul>
                                                     </div>
                                                 </div>
-                                            </div><hr>
-                                            <div class="" style="height: fit-content;">
-                                                <form action="<%= submission._id + '/updateMarks' %>" method="POST" style="padding-bottom: 30px; padding-right: 10px; height: fit-content;">
-                                                    <div style="float: right;">
-                                                    </div>
-                                                </form>
                                             </div>
                                         </div>
                                     </div>
