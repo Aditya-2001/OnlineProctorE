@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="./Quiz/img/logo.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Title</title>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- CSS Files -->
+    <link href="./Quiz/css/material-dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./Quiz/css/styles.css">
+</head>
+<body>
+    <div class="wrapper ">
+        <div class="main-panel">
+            <nav class="nbar">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h1 class="heading">OnlineProctorE</h1>
+                    </div>
+                    <div class="col-sm-6 nav-name">
+                        <div class="info">
+                            <table class="info-tab">
+                                <tr>
+                                    <td>
+                                        <span class="start">Name:</span> Ambika Singh Kaushik 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="start">Course:</span> Mini Project 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="start">Time Remaining:</span> <span id="hours"></span><span id="mins"></span><span id="secs"></span><span id="end"></span><br>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="right-tab">
+                                <tr>
+                                    <td>
+                                        <button class="btn btn-primary">Sumbit</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- <span class="start">Name:</span> Ambika Singh Kaushik <br>
+                            <span class="start">Course:</span> Mini Project <br>
+                            <span class="start">Time Remaining:</span> <span id="hours"></span><span id="mins"></span><span id="secs"></span><span id="end"></span> -->
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="content none">
+                <div class="container-fluid">
+                    <div class="row ">
+                        <div class="modal-content card">
+                            <div class="card-header card-header-green">
+                                <h4 class="modal-title" style="font-size: 1.5rem;"><b>Instructions</b></h4>
+                                <hr>
+                                <h5 style="float: right; font-size: 1rem;">Please follow the given instructions</h5>
+                            </div>
+                            <div class="modal-body">
+                                <p style="padding-bottom: 10px">1. Please Wait 1-2 minutes (depending upon your internet connection and system hardware capabilities) as it may take time to load the models.</p>
+                                <p style="padding-bottom: 10px">2. You have to allow both Camera and Microphone to continue to give the test.</p>
+                                <p style="padding-bottom: 10px">3. You have to share your entire screen and enable the <b>"share system audio"</b> checkbox.</p>
+                                <p style="padding-bottom: 10px">4. Do not change Tab or Browser while giving the test.</p>
+                                <p style="padding-bottom: 10px">5. Do not speak or leave your seat while giving the test.</p>
+                                <p style="padding-bottom: 10px">6. Do not copy paste answers from your friends or any other publicly available sources.</p>
+                                <p style="padding-bottom: 10px">7. Do not use Mobile phones.</p>
+                                <span class="pull-right start timer">
+                                    <span id="quiz-start-time">10</span> <br>
+                                    <button type="button" id="start-the-test" class="btn btn-primary pull-right" onclick="startTest()" disabled>Start Test</button>
+                                </span>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 side">
+                            <div class="side-card-nav" id="navigationBar">
+                                <div class="panel panel-default ">
+                                    <div class="panel-body">
+                                        <ul class="pagination test-questions" id="navigator">
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                            <li><a class="test-ques que-not-answered" onclick="akad()" data-href="page01">01</a></li>
+                                        </ul>
+                                    </div>
+                                </div>        
+                            </div>
+                        </div>
+                        <div class="col-lg-9 quiz quiz-card">
+                            <div id="addQuestions">
+                                <div class="ques-ans" id="page02">
+                                    <div class="question">
+                                        <span class="que">Q</span><span class="question-number">1.</span> What is your favourite fruit?
+                                        <div style="text-align: center;">
+                                            <iframe class="questionImage1" src="https://drive.google.com/file/d/1W9KY0Pd33L1XavWug8haqdOE17EMYT73/preview" allow="autoplay" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe> <br>
+                                            <iframe class="questionImage2" src="https://drive.google.com/file/d/1W9KY0Pd33L1XavWug8haqdOE17EMYT73/preview" allow="autoplay" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
+                                            <iframe class="questionImage2" src="https://drive.google.com/file/d/1W9KY0Pd33L1XavWug8haqdOE17EMYT73/preview" allow="autoplay" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
+                                        </div>
+                                    </div> <hr>
+                                    <div class="answer2">
+                                        <textarea name="subjective" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
+                                    </div>
+                                    <div class="blank-space">
+                                    </div>
+                                </div>
+                                <div class="butn">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <a class="btn btn-danger prev-btn" href="#" role="button">Previous</a>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <a class="btn btn-purple rev-btn" href="#" role="button">Mark For Review</a>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <a class="btn btn-primary save-btn btn-save-answer" href="subective.html" >Save and Next</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 side side-card2" >
+                            <div >
+                                <div class="col-self">
+                                    <div style="text-align: center;">
+                                        <table class="mtable">
+                                            <tr>
+                                                <td>
+                                                    Maximum Marks: 
+                                                </td>
+                                                <td>
+                                                    8 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Negative Marks: 
+                                                </td>
+                                                <td>
+                                                    1 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Partial Marking: 
+                                                </td>
+                                                <td>
+                                                    Yes 
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-6" style="float: left;">
+                                        <div class="side-card-video" style="float: left;">
+                                            <video id="video" height="100%" width="100%" autoplay muted></video>
+                                            <canvas id="canvas" width="800" height="680" hidden></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-6" style="float: right;">
+                                        <div class="side-card-video" style="float: right;">
+                                            <video id="video1" height="100%" width="100%" autoplay muted></video>
+                                            <canvas id="canvas1" width="800" height="680" hidden></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-sm-6" style="float: left;">
+                            <div class="side-card-video" style="float: left;">
+                                <video id="video" height="100%" width="100%" autoplay muted></video>
+                                <canvas id="canvas" width="800" height="680" hidden></canvas>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" style="float: right;">
+                            <div class="side-card-video" style="float: right;">
+                                <video id="video1" height="100%" width="100%" autoplay muted></video>
+                                <canvas id="canvas1" width="800" height="680" hidden></canvas>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <div class="content none">
+                <div class="container-fluid">
+                    <div class="row ">
+                        <div class="modal-content card">
+                            <div class="card-header card-header-green">
+                                    <h5 class="modal-title" id="title">Upload PDF File</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" enctype="multipart/form-data" action="#"><input type="hidden" name="csrfmiddlewaretoken" value="Mc81OD05CwmsNbwlYlnNjiF4KPgZ20MSDf2EFxnkBNacN8DgAAB8NqpdikcXMFRF">
+                                    <input type="hidden" name="course_id" id="course_id" class="form-control" required>
+                                    <h4>Upload PDF file in the form rollNumber.pdf (eg. IIT2000100.pdf)</h4>
+                                    <p style="padding-bottom: 10px">1. You have total 15 minutes to generate and upload the pdf file.</p>
+                                    <input type="file" name="image"  required><br><br>
+                                    <span class="pull-right start timer">
+                                        <span id="quiz-start-time">10</span> <br>
+                                        <button type="button" id="start-the-test" class="btn btn-primary pull-right" onclick="startTest()">Upload PDF</button>
+                                    </span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="./Quiz/js/jquery.js"></script>
+    <script src="./Quiz/js/script.js"></script>
+</body>
+</html>
