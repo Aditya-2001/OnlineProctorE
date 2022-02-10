@@ -565,13 +565,6 @@ exports.viewStream = async (req, res) => {
 }
 
 exports.downloadQuizResults = async (req, res) => {
-  // await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
-  //   await Question.find({quiz: quiz._id}, async (err, questions) => {
-  //     const response = await axios.get('https://drive.google.com/uc?export=view&id=1W9KY0Pd33L1XavWug8haqdOE17EMYT73',  { responseType: 'arraybuffer' })
-  //     const buffer = 'data:image/;base64,' + Buffer.from(response.data, "utf-8").toString('base64');
-  //     return res.render('facultyQuiz/questionPaper', {questions: questions, d: buffer});
-  //   }).clone().catch(function(err){console.log(err)});
-  // }).clone().catch(function(err){console.log(err)});
   await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
     const fileName = quiz.quizName+'.zip';
     const fileType = 'application/zip';
@@ -826,4 +819,18 @@ exports.assignSets = async (req, res) => {
     }).clone().catch(function(err){console.log(err)})
   }).clone().catch(function(err){console.log(err)})
   
+}
+
+exports.renderPreviewQuiz = async (req, res) => {
+  await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
+    return res.status(200).render('facultyQuiz/previewQuiz', {quizId: req.quizId, quiz: quiz});
+  }).clone().catch(function(err){console.log(err)});
+}
+
+exports.previewQuiz = async (req, res) => {
+  await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
+    await Question.find({quiz: quiz._id}, async (err, questions) => {
+      return res.status(200).json({quiz: quiz, questions: questions});
+    }).clone().catch(function(err){console.log(err)});
+  }).clone().catch(function(err){console.log(err)});
 }
