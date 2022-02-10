@@ -11,6 +11,7 @@ var questionMarking = new Map();
 function setMarks(){
     var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
     document.getElementById('mm').innerHTML = questionMarking.get(questionId).mm;
+    document.getElementById('set').innerHTML = questionMarking.get(questionId).set;
     if(questionMarking.get(questionId).nm){
         document.getElementById('nm').innerHTML = -questionMarking.get(questionId).nm;
     }
@@ -23,33 +24,14 @@ function setMarks(){
     else{
         document.getElementById('pm').innerHTML = "No";
     }
-    if(questionMarking.get(questionId).checked){
-        if(!document.getElementById('notChecked').classList.contains('none')){
-            document.getElementById('notChecked').classList.add('none');
-        }
-        if(document.getElementById('checked').classList.contains('none')){
-            document.getElementById('checked').classList.remove('none');
-        }
-        console.log(questionMarking.get(questionId).mo);
-        document.getElementById('mo').innerHTML = questionMarking.get(questionId).mo;
-    }
-    else{
-        if(document.getElementById('notChecked').classList.contains('none')){
-            document.getElementById('notChecked').classList.remove('none');
-        }
-        if(!document.getElementById('checked').classList.contains('none')){
-            document.getElementById('checked').classList.add('none');
-        }
-    }
 }
 
 async function getQuizQuestions(){
     var quizId = document.getElementById("quizId").value;
     try{
-        const response = await axios.post(quizId+'/getQuestions',{});
+        const response = await axios.post('',{});
         const quiz = response.data.quiz;
         const questions = response.data.questions;
-        const questionSubmissions = response.data.questionSubmissions;
         var questionCount = questions.length;
         var shuffleOrder = [];
         for (var i=0; i<questionCount; i++){
@@ -65,7 +47,6 @@ async function getQuizQuestions(){
             else{
                 displayQuestion += ' none"';
             }
-            var submission = questionSubmissions.find( ({question}) => question._id === questions[j]._id);
             displayQuestion += 'id="' + questions[j]._id + '"><div class="question"><span class="que">Q</span><span class="question-number">';
             displayQuestion += (i+1) + '.</span>' + questions[j].question;
             displayQuestion += '<div style="text-align: center;">'
@@ -80,7 +61,7 @@ async function getQuizQuestions(){
             }
             displayQuestion += '</div></div> <hr><div class="answer';
             questionsType.set(questions[j]._id, questions[j].mcq);
-            questionMarking.set(questions[j]._id, {'mm': questions[j].maximumMarks, 'nm': questions[j].negativeMarking, 'pm': questions[j].markingScheme, 'mo': submission.marksObtained, 'checked': submission.checked});
+            questionMarking.set(questions[j]._id, {'mm': questions[j].maximumMarks, 'nm': questions[j].negativeMarking, 'pm': questions[j].markingScheme, set: questions[j].set});
             var flag = false;
             if(questions[j].mcq){
                 optionsCount.set(questions[j]._id, questions[j].options.length+1);
@@ -93,19 +74,9 @@ async function getQuizQuestions(){
                     var o = optionsOrder[Math.floor(Math.random() * (optionsCount.get(questions[j]._id)-k-1))];
                     optionsOrder.splice(optionsOrder.indexOf(o), 1);
                     displayQuestion += '<label><input type="checkbox" name="option' + (k+1) + '" value="option' + (k+1) + '" id="option' + (k+1) + questions[j]._id + '"';
-                    if(submission.optionsMarked.includes(questions[j].options[o])){
-                        displayQuestion += ' checked';
-                        flag = true;
-                    }
                     displayQuestion += ' disabled><i class="fa icon-checkbox"></i><span class="options" id="text' + (k+1) + questions[j]._id + '">' + questions[j].options[o] + '</span>';
-                    if(submission.checked){
-                        // submission.optionsMarked.includes(questions[j].options[o]) && 
-                        if(questions[j].correctOptions.includes(questions[j].options[o])){
-                            displayQuestion += '<i class="icon fa fa-check text-success fa-fw " title="Correct" aria-label="Correct"></i>';
-                        }
-                        else if(submission.optionsMarked.includes(questions[j].options[o])){
-                            displayQuestion += '<i class="icon fa fa-remove text-danger fa-fw red" title="Incorrect" aria-label="Incorrect"></i>';
-                        }
+                    if(questions[j].correctOptions.includes(questions[j].options[o])){
+                        displayQuestion += '<i class="icon fa fa-check text-success fa-fw " title="Correct" aria-label="Correct"></i>';
                     }
                     displayQuestion += '</label><br>';
                 }
@@ -121,7 +92,6 @@ async function getQuizQuestions(){
                 setMarks();
             }
             if(!questions[j].mcq){
-                document.getElementById("text1"+questions[j]._id).value = submission.textfield;
                 var answer = $.trim($("#text1"+questions[j]._id).val());
                 if(answer == ''){}
                 else{
@@ -129,18 +99,7 @@ async function getQuizQuestions(){
                 }
             }
             var navigation = '<li><button id="display' + questions[j]._id + '" class="test-ques ';
-            if(submission.markedForReview){
-                navigation += 'que-mark';
-            }
-            else if(flag){
-                navigation += 'que-save';
-            }
-            else if(submission.notAnswered){
-                navigation += 'que-not-answered';
-            }
-            else{
-                navigation += 'que-not-attempted';
-            }
+            navigation += 'que-not-attempted';
             navigation += '" onclick="display(\'' + questions[j]._id + '\')"';
             if(quiz.disablePrevious){
                 navigation += ' disabled>';
@@ -159,8 +118,8 @@ async function getQuizQuestions(){
 }
 
 function goBack(){
-    var courseId = document.getElementById('courseId').value;
-    window.location.href = '/dashboard/user/course/'+courseId;
+    var quizId = document.getElementById('quizId').value;
+    window.location.href = '/dashboard/faculty/quiz/'+quizId;
 }
 
 $(document).ready(function(){

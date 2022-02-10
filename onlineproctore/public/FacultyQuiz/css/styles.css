@@ -541,6 +541,13 @@ h4{
     }
 }
 
-.questionImg{
-    width: calc(100% - 20rem); height: auto;
+.questionImage1{
+    width: 600px;
+    height: 450px;
+    margin-bottom: 5px;
+}
+.questionImage2{
+    width: 400px;
+    height: 300px;
+    margin: 5px;
 }

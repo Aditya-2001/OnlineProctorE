@@ -19,6 +19,13 @@ body{
     /* text-align: right; */
     line-height: 1.5;
 }
+.timer{
+    font-family:cursive;
+    color: #5BB12F;
+    font-size: 1rem;
+    /* text-align: right; */
+    line-height: 1.5;
+}
 .info{
     float: right;
 }
@@ -38,7 +45,7 @@ body{
     padding:10px 15px;
 }
 .quiz-card{
-    min-height:78vh;
+    /* min-height:78vh; */
     height: fit-content;
     border: solid 1px gray;
     border-radius: 10px;
@@ -47,13 +54,14 @@ body{
     padding-bottom: 10px ;
 }
 .side-card-nav{
-    min-height:78vh;
-    height: fit-content;
+    /* min-height:78vh; */
+    /* height: 50%; */
     border: solid 1px gray;
     border-radius: 10px;
     box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
     background-color: #fff;
     padding-bottom: 10px ;
+    margin-bottom: 10px;
 }
 .side-card-video{
     margin-top: 10px; 
@@ -64,11 +72,29 @@ body{
     box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
     background-color: #fff;
 }
+.side-card2{
+    height: fit-content; 
+    /* margin-left: 10px; */
+    padding: 10px;
+    border: solid 1px gray;
+    border-radius: 10px;
+    box-shadow: 20px 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
+    background-color: #fff;
+}
+.instructions-card{
+    height: 78vh; 
+    /* margin-left: 10px; */
+    padding: 10px;
+    border: solid 1px gray;
+    border-radius: 10px;
+    box-shadow: 20px 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
+    background-color: #fff;
+}
 .panel-default{
     padding-top: 10px;
 }
 .panel-body{
-    height:70vh; 
+    height:80px; 
     overflow-y:scroll;
 }
 .question{
@@ -80,6 +106,11 @@ body{
     line-height: 2;
     height: 50vh;
     overflow-y:scroll;
+}
+.answer2{
+    padding: 5px 35px;
+    line-height: 2;
+    height: 50vh;
 }
 .options{
     padding-left: 10px;
@@ -326,7 +357,7 @@ body{
 }
 textarea{
     width: 100%;
-    height: 45vh !important;
+    height: 250px !important;
     border-radius: 10px;
     box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
     background-color: #8bf15836;
@@ -335,88 +366,13 @@ textarea{
 td{
     margin-right: 10px;
 }
-@media (max-width: 575px){
-    .nbar{
-        text-align:center;
-    }
-    .nav-name{
-        text-align: left;
-    }
-    .info{
-        float: unset;
-    }
-    textarea{
-        height: 30vh !important;
-    }
-    .answer{
-        height: 30vh;
-    }
-}
-@media (max-width:377px){
-    textarea{
-        height: 25vh !important;
-    }
-    .answer{
-        height: 25vh;
-    }
-}
-@media (max-height: 575px){
-    .answer{
-        height: 43vh;
-    }
-}
-@media (max-height: 500px){
-    textarea{
-        height: 40vh !important;
-    }
-    .quiz-card{
-        height:79vh;
-    }
-    .answer{
-        height: 40vh;
-    }
-}
-@media (max-height: 430px){
-    textarea{
-        height: 35vh !important;
-    }
-    .quiz-card{
-        height:80vh;
-    }
-    .answer{
-        height: 35vh;
-    }
-}
-@media (max-height: 360px){
-    textarea{
-        height: 30vh !important;
-    }
-    .quiz-card{
-        height:82vh;
-    }
-    .answer{
-        height: 30vh;
-    }
-}
-@media (max-height: 335px){
-    textarea{
-        height: 100px !important;
-    }
-    .quiz-card{
-        height:275px;
-    }
-    .side-card-nav{
-        height:156px;
-    }
-    .side-card-video{
-        height: 110px; 
-    }
-    .answer{
-        height: 100px;
-    }
-}
-.qtable{
-    width: 100%;
+.mtable{
+    font-family:cursive;
+    color: #5BB12F;
+    font-size: 1rem;
+    /* text-align: right; */
+    line-height: 1.5;
+    width: 80%;
 }
 .quest{
     width: 90%;
@@ -433,7 +389,6 @@ td{
 .card .card-header-green .card-text{
   box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(30, 161, 30, 0.4);
 }
-
 .card .card-header-green .card-icon,
 .card .card-header-green .card-text,
 .card .card-header-green:not(.card-header-icon):not(.card-header-text),
@@ -442,7 +397,88 @@ td{
 .card.card-rotate.bg-green .back {
   background: linear-gradient(60deg, #5BB12F, #5BB12F);
 }
+.blank-space{
+    height: 50px;
+}
+.questionImage1{
+    width: 600px;
+    height: 450px;
+    margin-bottom: 5px;
+}
+.questionImage2{
+    width: 400px;
+    height: 300px;
+    margin: 5px;
+}
+.side{
+    height: 100%;
+    display:flow-root;
+}
+.col-seld{
+    height: 25%;
+}
 
-.questionImg{
-    width: calc(100% - 1em); height: auto;
+@media (max-width: 991px){
+    #navigationBar{
+        height: fit-content;
+    }
+}
+@media (max-width: 710px){
+    .questionImage1{
+        width: 100%;
+        height: 75vw;
+    }
+}
+@media (max-width: 575px){
+    .nbar{
+        text-align:center;
+    }
+    .nav-name{
+        text-align: left;
+    }
+    .info{
+        float: unset;
+    }
+    .blank-space{
+        height: 150px;
+    }
+}
+@media (max-width: 510px){
+    .questionImage2{
+        width: 100%;
+        height: 75vw;
+    }
+}
+@media (max-width:377px){
+    textarea{
+        height: 25vh !important;
+    }
+    .answer{
+        height: 25vh;
+    }
+}
+@media (max-height: 550px){
+    textarea{
+        height: 220px !important;
+    }
+}
+@media (max-height: 485px){
+    textarea{
+        height: 200px !important;
+    }
+}
+@media (max-height: 445px){
+    textarea{
+        height: 150px !important;
+    }
+}
+@media (max-height: 350px){
+    textarea{
+        height: 100px !important;
+    }
+}
+@media (max-height: 250px){
+    textarea{
+        height: 50px !important;
+    }
 }
