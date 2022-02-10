@@ -1,10 +1,29 @@
 var questionsType = new Map();
+var questionMarking = new Map();
 var optionsCount = new Map();
 const peers = {};
 const peersScreen = {};
 var socket;
 let setHeight;
 var myPeer, myPeerScreen;
+var leftTime=10;
+var testStarted = false;
+function startTest(){
+    testStarted = true;
+    document.getElementById('quizInstructionsDiv').classList.add('none');
+    document.getElementById('quizQuestionsDiv').classList.remove('none');
+}
+var leftTimeInterval=setInterval(function(){
+    if(leftTime==0){
+        clearInterval(leftTimeInterval);
+        document.getElementById("quiz-start-time").innerHTML="";
+        document.getElementById("start-the-test").removeAttribute("disabled");
+    }
+    else{
+        leftTime-=1;
+        document.getElementById("quiz-start-time").innerText=(leftTime+" sec");
+    }
+},1000);
 
 window.onload = function() {
     var myfunc = setInterval(function() {
@@ -58,38 +77,35 @@ window.onload = function() {
             }
         }
     }, 1000);
-    // sendIP();
-    // AudioVideoDetection();
-    // startSharing();
-    // cocoSsd.load().then(function (loadedModel) {
-    //     model = loadedModel;
-    //     enableCam();
-    // });
+    sendIP();
+    AudioVideoDetection();
+    startSharing();
+    cocoSsd.load().then(function (loadedModel) {
+        model = loadedModel;
+        enableCam();
+    });
     getQuizQuestions();
-    setHeight = setInterval(()=>{
-        $('#navigationBar').height($('#addQuestions').height());
-    }, 1000)
-    // socket = io("/");
-    // myPeer = new Peer(undefined, {
-    //     path: '/peerjs',
-    //     host: '/',
-    //     port: '443'
-    // })
-    // myPeerScreen = new Peer(undefined, {
-    //     path: '/peerjs',
-    //     host: '/',
-    //     port: '443'
-    // })
-    // myPeer.on('open', id => {
-    //     socket.emit('join-room1', ROOM_ID + '1', id);
-    // })
-    // myPeerScreen.on('open', id => {
-    //     socket.emit('join-room2', ROOM_ID + '2', id);
-    // })
-    // socket.on('user-disconnected', userId => {
-    //     if (peers[userId]) peers[userId].close()
-    //     if (peersScreen[userId]) peersScreen[userId].close()
-    // })
+    socket = io("/");
+    myPeer = new Peer(undefined, {
+        path: '/peerjs',
+        host: '/',
+        port: '443'
+    })
+    myPeerScreen = new Peer(undefined, {
+        path: '/peerjs',
+        host: '/',
+        port: '443'
+    })
+    myPeer.on('open', id => {
+        socket.emit('join-room1', ROOM_ID + '1', id);
+    })
+    myPeerScreen.on('open', id => {
+        socket.emit('join-room2', ROOM_ID + '2', id);
+    })
+    socket.on('user-disconnected', userId => {
+        if (peers[userId]) peers[userId].close()
+        if (peersScreen[userId]) peersScreen[userId].close()
+    })
 };
 
 async function getQuizQuestions(){
@@ -125,14 +141,21 @@ async function getQuizQuestions(){
             else{
                 displayQuestion += ' none"';
             }
-            displayQuestion += 'id="' + questions[j]._id + '"><div class="question"><table class="qtable"><tr><td class="quest"><span class="que">Q</span><span class="question-number">';
-            displayQuestion += (i+1) + '.</span>' + questions[j].question + '</td><td class="marks"><table class="marks-table"><tr><td>MM:'+ questions[j].maximumMarks +'</td></tr><tr><td><span class="marks-assigned-zero"> Neg. Marks:'+questions[j].negativeMarking+'</span></td></tr></table></td></tr></table>';
+            displayQuestion += 'id="' + questions[j]._id + '"><div class="question"><span class="que">Q</span><span class="question-number">';
+            displayQuestion += (i+1) + '.</span>' + questions[j].question;
             displayQuestion += '<div style="text-align: center;">'
             for(var ic=0; ic<questions[j].imageLinks.length; ic++){
-                displayQuestion += '<img class="questionImg" src="https://drive.google.com/uc?export=view&id='+questions[j].imageLinks[ic].split('/').reverse()[1]+'">';
+                if(ic==0){
+                    displayQuestion += '<iframe class="questionImage1" src="https://drive.google.com/file/d/'+questions[j].imageLinks[ic].split('/').reverse()[1]+'/preview"allow="autoplay" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe><br>';
+                    continue;
+                }
+                else{
+                    displayQuestion += '<iframe class="questionImage2" src="https://drive.google.com/file/d/'+questions[j].imageLinks[ic].split('/').reverse()[1]+'/preview"allow="autoplay" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>';
+                }
             }
             displayQuestion += '</div></div> <hr><div class="answer';
             questionsType.set(questions[j]._id, questions[j].mcq);
+            questionMarking.set(questions[j]._id, {'mm': questions[j].maximumMarks, 'nm': questions[j].negativeMarking, 'pm': questions[j].markingScheme})
             var submission = questionSubmissions.find( ({question}) => question._id === questions[j]._id);
             var flag = false;
             if(questions[j].mcq){
@@ -152,14 +175,17 @@ async function getQuizQuestions(){
                     }
                     displayQuestion += '><i class="fa icon-checkbox"></i><span class="options" id="text' + (k+1) + questions[j]._id + '">' + questions[j].options[o] + '</span></label><br>';
                 }
-                displayQuestion += '</div></div>';
+                displayQuestion += '</div><div class="blank-space"></div></div>';
             }
             else{
                 optionsCount.set(questions[j]._id, 1);
                 displayQuestion += '"><textarea class="disable" id="text1' + questions[j]._id + '" name="subjective" onkeydown=';
-                displayQuestion += '"if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+\'\t\'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea></div></div>';
+                displayQuestion += '"if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+\'\t\'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea></div><div class="blank-space"></div></div>';
             }
             $('#addQuestions').append(displayQuestion);
+            if(i==0){
+                setMarks();
+            }
             if(!questions[j].mcq){
                 document.getElementById("text1"+questions[j]._id).value = submission.textfield;
                 var answer = $.trim($("#text1"+questions[j]._id).val());
@@ -315,6 +341,22 @@ function markQuestion() {
         console.log(error);
     }
 }
+function setMarks(){
+    var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
+    document.getElementById('mm').innerHTML = questionMarking.get(questionId).mm;
+    if(questionMarking.get(questionId).nm){
+        document.getElementById('nm').innerHTML = -questionMarking.get(questionId).nm;
+    }
+    else{
+        document.getElementById('nm').innerHTML = questionMarking.get(questionId).nm;
+    }
+    if(questionMarking.get(questionId).pm){
+        document.getElementById('pm').innerHTML = "Yes";
+    }
+    else{
+        document.getElementById('pm').innerHTML = "No";
+    }
+}
 
 $(document).ready(function(){
     $('.next').click(function(){
@@ -323,8 +365,7 @@ $(document).ready(function(){
         $('.quiz-card').find('.ques-ans.active').next().addClass('active');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('none');
         $('.quiz-card').find('.ques-ans.active').prev().removeClass('active');
-        clearInterval(setHeight);
-        $('#navigationBar').height($('#addQuestions').height());
+        setMarks();
     })
     $('.mark').click(function(){
         markQuestion();
@@ -332,8 +373,7 @@ $(document).ready(function(){
         $('.quiz-card').find('.ques-ans.active').next().addClass('active');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('none');
         $('.quiz-card').find('.ques-ans.active').prev().removeClass('active');
-        clearInterval(setHeight);
-        $('#navigationBar').height($('#addQuestions').height());
+        setMarks();
     })
     $('.prev').click(function(){
         nextOrPrevQuestion();
@@ -341,8 +381,7 @@ $(document).ready(function(){
         $('.quiz-card').find('.ques-ans.active').prev().addClass('active');
         $('.quiz-card').find('.ques-ans.active').next().addClass('none');
         $('.quiz-card').find('.ques-ans.active').next().removeClass('active');
-        clearInterval(setHeight);
-        $('#navigationBar').height($('#addQuestions').height());
+        setMarks();
     })
     $('.submit').click(function(){
         submitPaper();
@@ -358,14 +397,16 @@ function submitPaper(){
         var data = {
             submissionId: submissionId
         };
-        try{
-            var response = axios.post(quizId + '/submit', data);
-            response.then( result => {
-                window.location.href = result.data.url;
-            })
-        }
-        catch(error){
-            console.log(error);
+        if(testStarted){
+            try{
+                var response = axios.post(quizId + '/submit', data);
+                response.then( result => {
+                    window.location.href = result.data.url;
+                })
+            }
+            catch(error){
+                console.log(error);
+            }
         }
     }
 }
@@ -507,12 +548,14 @@ function audioDetection(stream){
                 var data = {
                     submissionId: submissionId
                 };
-                try{
-                    console.log('sending audio detection');
-                    axios.post(quizId + '/audio', data);
-                }
-                catch(error){
-                    console.log(error);
+                if(testStarted){
+                    try{
+                        console.log('sending audio detection');
+                        axios.post(quizId + '/audio', data);
+                    }
+                    catch(error){
+                        console.log(error);
+                    }
                 }
             }
         }
@@ -540,11 +583,13 @@ $(window).blur(function() {
         submissionId: submissionId
     };
     givingTest = false;
-    try{
-        axios.post(quizId + '/windowBlurred', data);
-    }
-    catch(error){
-        console.log(error);
+    if(testStarted){
+        try{
+            axios.post(quizId + '/windowBlurred', data);
+        }
+        catch(error){
+            console.log(error);
+        }
     }
 });
 
@@ -610,11 +655,13 @@ function connectWithScreenRecorder(){
             frame: frame,
             type: 796
         };
-        try{
-            axios.post(quizId + '/tabChanged', data);
-        }
-        catch(error){
-            console.log(error);
+        if(testStarted){
+            try{
+                axios.post(quizId + '/tabChanged', data);
+            }
+            catch(error){
+                console.log(error);
+            }
         }
         return 0;
     }
@@ -635,11 +682,13 @@ function checkScreenSharing(){
             var data = {
                 submissionId: submissionId
             };
-            try{
-                axios.post(quizId + '/screenSharingOff', data);
-            }
-            catch(error){
-                console.log(error);
+            if(testStarted){
+                try{
+                    axios.post(quizId + '/screenSharingOff', data);
+                }
+                catch(error){
+                    console.log(error);
+                }
             }
             startSharing();
         }
@@ -674,16 +723,18 @@ function predictWebcam() {
                         frame: frame,
                         type: 554
                     };
-                    try{
-                        // console.log('mobile');
-                        axios.post(quizId + '/mobileDetected', data);
-                    }
-                    catch(error){
-                        console.log(error);
+                    if(testStarted){
+                        try{
+                            // console.log('mobile');
+                            axios.post(quizId + '/mobileDetected', data);
+                        }
+                        catch(error){
+                            console.log(error);
+                        }
                     }
                 }
                 if(predictions[n].class === 'person'){
-                    // console.log('face');
+                    console.log('face');
                     count++;
                 }
             }
@@ -694,24 +745,28 @@ function predictWebcam() {
                 frame: frame,
                 type: 239
             };
-            try{
-                // console.log('multiple face');
-                axios.post(quizId + '/multipleFace', data);
-            }
-            catch(error){
-                console.log(error);
+            if(testStarted){
+                try{
+                    // console.log('multiple face');
+                    axios.post(quizId + '/multipleFace', data);
+                }
+                catch(error){
+                    console.log(error);
+                }
             }
         }
         else if(count === 0){
             var data = {
                 submissionId: submissionId,
             };
-            try{
-                // console.log('no person');
-                axios.post(quizId + '/noPerson', data);
-            }
-            catch(error){
-                console.log(error);
+            if(testStarted){
+                try{
+                    console.log('no person');
+                    axios.post(quizId + '/noPerson', data);
+                }
+                catch(error){
+                    console.log(error);
+                }
             }
         }
         // Call this function again to keep predicting when the browser is ready.
