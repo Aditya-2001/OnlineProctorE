@@ -18,6 +18,18 @@ exports.register = async (req, res) => {
   res.end('hh');
 }
 
+exports.renderLogin = async (req, res) => {
+  let token=req.cookies.auth;
+  User.findByToken(token, (err,user)=>{
+    if(user){
+      return res.redirect('/dashboard');
+    }
+    else{
+      return res.render('login/login');
+    }
+  })
+}
+
 exports.login = (req,res) => {
   let token=req.cookies.auth;
   req.body.username = req.body.username.toLowerCase();

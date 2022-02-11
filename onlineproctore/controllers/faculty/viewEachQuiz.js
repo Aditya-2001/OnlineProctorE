@@ -282,11 +282,18 @@ exports.addWrittenQuestion = async (req, res) => {
   }
   var writtenQuestion = {quiz: quizId, set: set, question: quizQuestion, maximumMarks: maximumMarks, note: note, imageLinks: imageLinks};
   const newQuestion = new Question(writtenQuestion);
-  await Question.findOne(writtenQuestion, (err, foundQuestion) => {
-    if(err) console.log(err);
-    if(foundQuestion) console.log('Question Already Exists');
-    if(!foundQuestion) newQuestion.save();
-    res.status(200).redirect(req.get('referer'));
+  await Quiz.findOne({_id: quizId}, async (err, quiz) => {
+    if(!quiz.setNames.includes(set)){
+      quiz.setNames.push(set);
+      quiz.setCount += 1;
+      quiz.save();
+    }
+    await Question.findOne(writtenQuestion, (err, foundQuestion) => {
+      if(err) console.log(err);
+      if(foundQuestion) console.log('Question Already Exists');
+      if(!foundQuestion) newQuestion.save();
+      res.status(200).redirect(req.get('referer'));
+    }).clone().catch(function(err){console.log(err)})
   }).clone().catch(function(err){console.log(err)})
 }
 
@@ -328,11 +335,18 @@ exports.addMCQQuestion = async (req, res) => {
     negativeMarking: negativeMarking, imageLinks: imageLinks};
   const newQuestion = new Question(mcqQuestion);
   console.log(newQuestion);
-  await Question.findOne(mcqQuestion, (err, foundQuestion) => {
-    if(err) console.log(err);
-    if(foundQuestion) console.log('Question Already Exists');
-    if(!foundQuestion) newQuestion.save();
-    return res.status(204).send();
+  await Quiz.findOne({_id: quizId}, async (err, quiz) => {
+    if(!quiz.setNames.includes(set)){
+      quiz.setNames.push(set);
+      quiz.setCount += 1;
+      quiz.save();
+    }
+    await Question.findOne(mcqQuestion, (err, foundQuestion) => {
+      if(err) console.log(err);
+      if(foundQuestion) console.log('Question Already Exists');
+      if(!foundQuestion) newQuestion.save();
+      return res.status(204).send();
+    }).clone().catch(function(err){console.log(err)})
   }).clone().catch(function(err){console.log(err)})
 }
 
