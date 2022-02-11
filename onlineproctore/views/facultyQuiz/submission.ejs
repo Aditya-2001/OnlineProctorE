@@ -227,15 +227,17 @@
                                                 <div class="panel panel-default">
                                                     <div class="panel-heading">
                                                         <h4 class="panel-title">
-                                                        <div data-toggle="collapse" href=<%= "#collapse2" + i %> onclick="page('<%= i %>')" >Similarity match from other students</div>
+                                                        <div data-toggle="collapse" href="<%= '#collapse2' + i %>" onclick="page('<%= i %>')" >Similarity match from other students</div>
                                                         </h4>
                                                     </div>
-                                                    <div id=<%= "collapse2" + i %> class="panel-collapse collapse cont1">  
-                                                        <div class=<%= "container1" + i %>>
+                                                    <div id="<%= 'collapse2' + i %>" class="panel-collapse collapse cont1">  
+                                                        <div class="<%= 'container1' + i %>">
                                                             <div class="row" id="<%= 'row' + i %>">
                                                                 <% questionSubmissions[i].studentPlagiarism.sort((a,b) => (a.percent > b.percent) ? -1 : 1).forEach(similarity => { %>
-                                                                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 single-item1" data-bs-toggle="modal" data-bs-target=<%= "#modal" +String(questionSubmissions[i]._id+similarity.username.toUpperCase()) %>>
-                                                                        <div class="btn plag-student-box"><%= similarity.username.toUpperCase() + " — " +similarity.percent*100 + "%" %> </div>
+                                                                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 single-item1" data-bs-toggle="modal" data-bs-target= "<%= '#modal' +String(questionSubmissions[i]._id+similarity.username.toUpperCase()) %>" >
+                                                                        <div class="btn plag-student-box"> 
+                                                                            <%= similarity.username.toUpperCase() + " — " +similarity.percent*100 + "%" %> 
+                                                                        </div>
                                                                     </div>
                                                                     <div class="modal fade" id="modal<%= String(questionSubmissions[i]._id+similarity.username.toUpperCase()) %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                                         <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
@@ -256,8 +258,8 @@
                                                                                   </form>
                                                                               </div>
                                                                             </div>
-                                                                          </div>
-                                                                      </div>
+                                                                        </div>
+                                                                    </div>
                                                                 <% }) %>
                                                             </div>
                                                             
