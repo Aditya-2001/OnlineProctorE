@@ -10,9 +10,21 @@ const device = require('express-device');
 const config = require('./config');
 const {auth} = require('./controllers/login_logout/authenticate');
 var app = express();
+const http = require('http');
+const https = require('https');
+const httpPort = process.env.PORT || 3000;
+const httpsPort = 3443;
+const privateKey = fs.readFileSync('./bin/certificates/private.key')
+const certificate = fs.readFileSync('./bin/certificates/certificate.pem')
+const credentials = {
+  key: privateKey,
+  cert: certificate
+}
+var HOST = 'localhost';
 
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const server = http.createServer(app).listen(httpPort, HOST, () => { console.log('Main Server listening to port ' + httpPort) });
+const secureServer = https.createServer(credentials, app).listen(httpsPort, HOST, () => { console.log('Peer Server listening to port ' + httpsPort) })
+const io = require('socket.io')(secureServer);
 const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
   debug: true
@@ -82,9 +94,3 @@ io.on('connection', socket => {
     })
   });
 })
-
-var port = process.env.PORT || 3000;
-var HOST = 'localhost';
-server.listen(port, HOST, () => {
-  console.log('server is listening on port:', port)
-});

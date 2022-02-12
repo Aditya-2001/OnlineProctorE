@@ -62,7 +62,7 @@
                                                 <table class="qtable">
                                                     <tr>
                                                         <td class="quest">
-                                                            <span class="que">Q</span><span class="question-number"><%= i+1 %>.</span> <%= questionSubmissions[i].question.question %>
+                                                            <span class="que">Q</span><span class="question-number"><%= i+1 %>.</span> <span class="q"> <%= questionSubmissions[i].question.question %></span>
                                                         </td>
                                                         <td class="marks">
                                                             <table class="marks-table">
@@ -88,9 +88,9 @@
                                                         </td>
                                                     </tr>
                                                 </table>
-                                                <div style="text-align: center;">
+                                                <div>
                                                     <% for(let ic=0; ic<images[questionSubmissions[i]._id].length; ic++){ %>
-                                                        <img class="questionImg" src="<%= images[questionSubmissions[i]._id][ic] %>" >
+                                                        <span class="q" style="font-size: 1rem;"><%= 'Image' + ic %>: <%= images[questionSubmissions[i]._id][ic] %><br></span>
                                                     <% } %>
                                                 </div>
                                             </div> <hr>
@@ -121,7 +121,7 @@
                                                 <table class="qtable">
                                                     <tr>
                                                         <td class="quest">
-                                                            <span class="que">Q</span><span class="question-number"><%= i+1 %>.</span> <%= questionSubmissions[i].question.question %>
+                                                            <span class="que">Q</span><span class="question-number"><%= i+1 %>.</span> <span class="q"> <%= questionSubmissions[i].question.question %></span>
                                                         </td>
                                                         <td class="marks">
                                                             <table class="marks-table">
@@ -147,9 +147,9 @@
                                                         </td>
                                                     </tr>
                                                 </table>
-                                                <div style="text-align: center;">
+                                                <div>
                                                     <% for(let ic=0; ic<images[questionSubmissions[i]._id].length; ic++){ %>
-                                                        <img class="questionImg" src="<%= images[questionSubmissions[i]._id][ic] %>" >
+                                                        <span class="q" style="font-size: 1rem;"><%= 'Image' + ic %>: <%= images[questionSubmissions[i]._id][ic] %><br></span>
                                                     <% } %>
                                                 </div>
                                             </div> <hr>

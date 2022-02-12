@@ -30,6 +30,9 @@
 
         */
         /*     brand Colors              */
+        html {
+          zoom: 0.6;
+        }
         .card {
           font-size: .875rem;
         }
@@ -19851,6 +19854,10 @@
           font-size: 2rem;
           line-height: 1.5;
         }
+        .q{
+          font-family: cursive;
+          line-height: 1.5;
+        }
         .butn{
           padding-left: 23px;
           padding-right: 55px;
@@ -20329,7 +20336,7 @@
                                         <table class="qtable">
                                             <tr>
                                                 <td class="quest">
-                                                    <span class="que">Q</span><span class="question-number"><%= i+1 %>.</span> <%= questions[i].question %>
+                                                    <span class="que">Q</span><span class="question-number"><%= i+1 %>.</span> <span class="q"><%= questions[i].question %></span>
                                                 </td>
                                                 <td class="marks">
                                                     <table class="marks-table">
@@ -20342,9 +20349,9 @@
                                                 </td>
                                             </tr>
                                         </table>
-                                        <div style="text-align: center;">
+                                        <div>
                                             <% for(let ic=0; ic<images[questions[i]._id].length; ic++){ %>
-                                                <img class="questionImg" src="<%= images[questions[i]._id][ic] %>" >
+                                              <span class="q" style="font-size: 1rem;"><%= 'Image' + ic %>: <%= images[questions[i]._id][ic] %><br></span>
                                             <% } %>
                                         </div>
                                     </div> <hr>
@@ -20367,7 +20374,7 @@
                                     <table class="qtable">
                                         <tr>
                                             <td class="quest">
-                                                <span class="que">Q</span><span class="question-number"><%= i+1 %>.</span> <%= questions[i].question %>
+                                                <span class="que">Q</span><span class="question-number"><%= i+1 %>.</span> <span class="q"><%= questions[i].question %></span>
                                             </td>
                                             <td class="marks">
                                                 <table class="marks-table">
@@ -20380,9 +20387,9 @@
                                             </td>
                                         </tr>
                                     </table>
-                                    <div style="text-align: center;">
+                                    <div>
                                         <% for(let ic=0; ic<images[questions[i]._id].length; ic++){ %>
-                                            <img class="questionImg" src="<%= images[questions[i]._id][ic] %>" >
+                                          <span class="q" style="font-size: 1rem;"><%= 'Image' + ic %>: <%= images[questions[i]._id][ic] %><br></span>
                                         <% } %>
                                     </div>
                                 </div>

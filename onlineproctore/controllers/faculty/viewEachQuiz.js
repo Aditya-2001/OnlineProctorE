@@ -635,10 +635,11 @@ exports.downloadQuizResults = async (req, res) => {
                     images[question._id] = [];
                     let addImages = question.imageLinks.map(function(link, index){
                       return new Promise(async function(resolve){
-                        const id = link.split('/').reverse()[1];
-                        const response = await axios.get('https://drive.google.com/uc?export=view&id='+id,  { responseType: 'arraybuffer' })
-                        const buffer = 'data:image/;base64,' + Buffer.from(response.data, "utf-8").toString('base64');
-                        images[question._id].push(buffer);
+                        // const id = link.split('/').reverse()[1];
+                        // const response = await axios.get('https://drive.google.com/uc?export=view&id='+id,  { responseType: 'arraybuffer' })
+                        // const buffer = 'data:image/;base64,' + Buffer.from(response.data, "utf-8").toString('base64');
+                        // images[question._id].push(buffer);
+                        images[question._id].push(link);
                         resolve();
                       })
                     })
@@ -651,7 +652,7 @@ exports.downloadQuizResults = async (req, res) => {
                   ejs.renderFile(path.resolve(__dirname,'../../views/facultyQuiz/questionPaper.ejs'), {
                     questions: questions,
                     images: images
-                  }, function(err, data){
+                  }, async function(err, data){
                     let options = {
                       "height": "11.25in",
                       "width": "8.5in",
@@ -662,15 +663,9 @@ exports.downloadQuizResults = async (req, res) => {
                         "height": "20mm",
                       },
                     };
-                    pdf.create(data, options).toFile(quiz.quizName+"_Set "+set+"_"+quiz._id+".pdf", async function (err, data) {
-                      if (err) {
-                        return res.status(204).send();
-                      }
-                      else {
-                        await zip.addLocalFile(path.resolve(__dirname,'../../'+quiz.quizName+'_Set '+set+'_'+quiz._id+'.pdf'));
-                        removeFile(path.resolve(__dirname,'../../'+quiz.quizName+'_Set '+set+'_'+quiz._id+'.pdf'));
-                        resolve();
-                      }
+                    pdf.create(data, options).toBuffer(async function(err, buffer){
+                      await zip.addFile(quiz.quizName+"_Set "+set+"_"+quiz._id+".pdf", Buffer.from(buffer, "utf8"));
+                      resolve();
                     });
                   })
                 })
@@ -731,10 +726,11 @@ exports.downloadStudentSubmissions = async (req, res) => {
                 images[questionSubmission._id] = [];
                 let addImages = questionSubmission.question.imageLinks.map(function(link, index){
                   return new Promise(async function(resolve){
-                    const id = link.split('/').reverse()[1];
-                    const response = await axios.get('https://drive.google.com/uc?export=view&id='+id,  { responseType: 'arraybuffer' })
-                    const buffer = 'data:image/;base64,' + Buffer.from(response.data, "utf-8").toString('base64');
-                    images[questionSubmission._id].push(buffer);
+                    // const id = link.split('/').reverse()[1];
+                    // const response = await axios.get('https://drive.google.com/uc?export=view&id='+id,  { responseType: 'arraybuffer' })
+                    // const buffer = 'data:image/;base64,' + Buffer.from(response.data, "utf-8").toString('base64');
+                    // images[questionSubmission._id].push(buffer);
+                    images[questionSubmission._id].push(link);
                     resolve();
                   })
                 })
@@ -762,15 +758,9 @@ exports.downloadStudentSubmissions = async (req, res) => {
                     "height": "20mm",
                   },
                 };
-                pdf.create(data, options).toFile(submission.user.username.toUpperCase()+"_"+submission.quiz._id+".pdf", async function (err, data) {
-                  if (err) {
-                    return res.status(204).send();
-                  }
-                  else {
-                    await zip.addLocalFile(path.resolve(__dirname,'../../'+submission.user.username.toUpperCase()+'_'+submission.quiz._id+'.pdf'));
-                    removeFile(path.resolve(__dirname,'../../'+submission.user.username.toUpperCase()+'_'+submission.quiz._id+'.pdf'));
-                    resolve();
-                  }
+                pdf.create(data, options).toBuffer(async function(err, buffer){
+                  await zip.addFile(submission.user.username.toUpperCase()+"_"+submission.quiz._id+".pdf", Buffer.from(buffer, "utf8"));
+                  resolve();
                 });
               })
             })
