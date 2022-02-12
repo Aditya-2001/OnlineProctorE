@@ -85,6 +85,12 @@ exports.endTest = async (req, res) => {
   }).clone().catch(function(err){console.log(err)})
 }
 
+exports.getTime = async (req, res) => {
+  return res.status(200).json({
+    time: new Date().getTime()
+  });
+}
+
 exports.ipAddress = async (req, res) => {
   await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
     if(submission){

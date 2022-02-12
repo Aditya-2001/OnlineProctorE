@@ -27,7 +27,11 @@ var leftTimeInterval=setInterval(function(){
 
 window.onload = function() {
     var myfunc = setInterval(function() {
-        var now = new Date().getTime();
+        var time = axios.post(quizId + '/getTime', {});
+        var now;
+        time.then( t => {
+            now = t.data.time;
+        })
         var timeleft = countDownDate - now;
             
         // Calculating the days, hours, minutes and seconds left

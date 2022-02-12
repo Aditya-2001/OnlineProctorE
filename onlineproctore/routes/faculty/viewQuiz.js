@@ -11,7 +11,7 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
-  tabChanged, mobileDetected, multipleFace, noPerson} = require('../../controllers/studentTa/quiz');
+  tabChanged, mobileDetected, multipleFace, noPerson, getTime} = require('../../controllers/studentTa/quiz');
 
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
 
@@ -101,6 +101,9 @@ router.route('/submit')
 
 router.route('/endTest')
   .post(authStudentQuiz, endTest);
+
+router.route('/getTime')
+  .post(authStudentQuiz, getTime);
 
 router.route('/ipAddress')
   .post(authStudentQuiz, ipAddress);
