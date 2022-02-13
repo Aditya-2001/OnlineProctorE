@@ -52,11 +52,11 @@ async function getQuizQuestions(){
             displayQuestion += '<div style="text-align: center;">'
             for(var ic=0; ic<questions[j].imageLinks.length; ic++){
                 if(ic==0){
-                    displayQuestion += '<iframe class="questionImage1" src="https://drive.google.com/file/d/'+questions[j].imageLinks[ic].split('/').reverse()[1]+'/preview" allow="autoplay"></iframe><br>';
+                    displayQuestion += '<img class="questionImage1" id="image' + ic + questions[j]._id +'" src="https://drive.google.com/uc?export=view&id='+questions[j].imageLinks[ic].split('/').reverse()[1]+'"><br>';
                     continue;
                 }
                 else{
-                    displayQuestion += '<iframe class="questionImage2" src="https://drive.google.com/file/d/'+questions[j].imageLinks[ic].split('/').reverse()[1]+'/preview" allow="autoplay"></iframe>';
+                    displayQuestion += '<img class="questionImage2" id="image' + ic + questions[j]._id +'" src="https://drive.google.com/uc?export=view&id='+questions[j].imageLinks[ic].split('/').reverse()[1]+'">';
                 }
             }
             displayQuestion += '</div></div> <hr><div class="answer';

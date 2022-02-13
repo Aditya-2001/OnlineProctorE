@@ -404,11 +404,15 @@ td{
     width: 600px;
     height: 450px;
     margin-bottom: 5px;
+    border: 2px solid black;
+    border-radius: 5px;
 }
 .questionImage2{
     width: 400px;
     height: 300px;
     margin: 5px;
+    border: 2px solid black;
+    border-radius: 5px;
 }
 .side{
     height: 100%;
