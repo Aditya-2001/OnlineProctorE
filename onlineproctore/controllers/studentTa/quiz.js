@@ -86,9 +86,24 @@ exports.endTest = async (req, res) => {
 }
 
 exports.getTime = async (req, res) => {
-  return res.status(200).json({
-    time: new Date().getTime()
-  });
+  await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
+    if(quiz.startDate > Date.now()){
+      return res.status(200).json({
+        time: new Date().getTime(),
+        countDownDate: new Date(quiz.endDate).getTime(),
+        redirect: true,
+        url: '/dashboard/user/course/'+quiz.course._id
+      });
+    }
+    else{
+      return res.status(200).json({
+        time: new Date().getTime(),
+        countDownDate: new Date(quiz.endDate).getTime(),
+        redirect: false,
+        url: ''
+      });
+    }
+  }).clone().catch(function(err){console.log(err)});
 }
 
 exports.ipAddress = async (req, res) => {

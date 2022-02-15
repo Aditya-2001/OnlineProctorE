@@ -37,6 +37,11 @@ window.onload = function() {
         var now;
         time.then( t => {
             now = t.data.time;
+            countDownDate = t.data.countDownDate;
+            if(t.data.redirect){
+                nextOrPrevQuestion();
+                window.location.href = t.data.url;
+            }
             var timeleft = countDownDate - now;
             // Calculating the days, hours, minutes and seconds left
             var hoursrem = Math.floor((timeleft) / (1000 * 60 * 60));
@@ -133,6 +138,7 @@ async function getQuizQuestions(){
         }
         if(quiz.disablePrevious){
             $('#previous').attr("disabled", true);
+            $('#markForReview').attr("disabled", true);
         }
         var questionCount = questions.length;
         var shuffleOrder = [];
@@ -592,13 +598,11 @@ $(window).blur(function() {
     };
     givingTest = false;
     if(testStarted){
-        if(currentElement == null || currentElement.nodeName == 'IFRAME'){
-            try{
-                axios.post(quizId + '/windowBlurred', data);
-            }
-            catch(error){
-                console.log(error);
-            }
+        try{
+            axios.post(quizId + '/windowBlurred', data);
+        }
+        catch(error){
+            console.log(error);
         }
     }
 });
@@ -666,13 +670,11 @@ function connectWithScreenRecorder(){
             type: 796
         };
         if(testStarted){
-            if(currentElement == null || currentElement.nodeName == 'IFRAME'){
-                try{
-                    axios.post(quizId + '/tabChanged', data);
-                }
-                catch(error){
-                    console.log(error);
-                }
+            try{
+                axios.post(quizId + '/tabChanged', data);
+            }
+            catch(error){
+                console.log(error);
             }
         }
         return 0;
@@ -736,13 +738,13 @@ function predictWebcam() {
                         type: 554
                     };
                     if(testStarted){
-                        // try{
-                        //     // console.log('mobile');
-                        //     axios.post(quizId + '/mobileDetected', data);
-                        // }
-                        // catch(error){
-                        //     console.log(error);
-                        // }
+                        try{
+                            // console.log('mobile');
+                            axios.post(quizId + '/mobileDetected', data);
+                        }
+                        catch(error){
+                            console.log(error);
+                        }
                     }
                 }
                 if(predictions[n].class === 'person'){
@@ -751,36 +753,36 @@ function predictWebcam() {
                 }
             }
         }
-        // if(count > 1){
-        //     var data = {
-        //         submissionId: submissionId,
-        //         frame: frame,
-        //         type: 239
-        //     };
-        //     if(testStarted){
-        //         try{
-        //             // console.log('multiple face');
-        //             axios.post(quizId + '/multipleFace', data);
-        //         }
-        //         catch(error){
-        //             console.log(error);
-        //         }
-        //     }
-        // }
-        // else if(count === 0){
-        //     var data = {
-        //         submissionId: submissionId,
-        //     };
-        //     if(testStarted){
-        //         try{
-        //             // console.log('no person');
-        //             axios.post(quizId + '/noPerson', data);
-        //         }
-        //         catch(error){
-        //             console.log(error);
-        //         }
-        //     }
-        // }
+        if(count > 1){
+            var data = {
+                submissionId: submissionId,
+                frame: frame,
+                type: 239
+            };
+            if(testStarted){
+                try{
+                    // console.log('multiple face');
+                    axios.post(quizId + '/multipleFace', data);
+                }
+                catch(error){
+                    console.log(error);
+                }
+            }
+        }
+        else if(count === 0){
+            var data = {
+                submissionId: submissionId,
+            };
+            if(testStarted){
+                try{
+                    // console.log('no person');
+                    axios.post(quizId + '/noPerson', data);
+                }
+                catch(error){
+                    console.log(error);
+                }
+            }
+        }
         // Call this function again to keep predicting when the browser is ready.
         window.requestAnimationFrame(predictWebcam);
     });

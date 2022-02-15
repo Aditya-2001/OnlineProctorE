@@ -60,37 +60,39 @@
                         <tbody>
                           <% submissions.forEach(submission => { %>
                             <% if(!submission.quiz.hidden){ %>
-                            <tr>
-                              <td> <%= submission.quiz.quizName %> </td>
-                              <td>
-                                <%= submission.quiz.startDate.toString().slice(0,16) %>
-                              </td>
-                              <td>
-                                <%= submission.quiz.startDate.toString().slice(16,-31) %>
-                              </td>
-                              <td>
-                                <%= submission.quiz.endDate.toString().slice(0,16) %>
-                              </td>
-                              <td>
-                                <%= submission.quiz.endDate.toString().slice(16,-31) %>
-                              </td>
-                              <% if(submission.quiz.quizHeld || submission.submitted){ %>
+                              <% if(String(submission.quiz.course._id) == String(course_id)){ %>
+                              <tr>
+                                <td> <%= submission.quiz.quizName %> </td>
                                 <td>
-                                  <a href="<%= '/dashboard/user/quiz/' + submission.quiz._id %>" type="button" rel="tooltip" title="View Quiz" class="btn btn-primary btn-link btn-sm">
-                                    <i class="material-icons" style="vertical-align: auto;">visibility</i>
-                                  </a>
+                                  <%= submission.quiz.startDate.toString().slice(0,16) %>
                                 </td>
-                              <% } else{ %>
                                 <td>
-                                  <a href="<%= '/dashboard/user/quiz/' + submission.quiz._id %>" type="button" rel="tooltip" title="Attempt Quiz" class="btn btn-primary btn-link btn-sm">
-                                    <i class="material-icons">play_arrow</i>
-                                  </a>
+                                  <%= submission.quiz.startDate.toString().slice(16,-31) %>
                                 </td>
+                                <td>
+                                  <%= submission.quiz.endDate.toString().slice(0,16) %>
+                                </td>
+                                <td>
+                                  <%= submission.quiz.endDate.toString().slice(16,-31) %>
+                                </td>
+                                <% if(submission.quiz.quizHeld || submission.submitted){ %>
+                                  <td>
+                                    <a href="<%= '/dashboard/user/quiz/' + submission.quiz._id %>" type="button" rel="tooltip" title="View Quiz" class="btn btn-primary btn-link btn-sm">
+                                      <i class="material-icons" style="vertical-align: auto;">visibility</i>
+                                    </a>
+                                  </td>
+                                <% } else{ %>
+                                  <td>
+                                    <a href="<%= '/dashboard/user/quiz/' + submission.quiz._id %>" type="button" rel="tooltip" title="Attempt Quiz" class="btn btn-primary btn-link btn-sm">
+                                      <i class="material-icons">play_arrow</i>
+                                    </a>
+                                  </td>
+                                <% } %>
+                                <td>
+                                  <a data-toggle="modal" data-target="#modal100" href="#"><i class="material-icons">info_outline</i></a>
+                                </td>
+                              </tr>
                               <% } %>
-                              <td>
-                                <a data-toggle="modal" data-target="#modal100" href="#"><i class="material-icons">info_outline</i></a>
-                              </td>
-                            </tr>
                             <% } %>
                           <% }) %>
                         </tbody>
