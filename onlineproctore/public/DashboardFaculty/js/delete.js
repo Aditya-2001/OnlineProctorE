@@ -143,12 +143,29 @@ async function setDate(startDate, endDate){
   document.getElementById("end_date").value = edate;
 }
 
+async function setSettings(proctoringSettings){
+  console.log(proctoringSettings);
+}
+
 $("#editCourseQuiz").submit(async function (e) {
   e.preventDefault();
   const quizId = document.getElementById('quizId').value;
   var serializedData = $(this).serialize();
   try{
     await axios.post(quizId + '/editCourseQuiz', serializedData);
+    location.reload();
+  }catch(error){
+    console.log(error);
+  }
+})
+
+$("#editProctoringSettings").submit(async function (e) {
+  e.preventDefault();
+  const quizId = document.getElementById('quizId').value;
+  var serializedData = $(this).serialize();
+  console.log(serializedData)
+  try{
+    await axios.post(quizId + '/editProctoringSettings', serializedData);
     location.reload();
   }catch(error){
     console.log(error);

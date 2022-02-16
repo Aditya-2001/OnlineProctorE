@@ -7,7 +7,7 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   addMCQQuestion, viewDetailAnalysis, deleteQuestion,
   editMCQQuestion, editWrittenQuestion, editCourseQuiz, 
   viewStream, downloadQuizResults, downloadStudentSubmissions,
-  assignSets, renderPreviewQuiz, previewQuiz} = require('../../controllers/faculty/viewEachQuiz');
+  assignSets, renderPreviewQuiz, previewQuiz, editProctoringSettings} = require('../../controllers/faculty/viewEachQuiz');
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
@@ -80,6 +80,9 @@ router.route('/editWrittenQuestion')
 
 router.route('/editCourseQuiz')
   .post(authFacultyTaQuiz, editCourseQuiz)
+
+router.route('/editProctoringSettings')
+  .post(authFacultyTaQuiz, editProctoringSettings)
 
 router.route('/deleteQuiz')
   .post(authFacultyTaQuiz, deleteQuiz)

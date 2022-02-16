@@ -572,6 +572,26 @@ exports.editCourseQuiz = async (req, res) => {
   }).clone().catch(function(err){console.log(err)});
 }
 
+exports.editProctoringSettings = async (req, res) => {
+  const quizId = req.quizId;
+  faceDetector=(req.body.face_detection==1)?true:false;
+  mobileDetector=(req.body.mobile_detection==1)?true:false;
+  tabSwitchDetector=(req.body.tab_switch_detection==1)?true:false;
+  screenDetector=(req.body.screen_detection==1)?true:false;
+  ipAddressDetector=(req.body.ip_detection==1)?true:false;
+  audioDetector=(req.body.audio_detection==1)?true:false;
+  await Quiz.findOne({_id: quizId}, (err, quiz) => {
+    quiz.faceDetector=faceDetector;
+    quiz.mobileDetector=mobileDetector;
+    quiz.tabSwitchDetector=tabSwitchDetector;
+    quiz.screenDetector=screenDetector;
+    quiz.ipAddressDetector=ipAddressDetector;
+    quiz.audioDetector=audioDetector;
+    quiz.save();
+    return res.status(204).send();
+  }).clone().catch(function(err){console.log(err)});
+}
+
 exports.viewStream = async (req, res) => {
   await Submission.findOne({_id: req.submissionId}, (err, submission) => {
     res.status(200).render('videoStreaming/stream', {submission: submission});

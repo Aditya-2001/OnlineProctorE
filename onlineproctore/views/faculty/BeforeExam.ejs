@@ -176,6 +176,21 @@
                 </div>
               </div>
             </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card card-stats">
+                <div class="card-header card-header-alert card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">settings</i>
+                  </div>
+                  <p class="card-category">Advanced Settings</p>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal4" href="#" onclick="setSettings('<%= quiz.proctoringSettings %>')">Change Settings</a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="row">
             <div class="col-lg-12 col-md-12">
@@ -529,6 +544,127 @@
                       </div>
                       <input type="submit" id="course_button" class="btn btn-primary pull-right" value="Edit Time"/>
                   </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal 4 -->
+        <div class="modal fade" id="modal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+            <div class="modal-content card">
+              <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-tabs card-header-green">
+                        <div class="nav-tabs-navigation">
+                            <div class="nav-tabs-wrapper">
+                                <ul class="nav nav-tabs" data-tabs="tabs">
+                                    <li class="nav-item col-md-4">
+                                        <a class="nav-link active" href="#proctoring_settings" data-toggle="tab">
+                                            <i class="material-icons">visibility</i> Proctoring Settings
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item col-md-4">
+                                        <a class="nav-link" href="#abc" data-toggle="tab">
+                                            <i class="material-icons">sync_alt</i> Advanced Options
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="proctoring_settings">
+                              <form id="editProctoringSettings">
+                                <div class="form-group">
+                                  <label class="bmd-label">Face Detection</label><br>
+                                  <select class="form-control" name="face_detection">
+                                    <% if(quiz.faceDetector) { %> 
+                                      <option value="1">Turned On</option>
+                                      <option value="0">Turn Off</option>
+                                    <% }else{ %>
+                                      <option value="0">Turned Off</option>
+                                      <option value="1">Turn On</option>
+                                    <% } %>
+                                  </select>
+                                </div>
+        
+                                <div class="form-group">
+                                  <label class="bmd-label">Mobile Detection</label><br>
+                                  <select class="form-control" name="mobile_detection">
+                                    <% if(quiz.mobileDetector) { %> 
+                                      <option value="1">Turned On</option>
+                                      <option value="0">Turn Off</option>
+                                    <% }else{ %>
+                                      <option value="0">Turned Off</option>
+                                      <option value="1">Turn On</option>
+                                    <% } %>
+                                  </select>
+                                </div>
+        
+                                <div class="form-group">
+                                  <label class="bmd-label">Tab Switch Detection</label><br>
+                                  <select class="form-control" name="tab_switch_detection">
+                                    <% if(quiz.tabSwitchDetector) { %> 
+                                      <option value="1">Turned On</option>
+                                      <option value="0">Turn Off</option>
+                                    <% }else{ %>
+                                      <option value="0">Turned Off</option>
+                                      <option value="1">Turn On</option>
+                                    <% } %>
+                                  </select>
+                                </div>
+        
+                                <div class="form-group">
+                                  <label class="bmd-label">Screen Detection</label><br>
+                                  <select class="form-control" name="screen_detection">
+                                    <% if(quiz.screenDetector) { %> 
+                                      <option value="1">Turned On</option>
+                                      <option value="0">Turn Off</option>
+                                    <% }else{ %>
+                                      <option value="0">Turned Off</option>
+                                      <option value="1">Turn On</option>
+                                    <% } %>
+                                  </select>
+                                </div>
+        
+                                <div class="form-group">
+                                  <label class="bmd-label">IP Address Detection</label><br>
+                                  <select class="form-control" name="ip_detection">
+                                    <% if(quiz.ipAddressDetector) { %> 
+                                      <option value="1">Turned On</option>
+                                      <option value="0">Turn Off</option>
+                                    <% }else{ %>
+                                      <option value="0">Turned Off</option>
+                                      <option value="1">Turn On</option>
+                                    <% } %>
+                                  </select>
+                                </div>
+        
+                                <div class="form-group">
+                                  <label class="bmd-label">Audio Detection</label><br>
+                                  <select class="form-control" name="audio_detection">
+                                    <% if(quiz.audioDetector) { %> 
+                                      <option value="1">Turned On</option>
+                                      <option value="0">Turn Off</option>
+                                    <% }else{ %>
+                                      <option value="0">Turned Off</option>
+                                      <option value="1">Turn On</option>
+                                    <% } %>
+                                  </select>
+                                </div>
+
+                                <input type="submit" id="proctor_setting_btn" class="btn btn-primary pull-right" value="Update Settings"/>
+                              </form>
+                            </div>
+                            <div class="tab-pane" id="abc">
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
               </div>
             </div>
           </div>
