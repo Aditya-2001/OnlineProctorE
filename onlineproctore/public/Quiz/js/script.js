@@ -9,9 +9,12 @@ var myPeer, myPeerScreen;
 var leftTime=10;
 var testStarted = false;
 var currentElement = null;
+azchar = "abcdefghijklmnopqrstuvwxyz"
+char01 = "0123456789"
+var mappings = {};
 document.addEventListener('mouseover', function (e) {
     currentElement = e.target;
-    console.log(currentElement.nodeName);
+    // console.log(currentElement.nodeName);
 });
 function startTest(){
     testStarted = true;
@@ -136,6 +139,7 @@ async function getQuizQuestions(){
             console.log(questionSubmissions[0].submission.submitted);
             window.location.href = '/dashboard/user/course/'+quiz.course._id;
         }
+        submissionId=document.getElementById("submissionId").value;
         if(quiz.disablePrevious){
             $('#previous').attr("disabled", true);
             $('#markForReview').attr("disabled", true);
@@ -145,9 +149,9 @@ async function getQuizQuestions(){
         for (var i=0; i<questionCount; i++){
             shuffleOrder.push(i);
         }
+        shuffleOrder=shuffledArray(shuffleOrder, submissionId);
         for (var i=0; i<questionCount; i++){
-            var j = shuffleOrder[Math.floor(Math.random() * (questionCount-i))];
-            shuffleOrder.splice(shuffleOrder.indexOf(j), 1);
+            var j=i;
             var displayQuestion = '<div class="ques-ans';
             if(i==0){
                 displayQuestion += ' active"';
@@ -244,7 +248,7 @@ async function getQuizQuestions(){
         }
     }
     catch(error){
-        console.log(error);
+        console.log("Error :", error);
     }
 
 }
@@ -306,7 +310,7 @@ function nextOrPrevQuestion() {
         axios.post(quizId + '/markAnswer', data);
     }
     catch(error){
-        console.log(error);
+        console.log("Error :", error);
     }
 }
 
@@ -352,7 +356,7 @@ function markQuestion() {
         axios.post(quizId + '/markAnswer', data);
     }
     catch(error){
-        console.log(error);
+        console.log("Error :", error);
     }
 }
 function setMarks(){
@@ -419,7 +423,7 @@ function submitPaper(){
                 })
             }
             catch(error){
-                console.log(error);
+                console.log("Error :", error);
             }
         }
     }
@@ -458,7 +462,7 @@ function sendIP(){
             axios.post(quizId + '/ipAddress', data);
         }
         catch(error){
-            console.log(error);
+            console.log("Error :", error);
         }
     });
 }
@@ -568,7 +572,7 @@ function audioDetection(stream){
                         axios.post(quizId + '/audio', data);
                     }
                     catch(error){
-                        console.log(error);
+                        console.log("Error :", error);
                     }
                 }
             }
@@ -583,12 +587,13 @@ numberOfTimesWindowsTimedOut=0;
 const video1 = document.getElementById("video1");
 var givingTest = false;
 
-$(window).focus(function() {
-    givingTest = true;
-});
-$(window).blur(function() {
+document.addEventListener("visibilitychange", function() {
+    if(document.visibilityState == "visible"){
+        return ;
+    }
     if(numberOfTimesWindowsTimedOut<3){
         numberOfTimesWindowsTimedOut++;
+        return ;
     }
     connectWithScreenRecorder();
     var submissionId = document.getElementById("submissionId").value;
@@ -596,26 +601,36 @@ $(window).blur(function() {
     var data = {
         submissionId: submissionId
     };
-    givingTest = false;
     if(testStarted){
         try{
             axios.post(quizId + '/windowBlurred', data);
         }
         catch(error){
-            console.log(error);
+            console.log("Error :", error);
         }
     }
 });
 
+$(window).focus(function() {
+    givingTest = true;
+});
+$(window).blur(function() {
+    if(numberOfTimesWindowsTimedOut<3){
+        numberOfTimesWindowsTimedOut++;
+    }
+    givingTest = false;
+});
+
 setInterval(() => {
-    if(givingTest == false){
+    if(document.visibilityState != "visible" || givingTest==false){
         connectWithScreenRecorder();
     }
-}, 5000);
+}, 8000);
 
 screenSharingTry=0;
 totalTry=3;
 oneTimeCalled=true;
+screenNotShared = true;
 async function startSharing() {
     var displayMediaOptions = {
         video: true,
@@ -652,6 +667,35 @@ async function startSharing() {
         oneTimeCalled=false;
         checkScreenSharing();
     }
+    screenNotShared=false;
+}
+
+function stopSharing(){
+    let tracks = video1.srcObject.getTracks();
+    tracks.forEach((track) => track.stop());
+    video1.srcObject = null;
+}
+
+function checkScreenSharing(){
+    setInterval(function() {
+        if(video1.srcObject["active"]==false && screenNotShared==false){
+            screenNotShared=true;
+            var submissionId = document.getElementById("submissionId").value;
+            var quizId = document.getElementById("quizId").value;
+            var data = {
+                submissionId: submissionId
+            };
+            if(testStarted){
+                try{
+                    axios.post(quizId + '/screenSharingOff', data);
+                }
+                catch(error){
+                    console.log("Error :", error);
+                }
+            }
+            startSharing();
+        }
+    }, 5000);
 }
 
 function connectWithScreenRecorder(){
@@ -674,39 +718,11 @@ function connectWithScreenRecorder(){
                 axios.post(quizId + '/tabChanged', data);
             }
             catch(error){
-                console.log(error);
+                console.log("Error :", error);
             }
         }
         return 0;
     }
-}
-
-function stopSharing(){
-    let tracks = video1.srcObject.getTracks();
-    tracks.forEach((track) => track.stop());
-    video1.srcObject = null;
-}
-
-var notShared = true;
-function checkScreenSharing(){
-    setInterval(function() {
-        if(video1.srcObject["active"]==false){
-            var submissionId = document.getElementById("submissionId").value;
-            var quizId = document.getElementById("quizId").value;
-            var data = {
-                submissionId: submissionId
-            };
-            if(testStarted){
-                try{
-                    axios.post(quizId + '/screenSharingOff', data);
-                }
-                catch(error){
-                    console.log(error);
-                }
-            }
-            startSharing();
-        }
-    }, 5000);
 }
 
 var model = undefined;
@@ -743,7 +759,7 @@ function predictWebcam() {
                             axios.post(quizId + '/mobileDetected', data);
                         }
                         catch(error){
-                            console.log(error);
+                            console.log("Error :", error);
                         }
                     }
                 }
@@ -765,7 +781,7 @@ function predictWebcam() {
                     axios.post(quizId + '/multipleFace', data);
                 }
                 catch(error){
-                    console.log(error);
+                    console.log("Error :", error);
                 }
             }
         }
@@ -779,11 +795,47 @@ function predictWebcam() {
                     axios.post(quizId + '/noPerson', data);
                 }
                 catch(error){
-                    console.log(error);
+                    console.log("Error :", error);
                 }
             }
         }
         // Call this function again to keep predicting when the browser is ready.
         window.requestAnimationFrame(predictWebcam);
     });
+}
+
+
+function idMapping(ID){
+    getMapping();
+    mappedVal=0;
+    for(i=ID.length-1; i>=0; i--){
+        mappedVal+=Math.pow(35, ID.length-i)*mappings[ID[i]];
+    }
+    return mappedVal;
+}
+
+function getMapping(){
+	for(let i=0;i<azchar.length; i++){
+		mappings[azchar[i]] = azchar[i].charCodeAt(0)-97;
+	}
+	for(let i=0;i<char01.length; i++){
+		mappings[char01[i]] = char01[i].charCodeAt(0)-48+26;
+	}
+}
+
+function shuffledArray(array, seed) {
+    seed=idMapping(seed);
+    var m = array.length, t, i;
+    while (m) {
+        i = Math.floor(random(seed) * m--);
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+        ++seed;
+    }
+    return array;
+}
+function random(seed) {
+    var x = Math.sin(seed++) * 10000; 
+    return x - Math.floor(x);
 }
