@@ -30,6 +30,10 @@ exports.renderLogin = async (req, res) => {
   })
 }
 
+exports.browserError = async (req, res) => {
+  return res.render('error/browserError');
+}
+
 exports.login = (req,res) => {
   let token=req.cookies.auth;
   req.body.username = req.body.username.toLowerCase();
