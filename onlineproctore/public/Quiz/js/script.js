@@ -632,11 +632,20 @@ totalTry=3;
 oneTimeCalled=true;
 screenNotShared = true;
 async function startSharing() {
-    var displayMediaOptions = {
-        video: true,
-        audio: true,
-        displaySurface: "monitor",
-    };
+    var displayMediaOptions;
+    if (navigator.appVersion.indexOf("Win") != -1){
+        displayMediaOptions = {
+            video: true,
+            audio: true,
+            displaySurface: "monitor",
+        };
+    }
+    else{
+        displayMediaOptions = {
+            video: true,
+            displaySurface: "monitor",
+        };
+    }
     try{
         let localStream = await navigator.mediaDevices.getDisplayMedia(
             displayMediaOptions
