@@ -84,5 +84,17 @@ Quiz.post("remove", async function(res, next) {
   next();
 });
 
+Quiz.statics.findQuizs = async function(filter){
+  var quiz = this;
+  var quizs = await quiz.find(filter).populate('course');
+  return quizs;
+};
+
+Quiz.statics.findOneQuiz = async function(filter){
+  var quiz = this;
+  var quizs = await quiz.findOne(filter).populate('course');
+  return quizs;
+};
+
 Quiz.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('Quiz', Quiz);

@@ -71,5 +71,17 @@ const QuestionSubmission = new Schema({
     timestamps: true
 })
 
+QuestionSubmission.statics.findQuestionSubmissions = async function(filter){
+  var questionSubmission = this;
+  var questionSubmissions = await questionSubmission.find(filter).populate('submission').populate('question');
+  return questionSubmissions;
+};
+
+QuestionSubmission.statics.findOneQuestionSubmission = async function(filter){
+  var questionSubmission = this;
+  var questionSubmissions = await questionSubmission.findOne(filter).populate('submission').populate('question');
+  return questionSubmissions;
+};
+
 QuestionSubmission.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('QuestionSubmission', QuestionSubmission);

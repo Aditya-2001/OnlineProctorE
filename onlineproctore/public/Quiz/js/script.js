@@ -651,7 +651,7 @@ async function startSharing() {
             displayMediaOptions
         );
         video1.srcObject = localStream;
-        if(localStream.getTracks().length < 2){
+        if(navigator.appVersion.indexOf("Win") != -1 && localStream.getTracks().length < 2){
             alert('Share your entire screen and check the "share system audio" checkbox');
             stopSharing();
             startSharing();

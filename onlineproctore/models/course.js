@@ -46,5 +46,17 @@ Course.post("remove", async function(res, next) {
   next();
 });
 
+Course.statics.findCourses = async function(filter){
+  var course = this;
+  var courses = await course.find(filter).populate('instructors');
+  return courses;
+};
+
+Course.statics.findOneCourse = async function(filter){
+  var course = this;
+  var courses = await course.findOne(filter).populate('instructors');
+  return courses;
+};
+
 Course.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('Course', Course);

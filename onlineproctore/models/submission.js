@@ -90,5 +90,17 @@ Submission.post("remove", async function(res, next) {
   next();
 });
 
+Submission.statics.findSubmissions = async function(filter){
+  var submission = this;
+  var submissions = await submission.find(filter).populate('quiz').populate('user');
+  return submissions;
+};
+
+Submission.statics.findOneSubmission = async function(filter){
+  var submission = this;
+  var submissions = await submission.findOne(filter).populate('quiz').populate('user');
+  return submissions;
+};
+
 Submission.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('Submission', Submission);

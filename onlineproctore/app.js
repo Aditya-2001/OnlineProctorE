@@ -16,6 +16,7 @@ const httpPort = process.env.PORT || 3000;
 const httpsPort = 3443;
 const privateKey = fs.readFileSync('./bin/certificates/private.key')
 const certificate = fs.readFileSync('./bin/certificates/certificate.pem')
+const Course = require('./models/course');
 const credentials = {
   key: privateKey,
   cert: certificate
@@ -64,6 +65,13 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', index);
 app.get('/.well-known/pki-validation/1C037F04249B0088AB3D82E23FBB70E3.txt', (req, res) => {
   res.sendFile(path.resolve(__dirname, '1C037F04249B0088AB3D82E23FBB70E3.txt'));
+})
+app.get('/getcourses', async (req, res) => {
+  var courses = await Course.findCourses({});
+  console.log('ejinjf');
+  var courses1 = await Course.findCourses({});
+  console.log('almkmk');
+  res.json({courses: courses, courses1: courses1});
 })
 app.use('/users', users);
 app.use(auth);

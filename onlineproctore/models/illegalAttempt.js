@@ -19,5 +19,17 @@ const IllegalAttempt = new Schema({
     timestamps: true
 })
 
+IllegalAttempt.statics.findIllegalAttempts = async function(filter){
+  var illegalAttempt = this;
+  var illegalAttempts = await illegalAttempt.find(filter).populate('submission');
+  return illegalAttempts;
+};
+
+IllegalAttempt.statics.findOneIllegalAttempt = async function(filter){
+  var illegalAttempt = this;
+  var illegalAttempts = await illegalAttempt.findOne(filter).populate('submission');
+  return illegalAttempts;
+};
+
 IllegalAttempt.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('IllegalAttempt', IllegalAttempt);
