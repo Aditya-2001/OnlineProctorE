@@ -6,7 +6,7 @@
                 <% enrollments.forEach( enrollment => { %>
                     <div class="col-md-3 col-sm-6">
                         <div class="card card-chart course">
-                          <img src="data:image/<%=enrollment.course.courseImage.contentType%>;base64,
+                          <img class="course-Image" src="data:image/<%=enrollment.course.courseImage.contentType%>;base64,
                           <%=enrollment.course.courseImage.data.toString('base64')%>" 
                           <% if(enrollment.headTa){ %>
                           data-toggle="modal" data-target="#modal" onclick="setID('<%= enrollment.course._id%>')"

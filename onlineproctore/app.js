@@ -67,11 +67,11 @@ app.get('/.well-known/pki-validation/1C037F04249B0088AB3D82E23FBB70E3.txt', (req
   res.sendFile(path.resolve(__dirname, '1C037F04249B0088AB3D82E23FBB70E3.txt'));
 })
 app.get('/getcourses', async (req, res) => {
-  var courses = await Course.findCourses({});
-  console.log('ejinjf');
-  var courses1 = await Course.findCourses({});
+  // var courses = await Course.findCourses({});
+  // console.log('ejinjf');
+  var courses1 = await Course.findOneCourse({_id: "61f0346999984a49b68ccbd7"});
   console.log('almkmk');
-  res.json({courses: courses, courses1: courses1});
+  res.json({courses1: courses1});
 })
 app.use('/users', users);
 app.use(auth);

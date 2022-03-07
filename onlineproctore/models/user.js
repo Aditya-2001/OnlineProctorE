@@ -124,8 +124,14 @@ User.statics.findByToken = function(token,cb){
     user.findOne({"_id": decode, "token":token},function(err,user){
       if(err) return cb(err);
       cb(null,user);
-    })
+    }).clone().catch(function(err){console.log(err)});
   })
+};
+
+User.statics.findOneUser = async function(token){
+  var decode = await jwt.verify(token, config.secretKey)
+  var users = await this.findOne({"_id": decode, "token": token});
+  return users;
 };
 
 User.methods.deleteToken = function(token,cb){

@@ -31,270 +31,250 @@ const excelFileFilter = (req, file, cb) => {
 exports.uploadExcelFile = multer({ storage: storage, fileFilter: excelFileFilter});
 
 exports.authUserCourse = async (req, res, next) => {
-  const {course_id} = req.params;
-  await User.findByToken(req.cookies.auth, async (err, user) => {
-    if(err) return res.status(400).render('error/error');
-    if(!user) return res.status(400).render('error/error');
-    await Course.findOne({_id: course_id, instructors: {$all: [user._id]}}, async (err, course) => {
-      if(err) return res.status(400).render('error/error');
-      if(!course) return res.status(400).render('error/error');
-      req.course_id = course_id;
-      next();
-    }).clone().catch(function(err){console.log(err)});
-  })
+  try{
+    const {course_id} = req.params;
+    var user = await User.findOneUser(req.cookies.auth);
+    var course = await Course.findOneCourse({_id: course_id, instructors: {$all: [user._id]}});
+    if(!course){
+      throw new Error('Access denied to the Course');
+    }
+    req.course_id = course_id;
+    next();
+  }
+  catch(err){
+    console.log(err);
+    return res.status(400).render('error/error');
+  }
 }
 
 exports.getCourseDetails = async (req,res) => {
-  const course_id = req.course_id;
-  await Enrollment.find({course: course_id}, async (err, enrollment) => {
-    if(err) return res.status(400).json({
-      success: true,
-      message: 'Error in finding Enrollments to this course'
-    })
-    await Announcement.find({course: course_id}, async (err, announcement) => {
-      if(err) return res.status(400).json({
-        success: true,
-        message: 'Error in finding Announcements made in this course'
-      })
-      await Quiz.find({course: course_id}, async (err, quiz) => {
-        if(err) return res.status(400).json({
-          success: true,
-          message: 'Error in finding quizes created in this course'
-        })
-        await User.findByToken(req.cookies.auth, async (err, user) => {
-          if(err) return res.status(400).json({
-            success: true,
-            message: 'Error in finding the user'
-          })
-          if(!user) return res.status(400).json({
-            success: true,
-            message: 'Error in finding the user'
-          })
-          if(user){
-            await Enrollment.findOne({course: course_id, user: user._id}, async (err, enrolledUser) => {
-              if(err) return res.status(400).json({
-                success: true,
-                message: 'Error in finding enrollment'
-              })
-              if(!enrolledUser){
-                await Course.findOne({_id: course_id}, (err, course) => {
-                  return res.status(200).render('faculty/Course', {
-                    user: user,
-                    course_id: course_id,
-                    course: course,
-                    enrollments: enrollment,
-                    announcements: announcement,
-                    quizzes: quiz,
-                    student: config.student,
-                    ta: config.ta,
-                    page: course.courseName
-                  });
-                }).clone().catch(function(err){console.log(err)});
-              }
-              if(enrolledUser){
-                if(enrolledUser.accountType == config.ta){
-                  return res.status(200).render('studentTa/Course', {
-                    user: user,
-                    course_id: course_id,
-                    enrolledUser: enrolledUser,
-                    enrollments: enrollment,
-                    announcements: announcement,
-                    quizzes: quiz,
-                    student: config.student,
-                    ta: config.ta,
-                    page: enrolledUser.course.courseName
-                  });
-                }
-                else{
-                  for await (let quizz of quiz){
-                    if(Date.now() >= quizz.endDate){
-                      quizz.quizHeld = true;
-                      quizz.save();
-                    }
-                  }
-                  await Submission.find({user: user._id}, async (err, submissions) => {
-                    return res.status(200).render('studentTa/CourseStudent', {
-                      user: user,
-                      course_id: course_id,
-                      enrolledUser: enrolledUser,
-                      announcements: announcement,
-                      submissions: submissions,
-                      page: enrolledUser.course.courseName
-                    });
-                  }).clone().catch(function(err){console.log(err)})
-                }
-              }
-            }).clone().catch(function(err){console.log(err)});
-          }
-        })
-      }).clone().catch(function(err){console.log(err)});
-    }).clone().catch(function(err){console.log(err)});
-  }).clone().catch(function(err){console.log(err)});
+  try{
+    const course_id = req.course_id;
+    var enrollments = await Enrollment.findEnrollments({course: course_id});
+    var announcements = await Announcement.findAnnouncements({course: course_id});
+    var quizzes = await Quiz.findQuizs({course: course_id});
+    var user = await User.findOneUser(req.cookies.auth);
+    var enrolledUser = await Enrollment.findOneEnrollment({course: course_id, user: user._id});
+    var course = await Course.findOneCourse({_id: course_id});
+    for await (let quiz of quizzes){
+      if(Date.now() >= quiz.endDate){
+        quiz.quizHeld = true;
+        quiz.save();
+      }
+    }
+    if(!enrolledUser){
+      return res.status(200).render('faculty/Course', {
+        user: user,
+        course_id: course_id,
+        course: course,
+        enrollments: enrollments,
+        announcements: announcements,
+        quizzes: quizzes,
+        student: config.student,
+        ta: config.ta,
+        page: course.courseName
+      });
+    }
+    else{
+      if(enrolledUser.accountType == config.ta){
+        return res.status(200).render('studentTa/Course', {
+          user: user,
+          course_id: course_id,
+          enrolledUser: enrolledUser,
+          enrollments: enrollments,
+          announcements: announcements,
+          quizzes: quizzes,
+          student: config.student,
+          ta: config.ta,
+          page: enrolledUser.course.courseName
+        });
+      }
+      else{
+        var submissions = await Submission.findSubmissions({user: user._id});
+        return res.status(200).render('studentTa/CourseStudent', {
+          user: user,
+          course_id: course_id,
+          enrolledUser: enrolledUser,
+          announcements: announcements,
+          submissions: submissions,
+          page: enrolledUser.course.courseName
+        });
+      }
+    }
+  }
+  catch(err){
+    console.log(err);
+    return res.status(400).render('error/error');
+  }
 }
 
-exports.addMembers = (req, res) => {
+exports.addMembers = async (req, res) => {
   const course_id = req.course_id;
   const filePath = path.resolve(__dirname, '../../' + req.file.path);
   const workbook = XLSX.readFile(filePath);
-  (async function() {
-    const allSheets = workbook.SheetNames;
-    for await (let i of allSheets){
-      const accounts = XLSX.utils.sheet_to_json(workbook.Sheets[i]);
-      for await (let account of accounts){
+  const allSheets = workbook.SheetNames;
+  for await (let i of allSheets){
+    const accounts = XLSX.utils.sheet_to_json(workbook.Sheets[i]);
+    for await (let account of accounts){
+      try{
         var email = account.Email;
         var data = {email: email};
-        await User.findOne(data, async (err, user) => {
-          if(err) console.log(err);
-          if(!user) console.log('User Not Found');
-          if(user){
-            var accountType = config.student; 
-            if(account.Role.toLowerCase() === "faculty"){
-              accountType = config.faculty;
-              await Course.findOne({course: course_id, instructors: {$all: [user._id]}}, async (err,course) => {
-                if(err) console.log(err);
-                if(course) console.log('Already enrolled in course');
-                if(!course){
-                  await Course.findOne({course: course_id}, async (err, addMemCourse) => {
-                    if(err) console.log(err);
-                    if(!addMemCourse) console.log('Course Not Found');
-                    if(addMemCourse){
-                      addMemCourse.instructors.push(user._id);
-                    }
-                  })
-                }
-              }).clone().catch(function(err){console.log(err)});
-            }
-            else{
-              if(account.Role.toLowerCase() === "ta"){
-                accountType = config.ta;
-              }
-              const newEnrollment = new Enrollment({course: course_id, user: user._id, accountType: accountType})
-              await Enrollment.findOne({course: course_id, user: user._id}, (err,enrollment) => {
-                if(err) console.log(err);
-                if(enrollment) console.log('Already Enrolled');
-                if(!enrollment) newEnrollment.save()
-              }).clone().catch(function(err){console.log(err)});
-            }
+        var user = await User.findOne(data);
+        if(!user){
+          console.log('User Not Found');
+          continue;
+        }
+        var accountType = config.student;
+        if(account.Role.toLowerCase() === "faculty"){
+          accountType = config.faculty;
+          var course = await Course.findOneCourse({course: course_id, instructors: {$all: [user._id]}});
+          if(course){
+            console.log('Already enrolled in course');
+            continue;
           }
-        }).clone().catch(function(err){console.log(err)});
+          course = await Course.findOne({course: course_id});
+          if(!course){
+            console.log('Course Not Found');
+            continue;
+          }
+          course.instructors.push(user._id);
+          await course.save();
+        }
+        else{
+          if(account.Role.toLowerCase() === "ta"){
+            accountType = config.ta;
+          }
+          const newEnrollment = await new Enrollment({course: course_id, user: user._id, accountType: accountType})
+          var enrollment = await Enrollment.findOne({course: course_id, user: user._id});
+          if(enrollment){
+            console.log('Already Enrolled');
+            continue;
+          }
+          await newEnrollment.save();
+        }
+      }
+      catch(err){
+        console.log(err);
+        continue;
       }
     }
-    removeFile(filePath);
-    console.log(filePath);
-    return res.status(200).redirect(req.get('referer'));
-  })();
+  }
+  await removeFile(filePath);
+  return res.status(200).redirect(req.get('referer'));
 }
 
 exports.makeAnnouncement = async (req, res) => {
-  const course_id = req.course_id;
-  const subject = req.body.subject;
-  const message = req.body.message;
-  await User.findByToken(req.cookies.auth, (err, user) => {
-    if(err) return res.status(400).render('error/error');
-    if(!user) return res.status(400).render('error/error');
-    const newAnnouncement = new Announcement({course: course_id, user: user._id, subject: subject, message: message});
-    newAnnouncement.save();
+  try{
+    const course_id = req.course_id;
+    const subject = req.body.subject;
+    const message = req.body.message;
+    var user = await User.findOneUser(req.cookies.auth);
+    const newAnnouncement = await new Announcement({course: course_id, user: user._id, subject: subject, message: message});
+    await newAnnouncement.save();
     return res.status(204).send();
-  })
+  }
+  catch(err){
+    return res.status(204).send();
+  }
 }
 
 exports.createQuiz = async(req, res) => {
-  const startDate = new Date(req.body.startDate);
-  const endDate = new Date(req.body.endDate);
-  const quizName = req.body.quizName;
-  const quizHidden = req.body.hidden;
-  var hidden = true;
-  if(quizHidden === "off"){
-    hidden = false;
+  try{
+    const startDate = new Date(req.body.startDate);
+    const endDate = new Date(req.body.endDate);
+    const quizName = req.body.quizName;
+    const quizHidden = req.body.hidden;
+    var hidden = true;
+    if(quizHidden === "off"){
+      hidden = false;
+    }
+    const quizType = req.body.quizType;
+    var labQuiz = false;
+    if(quizType === "Lab"){
+      labQuiz = true;
+    }
+    const course_id = req.course_id;
+    const newQuiz = new Quiz({
+      course: course_id,
+      quizName: quizName,
+      hidden: hidden,
+      startDate: startDate,
+      endDate: endDate,
+      labQuiz: labQuiz
+    })
+    newQuiz.save();
+    return res.status(204).send();
   }
-  const quizType = req.body.quizType;
-  var labQuiz = false;
-  if(quizType === "Lab"){
-    labQuiz = true;
+  catch(err){
+    console.log(err);
+    return res.status(204).send();
   }
-  const course_id = req.course_id;
-  const newQuiz = new Quiz({
-    course: course_id,
-    quizName: quizName,
-    hidden: hidden,
-    startDate: startDate,
-    endDate: endDate,
-    labQuiz: labQuiz
-  })
-  newQuiz.save();
-  return res.status(204).send();
 }
 
 exports.changeHierarchy = async (req, res) => {
-  const headTa = req.body.flag;
-  const enrollment_id = req.body._id;
-  await Enrollment.findOne({_id: enrollment_id}, (err, enrollment) => {
-    if(err) return res.status(400).json({
-      success: true,
-      message: 'Error in finding Enrollment in this course'
-    })
-    if(!enrollment) return res.status(400).json({
-      success: true,
-      message: 'No such Enrollment exists in this course'
-    })
+  try{
+    const headTa = req.body.flag;
+    const enrollment_id = req.body._id;
+    var enrollment = await Enrollment.findOneEnrollment({_id: enrollment_id});
     enrollment.headTa = headTa;
     enrollment.save();
     return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)});
+  }
+  catch(err){
+    console.log(err);
+    return res.status(204).send();
+  }
 }
 
 exports.addSingleMember = async (req, res) => {
-  const course_id = req.course_id;
-  const type = req.body.accountType;
-  const email = req.body.email;
-  await User.findOne({email: email}, async (err, user) => {
-    if(err) console.log(err);
-    if(!user) console.log('User Not Found');
-    if(user){
-      var accountType = config.student; 
-      if(type === "faculty"){
-        accountType = config.faculty;
-        await Course.findOne({course: course_id, instructors: {$all: [user._id]}}, async (err,course) => {
-          if(err) console.log(err);
-          if(course) console.log('Already enrolled in course');
-          if(!course){
-            await Course.findOne({course: course_id}, async (err, addMemCourse) => {
-              if(err) console.log(err);
-              if(!addMemCourse) console.log('Course Not Found');
-              if(addMemCourse){
-                addMemCourse.instructors.push(user._id);
-                addMemCourse.save();
-              }
-            }).clone().catch(function(err){console.log(err)});
-          }
-        }).clone().catch(function(err){console.log(err)});
+  try{
+    const course_id = req.course_id;
+    const type = req.body.accountType;
+    const email = req.body.email;
+    var user = await User.findOne({email: email});
+    if(!user){
+      throw new Error('Account Not Found');
+    }
+    var accountType = config.student;
+    if(type === "faculty"){
+      accountType = config.faculty;
+      var course = await Course.findOneCourse({course: course_id, instructors: {$all: [user._id]}});
+      if(course){
+        throw new Error('Already enrolled in course');
       }
-      else{
-        if(type === "ta"){
-          accountType = config.ta;
-        }
-        const newEnrollment = new Enrollment({course: course_id, user: user._id, accountType: accountType})
-        await Enrollment.findOne({course: course_id, user: user._id}, (err, enrollment) => {
-          if(err) console.log(err);
-          if(enrollment) console.log('Already Enrolled');
-          if(!enrollment) newEnrollment.save()
-        }).clone().catch(function(err){console.log(err)});
+      course = await Course.findOne({course: course_id});
+      if(!course){
+        throw new Error('Course Not Found');
       }
+      course.instructors.push(user._id);
+      await course.save();
+    }
+    else{
+      if(type === "ta"){
+        accountType = config.ta;
+      }
+      const newEnrollment = await new Enrollment({course: course_id, user: user._id, accountType: accountType})
+      var enrollment = await Enrollment.findOne({course: course_id, user: user._id});
+      if(enrollment){
+        throw new Error('Already Enrolled');
+      }
+      await newEnrollment.save();
     }
     return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)});
+  }
+  catch(err){
+    console.log(err);
+    return res.status(204).send();
+  }
 }
 
 exports.deleteCourse = async (req, res) => {
   const course_id = req.course_id;
   const confirmation = req.body.confirmation;
   if(course_id == confirmation){
-    await Course.findOne({_id: course_id}, (err, course) => {
-      if(err) return res.status(200).redirect('/dashboard');
-      if(!course) return res.status(200).redirect('/dashboard');
-      course.remove();
-      return res.status(200).redirect('/dashboard');
-    }).clone().catch(function(err){console.log(err)});
+    var course = await Course.findOne({_id: course_id})
+    course.remove();
+    return res.status(200).redirect('/dashboard');
   }
   else{
     return res.status(200).redirect(req.get('referer'));
@@ -302,34 +282,37 @@ exports.deleteCourse = async (req, res) => {
 }
 
 exports.viewAnnouncements = async (req, res) => {
-  const course_id = req.course_id;
-  await Announcement.find({course: course_id}, (err, announcements) => {
-    if(err) res.status(400).render('error/error');
-    res.status(200).render('studentTa/Announcements', {
-      announcements: announcements,
-      page: 'Announcements'
-    });
-  }).clone().catch(function(err){console.log(err)});
+  var announcements;
+  try{
+    const course_id = req.course_id;
+    announcements = await Announcement.findAnnouncements({course: course_id});
+  }
+  catch(err){
+    console.log(err);
+    announcements = [];
+  }
+  return res.status(200).render('studentTa/Announcements', {
+    announcements: announcements,
+    page: 'Announcements'
+  });
 }
 
 exports.deleteEnrollment = async (req, res) => {
-  await Enrollment.findOne({_id: req.body.id}, async (err, enrollment) => {
-    enrollment.remove();
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)});
+  var enrollment = await Enrollment.findOne({_id: req.body.id})
+  enrollment.remove();
+  return res.status(204).send();
 }
 
 exports.deleteInstructor = async (req, res) => {
-  await Course.findOne({_id: req.course_id}, async (err, course) => {
-    for(let i=0; i<course.instructors.length; i++){
-      if(String(course.instructors[i]._id) === req.body.id){
-        course.instructors.splice(i,1);
-        course.save();
-        break;
-      }
+  var course = await Course.findOne({_id: req.course_id})
+  for(let i=0; i<course.instructors.length; i++){
+    if(String(course.instructors[i]._id) === req.body.id){
+      course.instructors.splice(i,1);
+      course.save();
+      break;
     }
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)});
+  }
+  return res.status(204).send();
 }
 
 exports.downloadCourseResults = async (req, res) => {
@@ -339,40 +322,37 @@ exports.downloadCourseResults = async (req, res) => {
     'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   })
   var workbook = new Excel.stream.xlsx.WorkbookWriter({ stream: res })
-  await Quiz.find({course: req.course_id}, (err, quizzes) => {
-    console.log(quizzes.length);
-    let promises = quizzes.map(function(quiz, index){
-      return new Promise(function (resolve){
-        var worksheet = workbook.addWorksheet(String(quiz.quizName))
-        let rows = [];
-        worksheet.addRow(['UserName', 'Total Marks', 'Browser Switched', 'Multiple Person', 'Audio Detected', 'Mobile Detected', 'No Person']).commit();
-        Submission.find({quiz: quiz._id}, (err, submissions) => {
-          console.log(submissions.length);
-          let promises1 = submissions.map(function (submission, index){
-            return new Promise(function (resolve){
-              var username = submission.user.username;
-              var totalMarks = submission.mcqScore + submission.writtenScore;
-              var browserSwitched = submission.browserSwitched;
-              var multiplePerson = submission.multiplePerson;
-              var audioDetected = submission.audioDetected;
-              var mobileDetected = submission.mobileDetected;
-              var noPerson = submission.noPerson;
-              rows.push([username, totalMarks, browserSwitched, multiplePerson, audioDetected, mobileDetected, noPerson]);
-              resolve();
-            })
-          })
-          Promise.all(promises1).then(function(){
-            for(let j=0; j<rows.length; j++){
-              worksheet.addRow(rows[j]).commit()
-            }
-            worksheet.commit();
-          })
+  var quizzes = await Quiz.findQuizs({course: req.course_id})
+  let promises = quizzes.map(function(quiz, index){
+    return new Promise(async function (resolve){
+      var worksheet = workbook.addWorksheet(String(quiz.quizName))
+      let rows = [];
+      worksheet.addRow(['UserName', 'Total Marks', 'Set', 'Browser Switched', 'Multiple Person', 'Audio Detected', 'Mobile Detected', 'No Person']).commit();
+      var submissions = await Submission.findSubmissions({quiz: quiz._id})
+      let promises1 = submissions.map(function (submission, index){
+        return new Promise(function (resolve){
+          var username = submission.user.username;
+          var totalMarks = submission.mcqScore + submission.writtenScore;
+          var set = submission.set;
+          var browserSwitched = submission.browserSwitched;
+          var multiplePerson = submission.multiplePerson;
+          var audioDetected = submission.audioDetected;
+          var mobileDetected = submission.mobileDetected;
+          var noPerson = submission.noPerson;
+          rows.push([username, totalMarks, set, browserSwitched, multiplePerson, audioDetected, mobileDetected, noPerson]);
           resolve();
-        }).clone().catch(function(err){console.log(err)});
-      });
-    })
-    Promise.all(promises).then(function(){
-      workbook.commit()
-    })
-  }).clone().catch(function(err){console.log(err)});
+        })
+      })
+      Promise.all(promises1).then(function(){
+        for(let j=0; j<rows.length; j++){
+          worksheet.addRow(rows[j]).commit()
+        }
+        worksheet.commit();
+      })
+      resolve();
+    });
+  })
+  Promise.all(promises).then(function(){
+    workbook.commit()
+  })
 }

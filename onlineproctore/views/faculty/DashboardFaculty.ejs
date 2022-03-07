@@ -12,7 +12,7 @@
                     <% courses.forEach( course => { %>
                     <div class="col-md-3 col-sm-6">
                         <div class="card card-chart course">
-                            <img src="data:image/<%=course.courseImage.contentType%>;base64,
+                            <img class="course-Image" src="data:image/<%=course.courseImage.contentType%>;base64,
                             <%=course.courseImage.data.toString('base64')%>" data-toggle="modal" data-target="#modal" onclick="setID('<%= course._id%>')">
                             <div class="card-body">
                                 <h4 class="card-title"><%= course.courseName %><a href="#" data-toggle="modal" data-target="#modal1" class="material-icons" style="float: right;" onclick="setIDName('<%= course._id %>', '<%= course.courseName %>')">edit</a></h4>
