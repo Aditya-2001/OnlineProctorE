@@ -580,7 +580,16 @@
                               <form id="editProctoringSettings">
                                 <div class="form-group">
                                   <label class="bmd-label">Face Detection</label><br>
-                                  <select class="form-control" name="face_detection">
+                                  <span class="col-xs-6">
+                                    Turned On
+                                  </span>
+                                  <span class="col-xs-6 pull-right">
+                                    <label class="switch">
+                                      <input type="checkbox">
+                                      <span class="slider round"></span>
+                                    </label>
+                                  </span>
+                                  <!-- <select class="form-control" name="face_detection">
                                     <% if(quiz.faceDetector) { %> 
                                       <option value="1">Turned On</option>
                                       <option value="0">Turn Off</option>
@@ -588,7 +597,7 @@
                                       <option value="0">Turned Off</option>
                                       <option value="1">Turn On</option>
                                     <% } %>
-                                  </select>
+                                  </select> -->
                                 </div>
         
                                 <div class="form-group">
