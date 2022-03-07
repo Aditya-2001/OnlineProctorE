@@ -5,74 +5,70 @@ const path = require('path');
 const fs = require('fs');
 
 exports.addCourse = async (req,res) => {
-  await User.findByToken(req.cookies.auth, async (err, user) => {
-    if(err) return res.status(400).json({
-      success: false,
-      message: "Unable add Course"
-    });
+  try{
+    var user = await User.findOneUser(req.cookies.auth);
     img = {
       data: fs.readFileSync(path.resolve(__dirname, '../../uploads/course/demo.jpg')),
       contentType: "image/png"
     }
     const data = {courseName: req.body.courseName, instructors: [user._id], courseImage: img};
-    const newCourse = new Course(data);
-    newCourse.save((err,doc)=>{
-      if(err) return res.status(400).json({
-        success: false,
-        message: 'Unable to create Course'
-      })
-      return res.status(204).send();
-    })
-  })
+    const newCourse = await new Course(data);
+    await newCourse.save();
+    return res.status(204).send();
+  }
+  catch(err){
+    console.log(err);
+    return res.status(204).send();
+  }
 }
 
 exports.displayCourses = async (req,res) => {
-  await User.findByToken(req.cookies.auth, async (err, user) => {
-    if(err) return res.status(204).render('faculty/DashboardFaculty', {
+  try{
+    var user = await User.findOneUser(req.cookies.auth);
+    var courses = await Course.findCourses({instructors: {$all : [user._id]}});
+    return res.status(200).render('faculty/DashboardFaculty', {
+      success: true,
+      courses: courses,
+      page: 'Dashboard'
+    })
+  }
+  catch(err){
+    console.log(err);
+    return res.status(204).render('faculty/DashboardFaculty', {
       success: false,
-      courses: null
+      courses: [],
+      page: 'Dashboard'
     });
-    await Course.find({instructors: {$all : [user._id]}}, async (err, courses) => {
-      if(err) return res.status(204).render('faculty/DashboardFaculty', {
-        success: false,
-        courses: null
-      });
-      return res.status(200).render('faculty/DashboardFaculty', {
-        success: true,
-        courses: courses,
-        page: 'Dashboard'
-      })
-    }).clone().catch(function(err){ console.log(err)});
-  })
-  // console.log(courses[0].createdOn.toString().slice(0,-31))
+  }
 }
 
 exports.changeCourseName = async (req,res) => {
-  await Course.findOne({_id: req.body._id}, (err,course) => {
-    if(err) return res.status(400).json({
-      success: false,
-      message: 'Unable to change Course Name'
-    })
+  try{
+    var course = await Course.findOneCourse({_id: req.body._id});
     course.courseName = req.body.courseName;
-    course.save(err => console.log(err));
+    await course.save();
     return res.status(204).send();
-  }).clone().catch(function(err){ console.log(err)});
+  }
+  catch(err){
+    console.log(err);
+    return res.status(204).send();
+  }
 }
 
 exports.changeCourseImage = async(req,res) => {
-  await Course.findOne({_id: req.body._id}, (err,course) => {
-    if(err) return res.status(400).json({
-      success: false,
-      message: 'Unable to change Course Image'
-    })
-    console.log(req.file);
+  try{
+    var course = await Course.findOneCourse({_id: req.body._id});
     img = {
       data: fs.readFileSync(path.resolve(__dirname, '../../'+req.file.path)),
       contentType: "image/png"
     }
     course.courseImage = img;
-    course.save();
-    removeFile(path.resolve(__dirname, '../../'+req.file.path));
+    await course.save();
+    await removeFile(path.resolve(__dirname, '../../'+req.file.path));
     return res.status(200).redirect('/dashboard');
-  }).clone().catch(function(err){ console.log(err)});
+  }
+  catch(err){
+    console.log(err);
+    return res.status(200).redirect('/dashboard');
+  }
 }

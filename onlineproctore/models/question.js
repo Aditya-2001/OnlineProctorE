@@ -64,5 +64,17 @@ Question.post("remove", async function(res, next) {
   next();
 });
 
+Question.statics.findQuestions = async function(filter){
+  var question = this;
+  var questions = await question.find(filter).populate('course');
+  return questions;
+};
+
+Question.statics.findOneQuestion = async function(filter){
+  var question = this;
+  var questions = await question.findOne(filter).populate('course');
+  return questions;
+};
+
 Question.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('Question', Question);

@@ -41,5 +41,17 @@ Announcement.post('remove', async function(res,next){
   next();
 })
 
+Announcement.statics.findAnnouncements = async function(filter){
+  var announcement = this;
+  var announcements = await announcement.find(filter).populate('course').populate('user');
+  return announcements;
+};
+
+Announcement.statics.findOneAnnouncement = async function(filter){
+  var announcement = this;
+  var announcements = await announcement.findOne(filter).populate('course').populate('user');
+  return announcements;
+};
+
 Announcement.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('Announcement', Announcement);

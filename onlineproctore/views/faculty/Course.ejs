@@ -314,12 +314,12 @@
                 <form id="makeCourseAnnouncement">
                   <div class="form-group">
                     <label class="bmd-label-floating">Subject...</label>
-                    <input class="form-control" name="subject" required/>
+                    <input class="form-control" name="subject" autocomplete="off" required/>
                   </div>
                     <input id="course_id" name="course_id" value="<%=course_id%>" hidden />
                     <div class="form-group">
                       <label class="bmd-label-floating">Type Here Something...</label>
-                      <textarea class="form-control" name="message" id="ann_message" rows="4" required></textarea>
+                      <textarea class="form-control" name="message" id="ann_message" rows="4" autocomplete="off" required></textarea>
                     </div>
                     <!-- <div class="mb-2">
                       <input type="file" class="" name="file">
@@ -427,7 +427,7 @@
                 <form id="addIndividualMember">
                   <div class="form-group">
                     <label class="bmd-label">Email</label><br>
-                    <input type="text" class="form-control" id="user_email" name="email" required>
+                    <input type="text" class="form-control" id="user_email" name="email" autocomplete="off" required>
                   </div>
                   <div class="form-group">
                     <label class="bmd-label">User type</label><br>
@@ -455,7 +455,7 @@
                 <form id="deleteCourse" action= <%= course_id + '/delete' %> method="POST">
                   <div class="form-group">
                     <label class="bmd-label">Enter "<b><%=course_id%></b>" to delete this course</label><br>
-                    <input type="text" class="form-control" id="random_string" name="confirmation" required>
+                    <input type="text" class="form-control" id="random_string" name="confirmation" autocomplete="off" required>
                   </div>
                     <input type="submit" id="course_button" class="btn btn-primary pull-right" value="Delete Course"/>
                 </form>

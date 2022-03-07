@@ -216,3 +216,8 @@ bottom: .5em;
 .edit:hover{
   cursor: pointer;
 }
+
+.course-Image{
+  width: 100%;
+  height: 200px;
+}

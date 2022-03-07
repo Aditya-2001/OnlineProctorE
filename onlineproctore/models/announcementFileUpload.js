@@ -16,5 +16,17 @@ const AnnouncementFileUpload = new Schema({
     timestamps: true
 })
 
+AnnouncementFileUpload.statics.findAnnouncementFileUploads = async function(filter){
+  var announcementFileUpload = this;
+  var announcementFileUploads = await announcementFileUpload.find(filter).populate('course');
+  return announcementFileUploads;
+};
+
+AnnouncementFileUpload.statics.findOneAnnouncementFileUpload = async function(filter){
+  var announcementFileUpload = this;
+  var announcementFileUploads = await announcementFileUpload.findOne(filter).populate('course');
+  return announcementFileUploads;
+};
+
 AnnouncementFileUpload.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('AnnouncementFileUpload', AnnouncementFileUpload);

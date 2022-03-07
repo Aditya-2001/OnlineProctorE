@@ -26,5 +26,17 @@ const Enrollment = new Schema({
     timestamps: true
 })
 
+Enrollment.statics.findEnrollments = async function(filter){
+  var enrollment = this;
+  var enrollments = await enrollment.find(filter).populate('course').populate('user');
+  return enrollments;
+};
+
+Enrollment.statics.findOneEnrollment = async function(filter){
+  var enrollment = this;
+  var enrollments = await enrollment.findOne(filter).populate('course').populate('user');
+  return enrollments;
+};
+
 Enrollment.plugin(mongooseAutopopulate);
 module.exports = mongoose.model('Enrollment', Enrollment);
