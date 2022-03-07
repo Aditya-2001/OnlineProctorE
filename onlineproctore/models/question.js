@@ -66,13 +66,13 @@ Question.post("remove", async function(res, next) {
 
 Question.statics.findQuestions = async function(filter){
   var question = this;
-  var questions = await question.find(filter).populate('course');
+  var questions = await question.find(filter).populate('quiz');
   return questions;
 };
 
 Question.statics.findOneQuestion = async function(filter){
   var question = this;
-  var questions = await question.findOne(filter).populate('course');
+  var questions = await question.findOne(filter).populate('quiz');
   return questions;
 };
 
