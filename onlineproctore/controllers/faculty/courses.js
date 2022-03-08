@@ -29,7 +29,8 @@ exports.displayCourses = async (req,res) => {
     return res.status(200).render('faculty/DashboardFaculty', {
       success: true,
       courses: courses,
-      page: 'Dashboard'
+      page: 'Dashboard',
+      backLink: '/dashboard'
     })
   }
   catch(err){
@@ -37,7 +38,8 @@ exports.displayCourses = async (req,res) => {
     return res.status(204).render('faculty/DashboardFaculty', {
       success: false,
       courses: [],
-      page: 'Dashboard'
+      page: 'Dashboard',
+      backLink: '/dashboard'
     });
   }
 }

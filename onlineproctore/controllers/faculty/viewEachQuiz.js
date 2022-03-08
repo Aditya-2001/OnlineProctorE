@@ -89,7 +89,8 @@ exports.getCourseQuiz = async (req, res) => {
       var data = {
         quizId: quizId, 
         quiz: quiz, 
-        submission: submission
+        submission: submission,
+        backLink: '/dashboard/user/course/' + quiz.course._id
       }
       if(quiz.startDate <= Date.now() && Date.now() < quiz.endDate){
         if(!submission.submitted && req.device.type == 'desktop'){
@@ -426,88 +427,90 @@ exports.generateScore = async (req, res) => {
 }
 
 exports.generateSimilarityReport = async (req, res) => {
-  const quizId = req.quizId;
-  await Submission.find({quiz: quizId}, async (err, submissions) => {
+  try{
+    const quizId = req.quizId;
+    var submissions = await Submission.findSubmissions({quiz: quizId});
     for await (let submission of submissions){
-      await QuestionSubmission.find({submission: submission._id}, async (err, questionSubmissions) => {
-        for await(let questionSubmission of questionSubmissions){
-          if(questionSubmission && !questionSubmission.mcq && questionSubmission.textfield !== ''){
-            answerSimilarity.add({id: questionSubmission._id});
-          }
+      var questionSubmissions = await QuestionSubmission.findQuestionSubmissions({submission: submission._id});
+      for await(let questionSubmission of questionSubmissions){
+        if(questionSubmission && !questionSubmission.mcq && questionSubmission.textfield !== ''){
+          answerSimilarity.add({id: questionSubmission._id});
         }
-      }).clone().catch(function(err){console.log(err)})
+      }
     }
-    await Quiz.findOne({_id: quizId}, (err, quiz) => {
-      quiz.studentAnswersMatched = true;
-      quiz.save();
-      return res.status(204).send();
-    }).clone().catch(function(err){console.log(err)})
-  }).clone().catch(function(err){console.log(err)})
+    var quiz = await Quiz.findOne({_id: quizId});
+    quiz.studentAnswersMatched = true;
+    quiz.save();
+  }
+  catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.generatePlagiarismReport = async (req, res) => {
-  const quizId = req.quizId;
-  await Submission.find({quiz: quizId}, async (err, submissions) => {
+  try{
+    const quizId = req.quizId;
+    var submissions = await Submission.findSubmissions({quiz: quizId});
     for await (let submission of submissions){
-      await QuestionSubmission.find({submission: submission._id}, async (err, questionSubmissions) => {
-        for await (let questionSubmission of questionSubmissions){
-          if(questionSubmission && !questionSubmission.mcq && questionSubmission.textfield !== ''){
-            webPlagiarism.add({id: questionSubmission._id});
-          }
+      var questionSubmissions = await QuestionSubmission.findQuestionSubmissions({submission: submission._id});
+      for await (let questionSubmission of questionSubmissions){
+        if(questionSubmission && !questionSubmission.mcq && questionSubmission.textfield !== ''){
+          webPlagiarism.add({id: questionSubmission._id});
         }
-      }).clone().catch(function(err){console.log(err)})
+      }
     }
-    await Quiz.findOne({_id: quizId}, (err, quiz) => {
-      quiz.webDetectionDone = true;
-      quiz.save();
-      return res.status(204).send();
-    }).clone().catch(function(err){console.log(err)})
-  }).clone().catch(function(err){console.log(err)})
+    var quiz = await Quiz.findOne({_id: quizId});
+    quiz.webDetectionDone = true;
+    quiz.save();
+  }
+  catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.deleteQuestion = async (req, res) => {
-  await Question.findOne({_id: req.body.id}, async (err, question) => {
-    question.remove();
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)});
+  var question = await Question.findOne({_id: req.body.id});
+  question.remove();
+  return res.status(204).send();
 }
 
 exports.editMCQQuestion = async (req, res) => {
-  console.log(req.body['option8']);
-  const questionId = req.body.questionId;
-  const questionText = req.body.question;
-  const maximumMarks = req.body.maximumMarks;
-  const partialMarking = req.body.markingScheme;
-  const set = req.body.set;
-  var negativeMarking = 0;
-  var markingScheme = true;
-  if(partialMarking.toLowerCase() === "no"){
-    markingScheme = false;
-  }
-  var options = [];
-  var count = 1;
-  while(req.body['option'+count]){
-    if(req.body['option'+count] != ''){
-      options.push(req.body['option'+count]);
-      count += 1;
+  try{
+    const questionId = req.body.questionId;
+    const questionText = req.body.question;
+    const maximumMarks = req.body.maximumMarks;
+    const partialMarking = req.body.markingScheme;
+    const set = req.body.set;
+    var negativeMarking = 0;
+    var markingScheme = true;
+    if(partialMarking.toLowerCase() === "no"){
+      markingScheme = false;
     }
-  }
-  count = 1;
-  var imageLinks = [];
-  while(req.body['imageLink'+count]){
-    if(req.body['imageLink'+count] != ''){
-      imageLinks.push(req.body['imageLink'+count]);
-      count += 1;
+    var options = [];
+    var count = 1;
+    while(req.body['option'+count]){
+      if(req.body['option'+count] != ''){
+        options.push(req.body['option'+count]);
+        count += 1;
+      }
     }
-  }
-  if(req.body.negativeMarking)
-    negativeMarking = req.body.negativeMarking;
-  var correctOptions = [];
-  String(req.body.correctOptions).split(',').forEach(option => {
-    correctOptions.push(String(options[parseInt(option)-1]));
-  })
-  await Question.findOne({_id: questionId}, (err, question) => {
-    console.log(question);
+    count = 1;
+    var imageLinks = [];
+    while(req.body['imageLink'+count]){
+      if(req.body['imageLink'+count] != ''){
+        imageLinks.push(req.body['imageLink'+count]);
+        count += 1;
+      }
+    }
+    if(req.body.negativeMarking)
+      negativeMarking = req.body.negativeMarking;
+    var correctOptions = [];
+    String(req.body.correctOptions).split(',').forEach(option => {
+      correctOptions.push(String(options[parseInt(option)-1]));
+    })
+    var question = await Question.findOne({_id: questionId});
     question.question = questionText;
     question.maximumMarks = maximumMarks;
     question.options = options;
@@ -517,56 +520,68 @@ exports.editMCQQuestion = async (req, res) => {
     question.negativeMarking = negativeMarking;
     question.imageLinks = imageLinks;
     question.save();
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)})
+  }
+  catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.editWrittenQuestion = async (req, res) => {
-  const questionId = req.body.questionId;
-  const quizQuestion = req.body.question;
-  const maximumMarks = req.body.maximumMarks;
-  var note = req.body.note;
-  const set = req.body.set;
-  if(note == undefined){
-    note = '';
-  }
-  var count = 1;
-  var imageLinks = [];
-  while(req.body['imageLink'+count]){
-    if(req.body['imageLink'+count] != ''){
-      imageLinks.push(req.body['imageLink'+count]);
-      count += 1;
+  try{
+    const questionId = req.body.questionId;
+    const quizQuestion = req.body.question;
+    const maximumMarks = req.body.maximumMarks;
+    var note = req.body.note;
+    const set = req.body.set;
+    if(note == undefined){
+      note = '';
     }
-  }
-  await Question.findOne({_id: questionId}, (err, question) => {
+    var count = 1;
+    var imageLinks = [];
+    while(req.body['imageLink'+count]){
+      if(req.body['imageLink'+count] != ''){
+        imageLinks.push(req.body['imageLink'+count]);
+        count += 1;
+      }
+    }
+    var question = await Question.findOne({_id: questionId});
     question.question = quizQuestion;
     question.note = note;
     question.set = set;
     question.maximumMarks = maximumMarks;
     question.imageLinks = imageLinks;
     question.save();
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)});
+  }
+  catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.editCourseQuiz = async (req, res) => {
   const quizId = req.quizId;
   const startDate = req.body.startDate;
   const endDate = req.body.endDate;
-  await Quiz.findOne({_id: quizId}, (err, quiz) => {
-    quiz.startDate = startDate;
-    quiz.endDate = endDate;
-    quiz.save();
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)});
+  var quiz = await Quiz.findOne({_id: quizId});
+  quiz.startDate = startDate;
+  quiz.endDate = endDate;
+  quiz.save();
+  return res.status(204).send();
 }
 
 exports.viewStream = async (req, res) => {
-  await Submission.findOne({_id: req.submissionId}, (err, submission) => {
-    res.status(200).render('videoStreaming/stream', {submission: submission});
-  }).clone().catch(function(err){console.log(err)});
+  var submission = await Submission.findOneSubmission({_id: req.submissionId});
+  var backLink = '/dashboard/user/quiz/' + submission.quiz._id + '/viewDetailAnalysis';
+  if(req.cookies.accountType == config.faculty)
+    backLink = '/dashboard/faculty/quiz/' + submission.quiz._id + '/viewDetailAnalysis';
+  return res.status(200).render('videoStreaming/stream', {
+    submission: submission,
+    backLink: backLink
+  });
 }
 
+//unmodified and unoptimized
 exports.downloadQuizResults = async (req, res) => {
   await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
     const fileName = quiz.quizName+'.zip';
@@ -677,6 +692,7 @@ exports.downloadQuizResults = async (req, res) => {
   }).clone().catch(function(err){console.log(err)});
 }
 
+//unmodified and unoptimized
 exports.downloadStudentSubmissions = async (req, res) => {
   await Submission.find({quiz: req.quizId}, async (err, submissions) => {
     const fileName = 'submissions.zip';
@@ -765,6 +781,7 @@ exports.downloadStudentSubmissions = async (req, res) => {
   }).clone().catch(function(err){console.log(err)});
 }
 
+//unmodified and unoptimized
 exports.assignSets = async (req, res) => {
   await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
     await Enrollment.find({course: quiz.course._id, accountType: config.student}, async (err, enrollments) => {
@@ -815,15 +832,12 @@ exports.assignSets = async (req, res) => {
 }
 
 exports.renderPreviewQuiz = async (req, res) => {
-  await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
-    return res.status(200).render('facultyQuiz/previewQuiz', {quizId: req.quizId, quiz: quiz});
-  }).clone().catch(function(err){console.log(err)});
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  return res.status(200).render('facultyQuiz/previewQuiz', {quizId: req.quizId, quiz: quiz});
 }
 
 exports.previewQuiz = async (req, res) => {
-  await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
-    await Question.find({quiz: quiz._id}, async (err, questions) => {
-      return res.status(200).json({quiz: quiz, questions: questions});
-    }).clone().catch(function(err){console.log(err)});
-  }).clone().catch(function(err){console.log(err)});
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  var questions = await Question.findQuestions({quiz: quiz._id});
+  return res.status(200).json({quiz: quiz, questions: questions});
 }

@@ -36,16 +36,13 @@ exports.createAccount = (req, res) => {
 }
 
 exports.getAllAccounts = async (req, res) => {
-  await User.find({}, async (err, users) => {
-    await User.findByToken(req.cookies.auth, (err, user) => {
-      return res.status(200).render('staff/DashboardStaff', {users: users, staff: user});
-    })
-  }).clone().catch(function(err){console.log(err)})
+  var users = await User.find({});
+  var user = await User.findOneUser(req.cookies.auth);
+  return res.status(200).render('staff/DashboardStaff', {users: users, staff: user, backLink: '/dashboard'});
 }
 
 exports.deleteUser = async (req, res) => {
-  await User.findOne({_id: req.body.id}, (err, user) => {
-    user.remove();
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)})
+  var user = await User.findOne({_id: req.body.id});
+  user.remove();
+  return res.status(204).send();
 }

@@ -6,189 +6,182 @@ const Submission = require('../../models/submission');
 const IllegalAttempt = require('../../models/illegalAttempt');
 
 exports.getQuestions = async (req, res) => {
-  const quizId  = req.quizId;
-  await User.findByToken(req.cookies.auth, async (err, user) => {
-    await Quiz.findOne({_id: quizId}, async (err, quiz) => {
-      await Submission.findOne({quiz: quizId, user: user._id}, async (err, submission) => {
-        await Question.find({quiz: quizId, set: submission.set}, async (err, questions) => {
-          await QuestionSubmission.find({submission: submission._id}, async (err, questionSubmissions) => {
-            if(quiz.startDate > Date.now()){
-              return res.status(400).json({
-                message: 'Unauthorized Access to Quiz Questions'
-              });
-            }
-            if(Date.now() >= quiz.endDate || submission.submitted){
-              return res.status(200).json({
-                quizId: quizId,
-                quiz: quiz,
-                questions: questions,
-                questionSubmissions: questionSubmissions,
-                redirect: true,
-                url: '/dashboard/user/course/'+quiz.course._id
-              })
-            }
-            else{
-              return res.status(200).json({
-                quizId: quizId,
-                quiz: quiz,
-                questions: questions,
-                questionSubmissions: questionSubmissions,
-                redirect: false,
-                url: ''
-              })
-            }
-          }).clone().catch(function(err){console.log(err)});
-        }).clone().catch(function(err){console.log(err)})
-      }).clone().catch(function(err){console.log(err)})
-    }).clone().catch(function(err){console.log(err)})
-  })
+  try{
+    const quizId  = req.quizId;
+    var user = await User.findOneUser(req.cookies.auth);
+    var quiz = await Quiz.findOneQuiz({_id: quizId});
+    var submission = await Submission.findOneSubmission({quiz: quizId, user: user._id});
+    var questions = await Question.findQuestions({quiz: quizId, set: submission.set});
+    var questionSubmissions = await QuestionSubmission.findQuestionSubmissions({submission: submission._id});
+    var data = {
+      quizId: quizId,
+      quiz: quiz,
+      questions: questions,
+      questionSubmissions: questionSubmissions,
+      redirect: false,
+      url: ''
+    }
+    if(Date.now() >= quiz.endDate || submission.submitted){
+      data.redirect = true;
+      data.url = '/dashboard/user/course/'+quiz.course._id;
+      return res.status(200).json(data);
+    }
+    return res.status(200).json(data)
+  }catch(err){
+    console.log(err);
+    return res.status(400).render('error/error');
+  }
 }
 
 exports.markAnswer = async (req, res) => {
-  await QuestionSubmission.findOne({submission: req.body.submissionId, question: req.body.questionId}, (err, questionSubmission) => {
-    questionSubmission.answerLocked = req.body.answerLocked;
-    questionSubmission.notAnswered = req.body.notAnswered;
-    questionSubmission.markedForReview = req.body.markedForReview;
-    if(questionSubmission.mcq){
-      questionSubmission.optionsMarked = req.body.markedAnswer;
-    }
-    else{
-      questionSubmission.textfield = req.body.markedAnswer;
-    }
-    questionSubmission.save();
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)})
+  var questionSubmission = await QuestionSubmission.findOne({submission: req.body.submissionId, question: req.body.questionId});
+  questionSubmission.answerLocked = req.body.answerLocked;
+  questionSubmission.notAnswered = req.body.notAnswered;
+  questionSubmission.markedForReview = req.body.markedForReview;
+  if(questionSubmission.mcq){
+    questionSubmission.optionsMarked = req.body.markedAnswer;
+  }
+  else{
+    questionSubmission.textfield = req.body.markedAnswer;
+  }
+  questionSubmission.save();
+  return res.status(204).send();
 }
 
 exports.submit = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
-    submission.submitted = true;
-    submission.save();
-    res.status(200).json({
-      url: '/dashboard/user/course/'+submission.quiz.course._id
-    });
-  }).clone().catch(function(err){console.log(err)})
+  var submission = await Submission.findOne({_id: req.body.submissionId});
+  submission.submitted = true;
+  submission.save();
+  res.status(200).json({
+    url: '/dashboard/user/course/'+submission.quiz.course._id
+  });
 }
 
 exports.endTest = async (req, res) => {
   const quizId = req.quizId;
-  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
-    submission.submitted = true;
-    submission.save();
-    await Quiz.findOne({_id: quizId}, (err, quiz) => {
-      quiz.quizHeld = true;
-      quiz.save();
-      res.status(200).json({
-        url: '/dashboard/user/course/'+submission.quiz.course._id
-      });
-    }).clone().catch(function(err){console.log(err)})
-  }).clone().catch(function(err){console.log(err)})
+  var submission = await Submission.findOne({_id: req.body.submissionId});
+  submission.submitted = true;
+  submission.save();
+  var quiz = await Quiz.findOne({_id: quizId});
+  quiz.quizHeld = true;
+  quiz.save();
+  res.status(200).json({
+    url: '/dashboard/user/course/'+submission.quiz.course._id
+  });
 }
 
 exports.getTime = async (req, res) => {
-  await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
-    if(quiz.startDate > Date.now()){
-      return res.status(200).json({
-        time: new Date().getTime(),
-        countDownDate: new Date(quiz.endDate).getTime(),
-        redirect: true,
-        url: '/dashboard/user/course/'+quiz.course._id
-      });
-    }
-    else{
-      return res.status(200).json({
-        time: new Date().getTime(),
-        countDownDate: new Date(quiz.endDate).getTime(),
-        redirect: false,
-        url: ''
-      });
-    }
-  }).clone().catch(function(err){console.log(err)});
+  var quiz = await Quiz.findOne({_id: req.quizId});
+  var data = {
+    time: new Date().getTime(),
+    countDownDate: new Date(quiz.endDate).getTime(),
+    redirect: false,
+    url: ''
+  }
+  if(quiz.startDate > Date.now()){
+    data.redirect = true;
+    data.url = '/dashboard/user/course/'+quiz.course._id;
+    return res.status(200).json(data);
+  }
+  return res.status(200).json(data);
 }
 
 exports.ipAddress = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
-    if(submission){
-      submission.ipAddress = req.body.ip;
-      submission.save();
-      return res.status(204).send();
-    }
-  }).clone().catch(function(err){console.log(err)})
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
+    submission.ipAddress = req.body.ip;
+    submission.save();
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.audio = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
-    if(submission){
-      submission.audioDetected += 1;
-      submission.save();
-      return res.status(204).send();
-    }
-  }).clone().catch(function(err){console.log(err)})
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
+    submission.audioDetected += 1;
+    submission.save();
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.windowBlurred = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
-    if(submission){
-      submission.browserSwitched += 1;
-      submission.save();
-      return res.status(204).send();
-    }
-  }).clone().catch(function(err){console.log(err)})
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
+    submission.browserSwitched += 1;
+    submission.save();
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.screenSharingOff = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, (err, submission) => {
-    if(submission){
-      submission.screenSharingTurnedOff += 1;
-      submission.save();
-      return res.status(204).send();
-    }
-  }).clone().catch(function(err){console.log(err)})
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
+    submission.screenSharingTurnedOff += 1;
+    submission.save();
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.tabChanged = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
     submission.browserSwitched += 1;
     submission.save();
-    await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
-      if(illegalAttempts.length <= 40){
-        await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
-      }
-      return res.status(204).send();
-    }).clone().catch(function(err){console.log(err)})
-  }).clone().catch(function(err){console.log(err)})
+    var illegalAttempts = await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type});
+    if(illegalAttempts.length <= 40){
+      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+    }
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.mobileDetected = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
     submission.mobileDetected += 1;
     submission.save();
-    await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
-      if(illegalAttempts.length <= 40){
-        await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
-      }
-      return res.status(204).send();
-    }).clone().catch(function(err){console.log(err)})
-  }).clone().catch(function(err){console.log(err)})  
+    var illegalAttempts = await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type});
+    if(illegalAttempts.length <= 40){
+      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+    }
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.multipleFace = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
     submission.multiplePerson += 1;
     submission.save();
-    await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type}, async (err, illegalAttempts) => {
-      if(illegalAttempts.length <= 40){
-        await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
-      }
-      return res.status(204).send();
-    }).clone().catch(function(err){console.log(err)})
-  }).clone().catch(function(err){console.log(err)})
+    var illegalAttempts = await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type});
+    if(illegalAttempts.length <= 40){
+      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+    }
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }
 
 exports.noPerson = async (req, res) => {
-  await Submission.findOne({_id: req.body.submissionId}, async (err, submission) => {
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId})
     submission.noPerson += 1;
     submission.save();
-    return res.status(204).send();
-  }).clone().catch(function(err){console.log(err)})
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
 }

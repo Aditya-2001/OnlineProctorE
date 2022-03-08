@@ -72,7 +72,8 @@ exports.getCourseDetails = async (req,res) => {
         quizzes: quizzes,
         student: config.student,
         ta: config.ta,
-        page: course.courseName
+        page: course.courseName,
+        backLink: '/dashboard'
       });
     }
     else{
@@ -86,7 +87,8 @@ exports.getCourseDetails = async (req,res) => {
           quizzes: quizzes,
           student: config.student,
           ta: config.ta,
-          page: enrolledUser.course.courseName
+          page: enrolledUser.course.courseName,
+          backLink: '/dashboard'
         });
       }
       else{
@@ -97,7 +99,8 @@ exports.getCourseDetails = async (req,res) => {
           enrolledUser: enrolledUser,
           announcements: announcements,
           submissions: submissions,
-          page: enrolledUser.course.courseName
+          page: enrolledUser.course.courseName,
+          backLink: '/dashboard'
         });
       }
     }
@@ -291,9 +294,13 @@ exports.viewAnnouncements = async (req, res) => {
     console.log(err);
     announcements = [];
   }
+  var backLink = '/dashboard/user/course/' + course_id;
+  if(req.cookies.accountType == config.faculty)
+    backLink = '/dashboard/faculty/course/' + course_id;
   return res.status(200).render('studentTa/Announcements', {
     announcements: announcements,
-    page: 'Announcements'
+    page: 'Announcements',
+    backLink: backLink
   });
 }
 
