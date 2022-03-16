@@ -667,8 +667,8 @@ exports.downloadQuizResults = async (req, res) => {
                         "height": "20mm",
                       },
                     };
-                    pdf.create(data, options).toBuffer(async function(err, buffer){
-                      await zip.addFile(quiz.quizName+"_Set "+set+"_"+quiz._id+".pdf", Buffer.from(buffer, "utf8"));
+                    pdf.create(data, options).toBuffer(function(err, buffer){
+                      zip.addFile(String(quiz.quizName+"_Set "+set+"_"+String(quiz._id)+".pdf"), Buffer.from(buffer, "utf8"));
                       resolve();
                     });
                   })
@@ -763,8 +763,8 @@ exports.downloadStudentSubmissions = async (req, res) => {
                     "height": "20mm",
                   },
                 };
-                pdf.create(data, options).toBuffer(async function(err, buffer){
-                  await zip.addFile(submission.user.username.toUpperCase()+"_"+submission.quiz._id+".pdf", Buffer.from(buffer, "utf8"));
+                pdf.create(data, options).toBuffer(function(err, buffer){
+                  zip.addFile(String(submission.user.username.toUpperCase()+"_"+String(submission.quiz._id)+".pdf"), Buffer.from(buffer, "utf8"));
                   resolve();
                 });
               })

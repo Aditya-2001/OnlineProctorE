@@ -104,12 +104,12 @@ window.onload = function() {
     socket = io("/");
     myPeer = new Peer(undefined, {
         path: '/peerjs',
-        host: '/',
+        host: 'onlineproctore.herokuapp.com',
         port: '443'
     })
     myPeerScreen = new Peer(undefined, {
         path: '/peerjs',
-        host: '/',
+        host: 'onlineproctore.herokuapp.com',
         port: '443'
     })
     myPeer.on('open', id => {
