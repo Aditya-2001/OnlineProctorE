@@ -4,12 +4,12 @@ const videoGrid = document.getElementById('videoCard1');
 const videoGrid1 = document.getElementById('videoCard2');
 const myPeer = new Peer(undefined, {
     path: '/peerjs',
-    host: '/',
+    host: 'onlineproctore.herokuapp.com',
     port: '443'
 })
 const myPeerScreen = new Peer(undefined, {
     path: '/peerjs',
-    host: '/',
+    host: 'onlineproctore.herokuapp.com',
     port: '443'
 })
 myPeer.on('open', id => {
