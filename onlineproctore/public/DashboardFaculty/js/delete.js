@@ -133,24 +133,20 @@ $("#editWrittenQuestion").submit(async function (e) {
   }
 })
 
-async function setDate(startDate, endDate){
-  startDate = new Date(startDate);
-  sdate = startDate.getFullYear()+"-"+("0" + (startDate.getMonth()+1)).slice(-2)+"-"+("0"+startDate.getDate()).slice(-2)+"T"+startDate.toString().slice(16,21);
-  console.log(sdate);
-  document.getElementById("start_date").value = sdate;
-  endDate = new Date(endDate);
-  edate = endDate.getFullYear()+"-"+("0" + (endDate.getMonth()+1)).slice(-2)+"-"+("0"+endDate.getDate()).slice(-2)+"T"+endDate.toString().slice(16,21);
-  document.getElementById("end_date").value = edate;
-}
-
 $("#editCourseQuiz").submit(async function (e) {
   e.preventDefault();
   const quizId = document.getElementById('quizId').value;
   var serializedData = $(this).serialize();
+  var errorr = document.getElementById("setError1");
   try{
     await axios.post(quizId + '/editCourseQuiz', serializedData);
-    location.reload();
+    errorr.style.color="green";
+    errorr.innerHTML = "Timing Changed";
+    fader("#setError1");
   }catch(error){
     console.log(error);
+    // errorr.style.color="red";
+    // errorr.innerHTML = error.response.data.message;
+    // fader('#setError')
   }
 })

@@ -66,6 +66,26 @@ const Quiz = new Schema({
   illegalAttemptsPresent: {
     type: Boolean,
     default: true
+  },
+  faceDetector: {
+    type: Boolean,
+    default: true
+  },
+  mobileDetector: {
+    type: Boolean,
+    default: true
+  },
+  tabSwitchDetector: {
+    type: Boolean,
+    default: true
+  },
+  ipAddressDetector: {
+    type: Boolean,
+    default: true
+  },
+  audioDetector: {
+    type: Boolean,
+    default: true
   }},{
     timestamps: true
 })
