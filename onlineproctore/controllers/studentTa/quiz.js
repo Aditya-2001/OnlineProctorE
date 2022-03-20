@@ -70,6 +70,18 @@ exports.endTest = async (req, res) => {
   });
 }
 
+exports.getQuizDetectionSettings = async (req, res) => {
+  const quizId = req.quizId;
+  var quiz = await Quiz.findOne({_id: quizId});
+  res.status(200).json({
+    faceDetector: quiz.faceDetector,
+    mobileDetector: quiz.mobileDetector,
+    tabSwitchDetector: quiz.tabSwitchDetector,
+    ipAddressDetector: quiz.ipAddressDetector,
+    audioDetector: quiz.audioDetector
+  });
+}
+
 exports.getTime = async (req, res) => {
   var quiz = await Quiz.findOne({_id: req.quizId});
   var data = {

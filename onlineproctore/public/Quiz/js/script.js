@@ -21,6 +21,67 @@ function startTest(){
     document.getElementById('quizInstructionsDiv').classList.add('none');
     document.getElementById('quizQuestionsDiv').classList.remove('none');
 }
+
+var myfunc = setInterval(function() {
+    var quizId = document.getElementById("quizId").value;
+    var time = axios.post(quizId + '/getTime', {});
+    var now;
+    time.then( t => {
+        now = t.data.time;
+        countDownDate = t.data.countDownDate;
+        if(t.data.redirect){
+            nextOrPrevQuestion();
+            window.location.href = t.data.url;
+        }
+        var timeleft = countDownDate - now;
+        // Calculating the days, hours, minutes and seconds left
+        var hoursrem = Math.floor((timeleft) / (1000 * 60 * 60));
+        var hours=hoursrem
+        if(hoursrem<10){
+            hours="0"+hoursrem
+        }
+        var minutesrem = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+        var minutes = minutesrem
+        if(minutesrem<10){
+            minutes="0"+minutesrem
+        }
+        var secondsrem = Math.floor((timeleft % (1000 * 60)) / 1000);
+        var seconds=secondsrem
+        if(secondsrem<10){
+            seconds="0"+secondsrem;
+        }
+            
+        // Result is output to the specific element
+        document.getElementById("hours").innerHTML = hours + ":" 
+        document.getElementById("mins").innerHTML = minutes + ":" 
+        document.getElementById("secs").innerHTML = seconds 
+            
+        // Display the message when countdown is over
+        if (timeleft < 0) {
+            clearInterval(myfunc);
+            document.getElementById("hours").innerHTML = "" 
+            document.getElementById("mins").innerHTML = ""
+            document.getElementById("secs").innerHTML = ""
+            document.getElementById("end").innerHTML = "TIME UP!!";
+            nextOrPrevQuestion();
+            $('.disable').attr('disabled', true);
+            var submissionId = document.getElementById("submissionId").value;
+            var data = {
+                submissionId: submissionId
+            };
+            try{
+                var response = axios.post(quizId + '/endTest', data);
+                response.then( result => {
+                    window.location.href = result.data.url;
+                })
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+    })
+}, 1000);
+
 var leftTimeInterval=setInterval(function(){
     if(leftTime==0){
         clearInterval(leftTimeInterval);
@@ -33,96 +94,42 @@ var leftTimeInterval=setInterval(function(){
     }
 },1000);
 
-window.onload = function() {
-    var myfunc = setInterval(function() {
-        var quizId = document.getElementById("quizId").value;
-        var time = axios.post(quizId + '/getTime', {});
-        var now;
-        time.then( t => {
-            now = t.data.time;
-            countDownDate = t.data.countDownDate;
-            if(t.data.redirect){
-                nextOrPrevQuestion();
-                window.location.href = t.data.url;
-            }
-            var timeleft = countDownDate - now;
-            // Calculating the days, hours, minutes and seconds left
-            var hoursrem = Math.floor((timeleft) / (1000 * 60 * 60));
-            var hours=hoursrem
-            if(hoursrem<10){
-                hours="0"+hoursrem
-            }
-            var minutesrem = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-            var minutes = minutesrem
-            if(minutesrem<10){
-                minutes="0"+minutesrem
-            }
-            var secondsrem = Math.floor((timeleft % (1000 * 60)) / 1000);
-            var seconds=secondsrem
-            if(secondsrem<10){
-                seconds="0"+secondsrem;
-            }
-                
-            // Result is output to the specific element
-            document.getElementById("hours").innerHTML = hours + ":" 
-            document.getElementById("mins").innerHTML = minutes + ":" 
-            document.getElementById("secs").innerHTML = seconds 
-                
-            // Display the message when countdown is over
-            if (timeleft < 0) {
-                clearInterval(myfunc);
-                document.getElementById("hours").innerHTML = "" 
-                document.getElementById("mins").innerHTML = ""
-                document.getElementById("secs").innerHTML = ""
-                document.getElementById("end").innerHTML = "TIME UP!!";
-                nextOrPrevQuestion();
-                $('.disable').attr('disabled', true);
-                var submissionId = document.getElementById("submissionId").value;
-                var data = {
-                    submissionId: submissionId
-                };
-                try{
-                    var response = axios.post(quizId + '/endTest', data);
-                    response.then( result => {
-                        window.location.href = result.data.url;
-                    })
-                }
-                catch(error){
-                    console.log(error);
-                }
-            }
-        })
-    }, 1000);
+var detections;
+var quizDetectionResponse = axios.post(document.getElementById("quizId").value + '/getQuizDetectionSettings', {});
+quizDetectionResponse.then( result => {
+    detections = result.data;
     sendIP();
     AudioVideoDetection();
     startSharing();
-    cocoSsd.load().then(function (loadedModel) {
-        model = loadedModel;
-        enableCam();
-    });
-    getQuizQuestions();
-    socket = io("/");
-    myPeer = new Peer(undefined, {
-        path: '/peerjs',
-        host: 'onlineproctore.herokuapp.com',
-        port: '443'
-    })
-    myPeerScreen = new Peer(undefined, {
-        path: '/peerjs',
-        host: 'onlineproctore.herokuapp.com',
-        port: '443'
-    })
-    myPeer.on('open', id => {
-        socket.emit('join-room1', ROOM_ID + '1', id);
-    })
-    myPeerScreen.on('open', id => {
-        socket.emit('join-room2', ROOM_ID + '2', id);
-    })
-    socket.on('user-disconnected', userId => {
-        if (peers[userId]) peers[userId].close()
-        if (peersScreen[userId]) peersScreen[userId].close()
-    })
-};
+    if(detections.faceDetector && detections.mobileDetector){
+        cocoSsd.load().then(function (loadedModel) {
+            model = loadedModel;
+            enableCam();
+        });
+    }    
+})
+getQuizQuestions();
+socket = io("/");
+myPeer = new Peer(undefined, {
+    path: '/peerjs',
+    host: 'onlineproctore.herokuapp.com',
+    port: '443'
+})
+myPeerScreen = new Peer(undefined, {
+    path: '/peerjs',
+    host: 'onlineproctore.herokuapp.com',
+    port: '443'
+})
+myPeer.on('open', id => {
+    socket.emit('join-room1', ROOM_ID + '1', id);
+})
+myPeerScreen.on('open', id => {
+    socket.emit('join-room2', ROOM_ID + '2', id);
+})
+socket.on('user-disconnected', userId => {
+    if (peers[userId]) peers[userId].close()
+    if (peersScreen[userId]) peersScreen[userId].close()
+})
 
 async function getQuizQuestions(){
     var quizId = document.getElementById("quizId").value;
@@ -139,7 +146,7 @@ async function getQuizQuestions(){
             console.log(questionSubmissions[0].submission.submitted);
             window.location.href = '/dashboard/user/course/'+quiz.course._id;
         }
-        submissionId=document.getElementById("submissionId").value;
+        var submissionId=document.getElementById("submissionId").value;
         if(quiz.disablePrevious){
             $('#previous').attr("disabled", true);
             $('#markForReview').attr("disabled", true);
@@ -150,8 +157,9 @@ async function getQuizQuestions(){
             shuffleOrder.push(i);
         }
         shuffleOrder=shuffledArray(shuffleOrder, submissionId);
+        console.log(shuffleOrder)
         for (var i=0; i<questionCount; i++){
-            var j=i;
+            var j = shuffleOrder[i];
             var displayQuestion = '<div class="ques-ans';
             if(i==0){
                 displayQuestion += ' active"';
@@ -458,11 +466,13 @@ function sendIP(){
             submissionId: submissionId,
             ip: ip
         };
-        try{
-            axios.post(quizId + '/ipAddress', data);
-        }
-        catch(error){
-            console.log("Error :", error);
+        if(detections.ipAddressDetector){
+            try{
+                axios.post(quizId + '/ipAddress', data);
+            }
+            catch(error){
+                console.log("Error :", error);
+            }
         }
     });
 }
@@ -566,7 +576,7 @@ function audioDetection(stream){
                 var data = {
                     submissionId: submissionId
                 };
-                if(testStarted){
+                if(testStarted && detections.audioDetector){
                     try{
                         console.log('sending audio detection');
                         axios.post(quizId + '/audio', data);
@@ -601,7 +611,7 @@ document.addEventListener("visibilitychange", function() {
     var data = {
         submissionId: submissionId
     };
-    if(testStarted){
+    if(testStarted && detections.tabSwitchDetector){
         try{
             axios.post(quizId + '/windowBlurred', data);
         }
@@ -722,7 +732,7 @@ function connectWithScreenRecorder(){
             frame: frame,
             type: 796
         };
-        if(testStarted){
+        if(testStarted && detections.tabSwitchDetector){
             try{
                 axios.post(quizId + '/tabChanged', data);
             }
@@ -762,7 +772,7 @@ function predictWebcam() {
                         frame: frame,
                         type: 554
                     };
-                    if(testStarted){
+                    if(testStarted && detections.mobileDetector){
                         try{
                             // console.log('mobile');
                             axios.post(quizId + '/mobileDetected', data);
@@ -784,7 +794,7 @@ function predictWebcam() {
                 frame: frame,
                 type: 239
             };
-            if(testStarted){
+            if(testStarted && detections.faceDetector){
                 try{
                     // console.log('multiple face');
                     axios.post(quizId + '/multipleFace', data);
@@ -798,7 +808,7 @@ function predictWebcam() {
             var data = {
                 submissionId: submissionId,
             };
-            if(testStarted){
+            if(testStarted && detections.faceDetector){
                 try{
                     // console.log('no person');
                     axios.post(quizId + '/noPerson', data);
@@ -818,7 +828,7 @@ function idMapping(ID){
     getMapping();
     mappedVal=0;
     for(i=ID.length-1; i>=0; i--){
-        mappedVal+=Math.pow(35, ID.length-i)*mappings[ID[i]];
+        mappedVal+=Math.pow(35, i)*mappings[ID[i]];
     }
     return mappedVal;
 }

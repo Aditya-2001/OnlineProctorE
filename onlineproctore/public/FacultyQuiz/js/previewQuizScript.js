@@ -7,6 +7,9 @@ window.onload = function() {
 var questionsType = new Map();
 var optionsCount = new Map();
 var questionMarking = new Map();
+azchar = "abcdefghijklmnopqrstuvwxyz"
+char01 = "0123456789"
+var mappings = {};
 
 function setMarks(){
     var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
@@ -37,9 +40,10 @@ async function getQuizQuestions(){
         for (var i=0; i<questionCount; i++){
             shuffleOrder.push(i);
         }
+        shuffleOrder=shuffledArray(shuffleOrder, quizId);
+        console.log(shuffleOrder)
         for (var i=0; i<questionCount; i++){
-            var j = shuffleOrder[Math.floor(Math.random() * (questionCount-i))];
-            shuffleOrder.splice(shuffleOrder.indexOf(j), 1);
+            var j = shuffleOrder[i];
             var displayQuestion = '<div class="ques-ans';
             if(i==0){
                 displayQuestion += ' active"';
@@ -143,4 +147,39 @@ async function display(id){
     $('.quiz-card').find('.ques-ans.active').removeClass('active');
     document.getElementById(id).classList.add('active');
     document.getElementById(id).classList.remove('none');
+}
+
+function idMapping(ID){
+    getMapping();
+    mappedVal=0;
+    for(i=ID.length-1; i>=0; i--){
+        mappedVal+=Math.pow(35, i)*mappings[ID[i]];
+    }
+    return mappedVal;
+}
+
+function getMapping(){
+	for(let i=0;i<azchar.length; i++){
+		mappings[azchar[i]] = azchar[i].charCodeAt(0)-97;
+	}
+	for(let i=0;i<char01.length; i++){
+		mappings[char01[i]] = char01[i].charCodeAt(0)-48+26;
+	}
+}
+
+function shuffledArray(array, seed) {
+    seed=idMapping(seed);
+    var m = array.length, t, i;
+    while (m) {
+        i = Math.floor(random(seed) * m--);
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+        ++seed;
+    }
+    return array;
+}
+function random(seed) {
+    var x = Math.sin(seed++) * 10000; 
+    return x - Math.floor(x);
 }
