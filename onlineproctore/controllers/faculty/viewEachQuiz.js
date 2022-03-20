@@ -841,3 +841,38 @@ exports.previewQuiz = async (req, res) => {
   var questions = await Question.findQuestions({quiz: quiz._id});
   return res.status(200).json({quiz: quiz, questions: questions});
 }
+
+exports.faceDetectorSetting = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  quiz.faceDetector = !quiz.faceDetector;
+  quiz.save();
+  return res.status(204).send();
+}
+
+exports.mobileDetectorSetting = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  quiz.mobileDetector = !quiz.mobileDetector;
+  quiz.save();
+  return res.status(204).send();
+}
+
+exports.tabSwitchDetectorSetting = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  quiz.tabSwitchDetector = !quiz.tabSwitchDetector;
+  quiz.save();
+  return res.status(204).send();
+}
+
+exports.ipAddressDetectorSetting = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  quiz.ipAddressDetector = !quiz.ipAddressDetector;
+  quiz.save();
+  return res.status(204).send();
+}
+
+exports.audioDetectorSetting = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  quiz.audioDetector = !quiz.audioDetector;
+  quiz.save();
+  return res.status(204).send();
+}

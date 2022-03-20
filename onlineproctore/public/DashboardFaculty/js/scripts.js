@@ -1,7 +1,7 @@
 if(document.body.clientWidth<992){
-    document.getElementById("passTemp").setAttribute("data-toggle","");
-    document.getElementById("passTemp").setAttribute("data-target","");
-    document.getElementById("passTemp").setAttribute("href","/update/passwordChange");
+  document.getElementById("passTemp").setAttribute("data-toggle","");
+  document.getElementById("passTemp").setAttribute("data-target","");
+  document.getElementById("passTemp").setAttribute("href","/update/passwordChange");
 }
 
 $("#form").submit(async function (e) {
@@ -86,50 +86,21 @@ function addOption(){
   $('#questionOptions').append(option);
 }
 
-function removeOption(){
-  var n = $('#questionOptions').children().length;
-  for(let i=0; i<n-1; i++){
-    $('#questionOptions').children().last().remove();
-  }
-  n = $('#questionImages').children().length;
-  for(let i=0; i<n-1; i++){
-    $('#questionImages').children().last().remove();
-  }
-}
-
-function removeImageLink(){
-  var n = $('#writtenQuestionImages').children().length;
-  for(let i=0; i<n-1; i++){
-    $('#writtenQuestionImages').children().last().remove();
-  }
-}
-
 $(document).ready(function () {
   $('.dtBasicExample').DataTable();
   $('.dtBasicExample1').DataTable();
   $('.dataTables_length').addClass('bs-select');
 });
 
-$("#courseCreationForm").submit(async function (e) {
-    e.preventDefault();
-    var serializedData = $(this).serialize();
-    try{
-      await axios.post('/dashboard/faculty/add', serializedData);
-      location.reload();
-    }catch(error){
-      console.log(error.response);
-    }
-})
-
 $("#changeCourseName").submit(async function (e) {
-    e.preventDefault();
-    var serializedData = $(this).serialize();
-    try{
-      await axios.post('/dashboard/faculty/changeCourseName', serializedData);
-      location.reload();
-    }catch(error){
-      console.log(error.response);
-    }
+  e.preventDefault();
+  var serializedData = $(this).serialize();
+  try{
+    await axios.post(window.location.pathname+'/changeCourseName', serializedData);
+    location.reload();
+  }catch(error){
+    console.log(error.response);
+  }
 })
 
 $("#makeCourseAnnouncement").submit(async function (e) {
@@ -283,3 +254,108 @@ function fader(ID){
   $(ID).fadeIn()
   $(ID).delay(4000).fadeOut(4000)
 }
+
+faceDetector = document.getElementById('faceDetector');
+faceDetector.addEventListener('change', e => {
+  if(e.target.checked){
+    $('#faceDetectorSpan').html('Turned On');
+  } else {
+    $('#faceDetectorSpan').html('Turned Off');
+  }
+  var quizId = document.getElementById("quizId").value;
+  try{
+    axios.post(quizId+'/faceDetectorSetting', {});
+  }catch(error){
+    console.log(error.response);
+  }
+});
+
+mobileDetector = document.getElementById('mobileDetector');
+mobileDetector.addEventListener('change', e => {
+  if(e.target.checked){
+    $('#mobileDetectorSpan').html('Turned On');
+  } else {
+    $('#mobileDetectorSpan').html('Turned Off');
+  }
+  var quizId = document.getElementById("quizId").value;
+  try{
+    axios.post(quizId+'/mobileDetectorSetting', {});
+  }catch(error){
+    console.log(error.response);
+  }
+});
+
+tabSwitchDetector = document.getElementById('tabSwitchDetector');
+tabSwitchDetector.addEventListener('change', e => {
+  if(e.target.checked){
+    $('#tabSwitchDetectorSpan').html('Turned On');
+  } else {
+    $('#tabSwitchDetectorSpan').html('Turned Off');
+  }
+  var quizId = document.getElementById("quizId").value;
+  try{
+    axios.post(quizId+'/tabSwitchDetectorSetting', {});
+  }catch(error){
+    console.log(error.response);
+  }
+});
+
+ipAddressDetector = document.getElementById('ipAddressDetector');
+ipAddressDetector.addEventListener('change', e => {
+  if(e.target.checked){
+    $('#ipAddressDetectorSpan').html('Turned On');
+  } else {
+    $('#ipAddressDetectorSpan').html('Turned Off');
+  }
+  var quizId = document.getElementById("quizId").value;
+  try{
+    axios.post(quizId+'/ipAddressDetectorSetting', {});
+  }catch(error){
+    console.log(error.response);
+  }
+});
+
+audioDetector = document.getElementById('audioDetector');
+audioDetector.addEventListener('change', e => {
+  if(e.target.checked){
+    $('#audioDetectorSpan').html('Turned On');
+  } else {
+    $('#audioDetectorSpan').html('Turned Off');
+  }
+  var quizId = document.getElementById("quizId").value;
+  try{
+    axios.post(quizId+'/audioDetectorSetting', {});
+  }catch(error){
+    console.log(error.response);
+  }
+});
+
+visibility = document.getElementById('visibility');
+visibility.addEventListener('change', e => {
+  if(e.target.checked){
+    $('#visibilitySpan').html('Visible');
+  } else {
+    $('#visibilitySpan').html('Hidden');
+  }
+  var quizId = document.getElementById("quizId").value;
+  try{
+    axios.get(quizId+'/hideQuiz');
+  }catch(error){
+    console.log(error.response);
+  }
+});
+
+disablePrevious = document.getElementById('disablePrevious');
+disablePrevious.addEventListener('change', e => {
+  if(e.target.checked){
+    $('#disablePreviousSpan').html('Allowed');
+  } else {
+    $('#disablePreviousSpan').html('Not Allowed');
+  }
+  var quizId = document.getElementById("quizId").value;
+  try{
+    axios.get(quizId+'/disablePrevious');
+  }catch(error){
+    console.log(error.response);
+  }
+});

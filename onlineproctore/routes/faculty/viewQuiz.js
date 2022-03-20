@@ -7,7 +7,9 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   addMCQQuestion, viewDetailAnalysis, deleteQuestion,
   editMCQQuestion, editWrittenQuestion, editCourseQuiz, 
   viewStream, downloadQuizResults, downloadStudentSubmissions,
-  assignSets, renderPreviewQuiz, previewQuiz} = require('../../controllers/faculty/viewEachQuiz');
+  assignSets, renderPreviewQuiz, previewQuiz, faceDetectorSetting,
+  mobileDetectorSetting, tabSwitchDetectorSetting, ipAddressDetectorSetting,
+  audioDetectorSetting} = require('../../controllers/faculty/viewEachQuiz');
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
@@ -86,6 +88,21 @@ router.route('/deleteQuiz')
 
 router.route('/deleteQuestion')
   .post(authFacultyTaQuiz, deleteQuestion)
+
+router.route('/faceDetectorSetting')
+  .post(authFacultyTaQuiz, faceDetectorSetting)
+
+router.route('/mobileDetectorSetting')
+  .post(authFacultyTaQuiz, mobileDetectorSetting)
+
+router.route('/tabSwitchDetectorSetting')
+  .post(authFacultyTaQuiz, tabSwitchDetectorSetting)
+
+router.route('/ipAddressDetectorSetting')
+  .post(authFacultyTaQuiz, ipAddressDetectorSetting)
+
+router.route('/audioDetectorSetting')
+  .post(authFacultyTaQuiz, audioDetectorSetting)
 
 router.route('/deleteIllegalAttempts')
   .post(authFacultyTaQuiz, deleteIllegalAttempts)
