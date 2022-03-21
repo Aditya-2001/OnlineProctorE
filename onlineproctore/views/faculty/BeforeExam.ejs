@@ -132,28 +132,20 @@
                                     <thead class="text-warning">
                                     <th>Question</th>
                                     <th>Options</th>
+                                    <th>Set</th>
                                     <th>Correct Options</th>
-                                    <th>Marking Scheme</th>
                                     <th>Maximum Marks</th>
-                                    <th>Negative Marking</th>
-                                    <th>Edit</th>
                                     <th></th>
                                     </thead>
                                     <tbody>
                                       <% questions.forEach(question => { %>
                                         <% if(question.mcq){ %>
-                                          <tr>
+                                          <tr data-toggle="modal" data-target="#modal40" onclick="editMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')">
                                             <td><%= question.question %></td>
                                             <td><%= question.options.toString().split(',').join(', ') %></td>
+                                            <td><%= question.set %></td>
                                             <td><%= question.correctOptions.toString().split(',').join(', ') %></td>
-                                            <% if(question.markingScheme){ %>
-                                              <td>Partial Marking</td>
-                                            <% } else{ %>
-                                              <td>No Partial Marking</td>
-                                            <% } %>
                                             <td><%= question.maximumMarks %></td>
-                                            <td><%= question.negativeMarking %></td>
-                                            <td><i class="material-icons edit" data-toggle="modal" onclick="editMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal40">edit</i></td>
                                             <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
                                           </tr>
                                         <% } %>
@@ -165,19 +157,17 @@
                                 <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
                                     <thead class="text-warning">
                                     <th>Question</th>
-                                    <th></th>
+                                    <th>Set</th>
                                     <th>Maximum Marks</th>
-                                    <th>Edit</th>
                                     <th></th>
                                     </thead>
                                     <tbody>
                                       <% questions.forEach(question => { %>
                                         <% if(!question.mcq){ %>
-                                          <tr>
+                                          <tr data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal41">
                                             <td><%= question.question %></td>
-                                            <td></td>
+                                            <td><%= question.set %></td>
                                             <td><%= question.maximumMarks %></td>
-                                            <td><i class="material-icons edit" data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal41">edit</i></td>
                                             <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
                                           </tr>
                                         <% } %>
@@ -360,7 +350,7 @@
                 <form id="editMCQQuestion">
                     <div class="form-group">
                       <label class="bmd-label-floating">Edit the question below</label><br>
-                      <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4"></textarea>
+                      <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" required></textarea>
                     </div>
                     <input type="text" name="questionId" id="mcqQuestionId" hidden/>
                     <div class="form-group">
@@ -412,7 +402,7 @@
                   <form id="editWrittenQuestion">
                       <div class="form-group">
                         <label class="bmd-label-floating">Edit the question below</label><br>
-                        <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4"></textarea>
+                        <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" required></textarea>
                       </div>
                       <input type="text" name="questionId" id="writtenQuestionId" hidden/>
                       <div class="form-group">

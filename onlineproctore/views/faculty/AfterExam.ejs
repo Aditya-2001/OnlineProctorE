@@ -204,29 +204,23 @@
                             <div class="tab-pane active" id="mcqs">
                                 <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
                                     <thead class="text-warning">
-                                    <th>Question</th>
-                                    <th>Options</th>
-                                    <th class="mcq-table">Correct Options</th>
-                                    <th class="mcq-table">Marking Scheme</th>
-                                    <th class="mcq-table">Maximum Marks</th>
-                                    <th>Negative Marking</th>
-                                    </thead>
-                                    <tbody>
+                                      <th>Question</th>
+                                      <th>Options</th>
+                                      <th>Set</th>
+                                      <th class="mcq-table">Correct Options</th>
+                                      <th class="mcq-table">Maximum Marks</th>
+                                      </thead>
+                                      <tbody>
                                         <% questions.forEach(question => { %>
-                                            <% if(question.mcq){ %>
-                                              <tr>
-                                                <td><%= question.question %></td>
-                                                <td><%= question.options %></td>
-                                                <td><%= question.correctOptions %></td>
-                                                <% if(question.markingScheme){ %>
-                                                  <td>Partial Marking</td>
-                                                <% } else{ %>
-                                                  <td>No Partial Marking</td>
-                                                <% } %>
-                                                <td><%= question.maximumMarks %></td>
-                                                <td><%= question.negativeMarking %></td>
-                                              </tr>
-                                            <% } %>
+                                          <% if(question.mcq){ %>
+                                            <tr data-toggle="modal" data-target="#modal40" onclick="viewMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')">
+                                              <td><%= question.question %></td>
+                                              <td><%= question.options %></td>
+                                              <td><%= question.set %></td>
+                                              <td><%= question.correctOptions %></td>
+                                              <td><%= question.maximumMarks %></td>
+                                            </tr>
+                                          <% } %>
                                         <% }) %>
                                     </tbody>
                                 </table>        
@@ -235,15 +229,15 @@
                                 <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
                                     <thead class="text-warning">
                                     <th>Question</th>
-                                    <th></th>
+                                    <th>Set</th>
                                     <th>Maximum Marks</th>
                                     </thead>
                                     <tbody>
                                         <% questions.forEach(question => { %>
                                             <% if(!question.mcq){ %>
-                                              <tr>
+                                              <tr data-toggle="modal" onclick="viewWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal41">
                                                 <td><%= question.question %></td>
-                                                <td></td>
+                                                <td><%= question.set %></td>
                                                 <td><%= question.maximumMarks %></td>
                                               </tr>
                                             <% } %>
@@ -315,6 +309,89 @@
           </div>
         </div>
       </div>
-
+      <!-- Modal view mcq question -->
+      <div class="modal fade" id="modal40" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-green">
+              <h4 class="modal-title">View MCQ Question</h4>
+            </div>
+            <div class="modal-body">
+              <form id="editMCQQuestion">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Question</label><br>
+                    <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" disabled></textarea>
+                  </div>
+                  <input type="text" name="questionId" id="mcqQuestionId" hidden/>
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Maximum Marks</label><br>
+                    <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="mcqMarks" step="0.01" disabled/>
+                  </div><br>
+                  <div class="form-group">
+                    <label class="bmd-label">Set</label><br>
+                    <input type="text" class="form-control" autocomplete="off" id="mcqSet" name="set" placeholder="Enter name of set to which this question belongs to" disabled/>
+                  </div><br>
+                  <label class="bmd-label">Options</label>
+                  <div id="editMCQQuestionOptions"></div>
+                  <br><br>
+                  <label class="bmd-label">Image Links</label>
+                  <div id="editMCQQuestionImageLink"></div>
+                  <br>
+                  <br>
+                  <div class="form-group">
+                    <label class="bmd-label">Correct Options</label><br>
+                    <input type="text" class="form-control" autocomplete="off" name="correctOptions" id="mcqCorrectOptions" placeholder="Correct Options Number. eg: 1,2" disabled/>
+                  </div><br>
+                  <div class="form-group">
+                    <label class="bmd-label">Marking Scheme</label><br>
+                    <select class="form-control" name="markingScheme" disabled>
+                      <option value="Yes" id="yes">Partial Marking</option>
+                      <option value="No" id="no">No Partial Marking</option>
+                    </select>
+                  </div><br>
+                  <div class="form-group">
+                    <label class="bmd-label">Negative Marking</label><br>
+                    <input type="number" class="form-control" autocomplete="off" name="negativeMarking" min="0" step="0.01" id="mcqNegativeMarking" placeholder="Enter marks that will be awarded when answer is wrong" disabled/>
+                  </div><br>
+                  <!-- <input type="submit" class="btn btn-primary pull-right" value="Edit Question"/> -->
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal view written -->
+      <div class="modal fade" id="modal41" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-green">
+              <h4 class="modal-title">View written type question</h4>
+            </div>
+            <div class="modal-body">
+                <form id="editWrittenQuestion">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Question</label><br>
+                      <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" disabled></textarea>
+                    </div>
+                    <input type="text" name="questionId" id="writtenQuestionId" hidden/>
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Note regarding Question</label><br>
+                      <textarea class="form-control" name="note" id="writtenQuestionNote" autocomplete="off" rows="2" disabled></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="bmd-label-floating">Maximum Marks</label><br>
+                        <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="writtenQuestionMarks" step="0.01" disabled/>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                      <label class="bmd-label">Set</label><br>
+                      <input type="text" class="form-control" autocomplete="off" id="writtenSet" name="set" placeholder="Enter name of set to which this question belongs to" disabled/>
+                    </div><br>
+                    <label class="bmd-label">Image Links</label>
+                    <div id="editWrittenQuestionImageLink"></div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
 <%- include('./baseEjs/footer')%>
