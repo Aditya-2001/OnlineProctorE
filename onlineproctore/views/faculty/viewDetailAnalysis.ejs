@@ -13,6 +13,7 @@
                     <% }else{ %>
                       <input type="text" id="quizHeld" value="false" hidden/>
                     <% } %>
+                    <input type="text" name="quizId" id="quizId" value="<%= quiz._id %>" hidden/>
                     <form enctype="multipart/form-data" method="POST" id="form">
                         <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%"  style="text-align: center;">
                             <thead class="text-warning">
@@ -29,7 +30,7 @@
                                 <th>Audio Detection</th>
                                 <th>IP Address</th>
                             </tr></thead>
-                            <tbody>
+                            <tbody id="viewDetailAnalysisBody">
                               <% submissions.forEach( submission => { %>
                                 <tr>
                                   <td> <%= submission.user.username.toUpperCase() %> </td>
@@ -37,7 +38,7 @@
                                     <td><a href=<%= 'viewDetailAnalysis/submission/' + submission._id %> class="btn btn-primary">view</a></td>
                                     <td><%= submission.mcqScore + submission.writtenScore %></td>
                                   <% }else{ %>
-                                    <td><a href="<%= 'viewDetailAnalysis/viewStream/submission/' + submission._id %>"><i class="material-icons">visibility</i></a></td>
+                                    <td><a href="<%= 'viewDetailAnalysis/viewStream/submission/' + submission._id %>" class="btn btn-primary">view</a></td>
                                   <% } %>
                                   <td><%= submission.browserSwitched %></td>
                                   <td><%= submission.mobileDetected %></td>
@@ -49,7 +50,7 @@
                             </tbody>
                         </table>   
                     </form>
-                    </div>
+                  </div>
               </div>
             </div>
           </div>

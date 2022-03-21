@@ -255,107 +255,109 @@ function fader(ID){
   $(ID).delay(4000).fadeOut(4000)
 }
 
-faceDetector = document.getElementById('faceDetector');
-faceDetector.addEventListener('change', e => {
-  if(e.target.checked){
-    $('#faceDetectorSpan').html('Turned On');
-  } else {
-    $('#faceDetectorSpan').html('Turned Off');
-  }
-  var quizId = document.getElementById("quizId").value;
-  try{
-    axios.post(quizId+'/faceDetectorSetting', {});
-  }catch(error){
-    console.log(error.response);
-  }
-});
+if(window.location.pathname.split('/')[window.location.pathname.split('/').length - 1] == document.getElementById("quizId").value){
+  faceDetector = document.getElementById('faceDetector');
+  faceDetector.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#faceDetectorSpan').html('Turned On');
+    } else {
+      $('#faceDetectorSpan').html('Turned Off');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.post(quizId+'/faceDetectorSetting', {});
+    }catch(error){
+      console.log(error.response);
+    }
+  });
 
-mobileDetector = document.getElementById('mobileDetector');
-mobileDetector.addEventListener('change', e => {
-  if(e.target.checked){
-    $('#mobileDetectorSpan').html('Turned On');
-  } else {
-    $('#mobileDetectorSpan').html('Turned Off');
-  }
-  var quizId = document.getElementById("quizId").value;
-  try{
-    axios.post(quizId+'/mobileDetectorSetting', {});
-  }catch(error){
-    console.log(error.response);
-  }
-});
+  mobileDetector = document.getElementById('mobileDetector');
+  mobileDetector.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#mobileDetectorSpan').html('Turned On');
+    } else {
+      $('#mobileDetectorSpan').html('Turned Off');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.post(quizId+'/mobileDetectorSetting', {});
+    }catch(error){
+      console.log(error.response);
+    }
+  });
 
-tabSwitchDetector = document.getElementById('tabSwitchDetector');
-tabSwitchDetector.addEventListener('change', e => {
-  if(e.target.checked){
-    $('#tabSwitchDetectorSpan').html('Turned On');
-  } else {
-    $('#tabSwitchDetectorSpan').html('Turned Off');
-  }
-  var quizId = document.getElementById("quizId").value;
-  try{
-    axios.post(quizId+'/tabSwitchDetectorSetting', {});
-  }catch(error){
-    console.log(error.response);
-  }
-});
+  tabSwitchDetector = document.getElementById('tabSwitchDetector');
+  tabSwitchDetector.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#tabSwitchDetectorSpan').html('Turned On');
+    } else {
+      $('#tabSwitchDetectorSpan').html('Turned Off');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.post(quizId+'/tabSwitchDetectorSetting', {});
+    }catch(error){
+      console.log(error.response);
+    }
+  });
 
-ipAddressDetector = document.getElementById('ipAddressDetector');
-ipAddressDetector.addEventListener('change', e => {
-  if(e.target.checked){
-    $('#ipAddressDetectorSpan').html('Turned On');
-  } else {
-    $('#ipAddressDetectorSpan').html('Turned Off');
-  }
-  var quizId = document.getElementById("quizId").value;
-  try{
-    axios.post(quizId+'/ipAddressDetectorSetting', {});
-  }catch(error){
-    console.log(error.response);
-  }
-});
+  ipAddressDetector = document.getElementById('ipAddressDetector');
+  ipAddressDetector.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#ipAddressDetectorSpan').html('Turned On');
+    } else {
+      $('#ipAddressDetectorSpan').html('Turned Off');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.post(quizId+'/ipAddressDetectorSetting', {});
+    }catch(error){
+      console.log(error.response);
+    }
+  });
 
-audioDetector = document.getElementById('audioDetector');
-audioDetector.addEventListener('change', e => {
-  if(e.target.checked){
-    $('#audioDetectorSpan').html('Turned On');
-  } else {
-    $('#audioDetectorSpan').html('Turned Off');
-  }
-  var quizId = document.getElementById("quizId").value;
-  try{
-    axios.post(quizId+'/audioDetectorSetting', {});
-  }catch(error){
-    console.log(error.response);
-  }
-});
+  audioDetector = document.getElementById('audioDetector');
+  audioDetector.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#audioDetectorSpan').html('Turned On');
+    } else {
+      $('#audioDetectorSpan').html('Turned Off');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.post(quizId+'/audioDetectorSetting', {});
+    }catch(error){
+      console.log(error.response);
+    }
+  });
 
-visibility = document.getElementById('visibility');
-visibility.addEventListener('change', e => {
-  if(e.target.checked){
-    $('#visibilitySpan').html('Visible');
-  } else {
-    $('#visibilitySpan').html('Hidden');
-  }
-  var quizId = document.getElementById("quizId").value;
-  try{
-    axios.get(quizId+'/hideQuiz');
-  }catch(error){
-    console.log(error.response);
-  }
-});
+  visibility = document.getElementById('visibility');
+  visibility.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#visibilitySpan').html('Visible');
+    } else {
+      $('#visibilitySpan').html('Hidden');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.get(quizId+'/hideQuiz');
+    }catch(error){
+      console.log(error.response);
+    }
+  });
 
-disablePrevious = document.getElementById('disablePrevious');
-disablePrevious.addEventListener('change', e => {
-  if(e.target.checked){
-    $('#disablePreviousSpan').html('Allowed');
-  } else {
-    $('#disablePreviousSpan').html('Not Allowed');
-  }
-  var quizId = document.getElementById("quizId").value;
-  try{
-    axios.get(quizId+'/disablePrevious');
-  }catch(error){
-    console.log(error.response);
-  }
-});
+  disablePrevious = document.getElementById('disablePrevious');
+  disablePrevious.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#disablePreviousSpan').html('Allowed');
+    } else {
+      $('#disablePreviousSpan').html('Not Allowed');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.get(quizId+'/disablePrevious');
+    }catch(error){
+      console.log(error.response);
+    }
+  });
+}

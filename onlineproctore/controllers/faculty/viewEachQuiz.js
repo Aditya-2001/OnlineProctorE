@@ -354,6 +354,20 @@ exports.viewDetailAnalysis = async (req, res) => {
   }
 }
 
+exports.viewDetailAnalysisData = async (req, res) => {
+  try{
+    const quizId = req.quizId;
+    var submissions = await Submission.findSubmissions({quiz: quizId});
+    return res.status(200).json({
+      submissions: submissions
+    });
+  }
+  catch(err){
+    console.log(err);
+    return res.status(400).render('error/error');
+  }
+}
+
 exports.deleteIllegalAttempts = async (req, res) => {
   try{
     const quizId = req.quizId;

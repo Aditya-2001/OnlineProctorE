@@ -9,7 +9,7 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   viewStream, downloadQuizResults, downloadStudentSubmissions,
   assignSets, renderPreviewQuiz, previewQuiz, faceDetectorSetting,
   mobileDetectorSetting, tabSwitchDetectorSetting, ipAddressDetectorSetting,
-  audioDetectorSetting} = require('../../controllers/faculty/viewEachQuiz');
+  audioDetectorSetting, viewDetailAnalysisData} = require('../../controllers/faculty/viewEachQuiz');
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
@@ -44,6 +44,7 @@ router.route('/downloadStudentSubmissions')
 
 router.route('/viewDetailAnalysis')
   .get(authFacultyTaQuiz, viewDetailAnalysis)
+  .post(authFacultyTaQuiz, viewDetailAnalysisData)
 
 router.route('/viewDetailAnalysis/submission/:submissionId')
   .get(authFacultyTaQuizAnalysis, getUserSubmission)

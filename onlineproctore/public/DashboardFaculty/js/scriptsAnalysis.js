@@ -1,17 +1,66 @@
-$(document).ready(function () {
-  const quizHeld = document.getElementById('quizHeld').value;
-  if(quizHeld === 'true'){
-    $('.dtBasicExample2').DataTable({
-      "aaSorting": [[ 2, "desc" ], [ 3, "desc" ], [ 4, "desc" ], [ 5, "desc" ], [ 6, "desc" ], [ 7, "desc" ]]
-    });
+async function updateTable(){
+  const quizId = document.getElementById('quizId').value;
+  try{
+    var {data} = await axios.post('', {});
+    var submissions = data.submissions;
+    const quizHeld = document.getElementById('quizHeld').value;
+    if(quizHeld === 'true'){
+      submissions = submissions.sort((a,b) => {
+        var val = 1;
+        if((a.writtenScore+a.mcqScore) > (b.writtenScore+b.mcqScore))
+          val = -1;
+        else if((a.writtenScore+a.mcqScore) == (b.writtenScore+b.mcqScore) && a.browserSwitched > b.browserSwitched)
+          val = -1;
+        else if((a.writtenScore+a.mcqScore) == (b.writtenScore+b.mcqScore) && a.browserSwitched == b.browserSwitched && a.mobileDetected > b.mobileDetected)
+          val = -1;
+        else if((a.writtenScore+a.mcqScore) == (b.writtenScore+b.mcqScore) && a.browserSwitched == b.browserSwitched && a.mobileDetected == b.mobileDetected && a.multiplePerson > b.multiplePerson)
+          val = -1;
+        else if((a.writtenScore+a.mcqScore) == (b.writtenScore+b.mcqScore) && a.browserSwitched == b.browserSwitched && 
+          a.mobileDetected == b.mobileDetected && 
+          a.multiplePerson == b.multiplePerson &&
+          a.audioDetected > b.audioDetected)
+          val = -1;
+        return val;
+      })
+    }else{
+      submissions = submissions.sort((a,b) => {
+        var val = 1;
+        if(a.browserSwitched > b.browserSwitched)
+          val = -1;
+        else if(a.browserSwitched == b.browserSwitched && a.mobileDetected > b.mobileDetected)
+          val = -1;
+        else if(a.browserSwitched == b.browserSwitched && a.mobileDetected == b.mobileDetected && a.multiplePerson > b.multiplePerson)
+          val = -1;
+        else if(a.browserSwitched == b.browserSwitched && 
+          a.mobileDetected == b.mobileDetected && 
+          a.multiplePerson == b.multiplePerson &&
+          a.audioDetected > b.audioDetected)
+          val = -1;
+        return val;
+      })
+    }
+    document.getElementById('viewDetailAnalysisBody').innerHTML = "";
+    var tbody = document.getElementById('viewDetailAnalysisBody');
+    for(const submission of submissions){
+      var html = '<tr><td>'+submission.user.username.toUpperCase()+'</td>';
+      if(quizHeld === 'true'){
+        html += '<td><a href=\'viewDetailAnalysis/submission/' + submission._id + '\'class="btn btn-primary">view</a></td><td>'+ submission.mcqScore + submission.writtenScore + '</td>';
+      }
+      else{
+        html += '<td><a href=\'viewDetailAnalysis/viewStream/submission/' + submission._id + '\'class="btn btn-primary">view</a></td>'
+      }
+      html += '<td>'+ submission.browserSwitched +'</td>';
+      html += '<td>'+ submission.mobileDetected +'</td>';
+      html += '<td>'+ submission.multiplePerson +'</td>';
+      html += '<td>'+ submission.audioDetected +'</td>';
+      html += '<td>'+ submission.ipAddress +'</td>';
+      tbody.insertAdjacentHTML("beforeend", html);
+    }
+  }catch(error){
+    console.log(error.response);
   }
-  else{
-    $('.dtBasicExample2').DataTable({
-      "aaSorting": [[ 2, "desc" ], [ 3, "desc" ], [ 4, "desc" ], [ 5, "desc" ], [ 6, "desc" ]]
-    });
-  }
-});
-
-setInterval(()=> {
-  window.location.reload();
-}, 60000);
+}
+updateTable();
+setInterval(async ()=> {
+  updateTable();
+}, 10000);
