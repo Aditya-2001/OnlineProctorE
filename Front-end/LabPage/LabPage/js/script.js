@@ -15,7 +15,6 @@ var temp=setInterval(function(){
 var myfunc = setInterval(function() {
     var now = new Date().getTime();
     var timeleft = countDownDate - now;
-    console.log(timeleft);
         
     // Calculating the days, hours, minutes and seconds left
     var hoursrem = Math.floor((timeleft) / (1000 * 60 * 60));
@@ -75,6 +74,10 @@ $(document).ready(function() {
             btn.prop("disabled", false);
         },1500);
     });
+    $('.dtBasicExample').DataTable({
+            "ordering": false
+        });
+    $('.dataTables_length').addClass('bs-select');
 });
 
 function copyToClipboard(text) {
@@ -96,4 +99,67 @@ function copyToClipboard(text) {
             document.body.removeChild(textarea);
         }
     }
+}
+
+let editor;
+window.onload = function() {
+    editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/c_cpp");
+    // editor.session.setValue("/* Your Code Goes Here */");
+}
+
+function changeTheme() {
+    let theme = $("#themes").val();
+    if(theme == 'monokali') editor.setTheme("ace/theme/monokai");
+    else if(theme == 'ambiance') editor.setTheme("ace/theme/ambiance");
+    else if(theme == 'cobalt') editor.setTheme("ace/theme/cobalt");
+    else if(theme == 'eclipse') editor.setTheme("ace/theme/eclipse");
+    else if(theme == 'github') editor.setTheme("ace/theme/github");
+    else if(theme == 'solarized_light') editor.setTheme("ace/theme/solarized_light");
+    else if(theme == 'terminal') editor.setTheme("ace/theme/terminal");
+    else if(theme == 'xcode') editor.setTheme("ace/theme/xcode");
+}
+
+function changeLanguage() {
+    let language = $("#languages").val();
+    if(language == 'c' || language == 'cpp'){
+        editor.session.setMode("ace/mode/c_cpp");
+        // editor.session.setValue("/* Your Code Goes Here */");
+    }
+    else if(language == 'java'){
+        editor.session.setMode("ace/mode/java");
+    //     editor.session.setValue("/* Your Code Goes Here */");
+    }
+    else if(language == 'python'){
+        editor.session.setMode("ace/mode/python");
+        // editor.session.setValue("# Your Code Goes Here");
+    }
+}
+
+$(function(){
+    $("#upload_link").on('click', function(e){
+        e.preventDefault();
+        $("#upload:hidden").trigger('click');
+    });
+});
+
+function copy_helper(id1,id2){
+    document.getElementById(id1).style.display="none";
+    document.getElementById(id2).style.display="inline-block";
+    setTimeout(function() {
+        document.getElementById(id2).style.display="none";
+        document.getElementById(id1).style.display="inline-block";
+    }, 1000);
+}
+
+function copy_code(){
+    // navigator.clipboard.writeText(document.getElementsByClassName("ace_text-layer")[0].innerText);
+    console.log(document.getElementsByClassName("ace_text-layer")[0].innerHTML)
+    navigator.clipboard.writeText(document.getElementsByClassName("ace_text-layer")[0].innerHTML);
+    copy_helper("content_copy","done_all");
+}
+
+function copy_testcase(num){
+    copy_helper("not-copied"+num,"copied"+num);
 }

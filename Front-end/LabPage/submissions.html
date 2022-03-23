@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="./LabPage/img/logo.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Submission</title>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- CSS Files -->
+    <link href="./LabPage/css/material-dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./LabPage/css/styles.css">
+</head>
+<body>
+    <div class="wrapper ">
+        <div class="main-panel">
+            <nav class="nbar">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h1 class="heading">OnlineProctorE</h1>
+                    </div>
+                    <div class="col-sm-6 nav-name">
+                        <div class="info">
+                            <table class="info-tab">
+                                <tr>
+                                    <td>
+                                        <span class="start">Name:</span> Ambika Singh Kaushik 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="start">Course:</span> Mini Project 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="start">Time Remaining:</span> <span id="hours"></span><span id="mins"></span><span id="secs"></span><span id="end"></span><br>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="right-tab">
+                                <tr>
+                                    <td>
+                                        <button class="btn btn-primary">Submit</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- <span class="start">Name:</span> Ambika Singh Kaushik <br>
+                            <span class="start">Course:</span> Mini Project <br>
+                            <span class="start">Time Remaining:</span> <span id="hours"></span><span id="mins"></span><span id="secs"></span><span id="end"></span> -->
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="content none">
+                <div class="container-fluid">
+                    <div class="row ">
+                        <div class="modal-content card">
+                            <div class="card-header card-header-green">
+                                <h4 class="modal-title" style="font-size: 1.5rem;"><b>Instructions</b></h4>
+                                <hr>
+                                <h5 style="float: right; font-size: 1rem;">Please follow the given instructions</h5>
+                            </div>
+                            <div class="modal-body">
+                                <p style="padding-bottom: 10px">1. Please Wait 1-2 minutes (depending upon your internet connection and system hardware capabilities) as it may take time to load the models.</p>
+                                <p style="padding-bottom: 10px">2. You have to allow both Camera and Microphone to continue to give the test.</p>
+                                <p style="padding-bottom: 10px">3. You have to share your entire screen and enable the <b>"share system audio"</b> checkbox.</p>
+                                <p style="padding-bottom: 10px">4. Do not change Tab or Browser while giving the test.</p>
+                                <p style="padding-bottom: 10px">5. Do not speak or leave your seat while giving the test.</p>
+                                <p style="padding-bottom: 10px">6. Do not copy paste answers from your friends or any other publicly available sources.</p>
+                                <p style="padding-bottom: 10px">7. Do not use Mobile phones.</p>
+                                <span class="pull-right start timer">
+                                    <span id="quiz-start-time">10</span> <br>
+                                    <button type="button" id="start-the-test" class="btn btn-primary pull-right" onclick="startTest()" disabled>Start Test</button>
+                                </span>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="container-fluid quiz-card">
+                    <div class="navbar navbar-expand-sm navbar-light bg-light">
+                        <div class="container-fluid">
+                        <div class="" id="navbarText">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="./index.html">Questions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./question.html">Description</a>
+                            </li>
+                            <li class="nav-item selectd-page">
+                                <a class="nav-link" href="#">Submissions</a>
+                            </li>
+                            </ul>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="row external">
+                        <div class="col-sm-12 pad-unset pad hgt">
+                            <div class="marg">
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <span class="control-panel-theme">
+                                            <span class="que">Submissions: </span>
+                                            <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm">
+                                                <option value="all"> All </option>
+                                                <option value="1"> Question 1 </option>
+                                                <option value="2"> Question 2 </option>
+                                                <option value="3"> Question 3 </option>
+                                            </select>
+                                        </span>
+                                        <table class="dtBasicExample table table-hover table-striped table-sm table-responsive-sm" style="width: 100%;">
+                                            <thead class="text-warning">
+                                            <tr><th class="th-sm">Problem</th>
+                                            <th class="th-sm">Score</th>
+                                            <th class="th-sm">Time</th>
+                                            <th class="th-sm">Memory</th>
+                                            <th class="th-sm">Language</th>
+                                            <th class="th-sm">Detail</th>
+                                            <th class="th-sm">Submission Time</th>
+                                            </tr></thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Question 1</td>
+                                                    <td>5</td>
+                                                    <td>0.04794</td>
+                                                    <td>2</td>
+                                                    <td>C++</td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal1" href="#">view</a></td>
+                                                    <td>23:17, 23 Mar 2022</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Question 2</td>
+                                                    <td>0</td>
+                                                    <td>0.94</td>
+                                                    <td>20</td>
+                                                    <td>C++</td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal1" href="#">view</a></td>
+                                                    <td>23:18, 23 Mar 2022</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Question 3</td>
+                                                    <td>5</td>
+                                                    <td>0.794</td>
+                                                    <td>90</td>
+                                                    <td>C++</td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal1" href="#">view</a></td>
+                                                    <td>20:17, 23 Mar 2022</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Question 4</td>
+                                                    <td>1</td>
+                                                    <td>0.4</td>
+                                                    <td>200</td>
+                                                    <td>C++</td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal1" href="#">view</a></td>
+                                                    <td>23:17, 23 Mar 2022</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 1 -->
+    <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="card-header card-header-green">
+              <span class="heading-4">Submission(863563)</span><span class="material-icons icon CopyColumn right-right" id="content_copy"  onclick="copy_code()">content_copy</span>
+              <span class="material-icons icon CopyColumn right-right" id="done_all" style="display: none;">done_all</span>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="row center">
+                            <div class="col-md-4 col-sm-6">
+                              <!-- <input type="checkbox" disabled checked><i class="fa icon-checkbox"></i><span class="options">Potato</span> -->
+                              <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 1</span>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                              <i class="icon fa fa-remove text-danger fa-fw red"></i><span class="incorrect-test">Test Case 2</span>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                              <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 3</span>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                              <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 4</span>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                              <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 5</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="editor" id="editor" style="pointer-events: none;">
+                                #include<stdio.h>
+                                #include<stdlib.h>
+                                float determinant(float a[3][3]);
+                                void row_multiplication(float a[3][3],int row,float constant);
+                                void row_addition_to_another_row(float a[3][3],int row1,int row2,float constant);
+                                void matrix_multi(float a[3][3],float b[3][3]);
+                                
+                                int main()
+                                {
+                                    float a[3][3];
+                                    printf("Enter the entries of the matrix of order 3");
+                                    printf("\n\n");
+                                    float b[3][3],c[3][3],d[3][3];
+                                    int i,j;
+                                    for(i=0;i<3;i++)
+                                    {
+                                        for(j=0;j<3;j++)
+                                        {
+                                            scanf("%f",&a[i][j]);
+                                        }	
+                                    }
+                                    int p=0;
+                                    for(i=0;i<3;i++)
+                                    {
+                                        for(j=0;j<3;j++)
+                                        {
+                                            if(i==j)
+                                            {
+                                                b[i][j]=1;
+                                                
+                                            }
+                                            else
+                                                b[i][j]=0;			
+                                            d[i][j]=0;
+                                            c[i][j]=b[i][j];
+                                        }
+                                    }
+                                    for(i=0;i<3;i++)
+                                    {
+                                        for(j=0;j<3;j++)
+                                        {
+                                            if(a[i][j]==c[i][j])
+                                                p++;
+                                        }
+                                    }
+                                    if(p==9)
+                                    {
+                                        printf("Matrix is itself identity");
+                                        return 1;
+                                    }	
+                                    float det;
+                                    int l=1;
+                                    det=determinant(a);
+                                    if(det==0)
+                                        printf("Not possible to write matrix into product elementry matrices\n ");
+                                    else
+                                    {
+                                        printf("The elementry matrices such that a=E1*E2*E3*E4*----*En are\n\n");
+                                        if(a[0][0]==0)
+                                        {
+                                            row_addition_to_another_row(a,1,2,1);
+                                            if(a[0][0]!=0)
+                                            {         
+                                                row_addition_to_another_row(c,1,2,-1);
+                                                printf("E%d\n",l++);
+                                                   for(i=0;i<3;i++)
+                                                   {
+                                                           for(j=0;j<3;j++)
+                                                           {
+                                                               printf("%f ",c[i][j]);
+                                                               d[i][j]=c[i][j];
+                                                        }
+                                                        printf("\n");
+                                                   }
+                                                printf("\n");
+                                                for(i=0;i<3;i++)
+                                                {
+                                                    for(j=0;j<3;j++)
+                                                    {
+                                                        c[i][j]=b[i][j];
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {		
+                                                if(a[0][0]==0)
+                                                {          	
+                                                    row_addition_to_another_row(a,1,2,-1);
+                                                    row_addition_to_another_row(a,1,3,1/a[2][0]);
+                                                    row_addition_to_another_row(c,1,3,-1/a[2][0]);
+                                                    printf("E%d\n",l++); 
+                                                    for(i=0;i<3;i++)
+                                                    {
+                                                         for(j=0;j<3;j++)
+                                                          {
+                                                              printf("%f ",c[i][j]);
+                                                        }
+                                                        printf("\n");
+                                                    }
+                                                    p=0;
+                                                    for(i=0;i<3;i++)
+                                                    {
+                                                          for(j=0;j<3;j++)
+                                                          {
+                                                              if(d[i][j]==0)
+                                                              p++;
+                                                        }
+                                                    }
+                                                    if(p==9)
+                                                    {
+                                                           for(i=0;i<3;i++)
+                                                           {
+                                                               for(j=0;j<3;j++)
+                                                               {
+                                                                   d[i][j]=c[i][j];
+                                                            }
+                                                        }
+                                                       }
+                                                    else  
+                                                    {
+                                                        matrix_multi(d,c);
+                                                    }		   
+                                                    printf("\n");
+                                                    for(i=0;i<3;i++)
+                                                    {
+                                                         for(j=0;j<3;j++)
+                                                          {
+                                                               c[i][j]=b[i][j];
+                                                        }
+                                                    }
+                                                }
+                                            }	    
+                                        }
+                                        if(a[0][0]!=1)
+                                        {  
+                                            float f=a[0][0];
+                                            row_multiplication(a,1,1/a[0][0]);
+                                            row_multiplication(c,1,f);      		
+                                            printf("E%d\n",l++);
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       printf("%f ",c[i][j]);
+                                                }
+                                                printf("\n");
+                                            }
+                                            p=0;
+                                            for(i=0;i<3;i++)
+                                            {
+                                                  for(j=0;j<3;j++)
+                                                   {
+                                                       if(d[i][j]==0)
+                                                           p++;
+                                                }
+                                            }
+                                            if(p==9)
+                                           {
+                                                   for(i=0;i<3;i++)
+                                                   {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           d[i][j]=c[i][j];
+                                                   }
+                                                }
+                                            }
+                                            else  
+                                            {
+                                                matrix_multi(d,c);
+                                            }
+                                            printf("\n");
+                                            for(i=0;i<3;i++)
+                                            {
+                                                  for(j=0;j<3;j++)
+                                                   {
+                                                       c[i][j]=b[i][j];
+                                                }
+                                            }
+                                        }
+                                        if(a[1][0]!=0)
+                                        {   
+                                            float f=a[1][0];
+                                            row_addition_to_another_row(a,2,1,-1*a[1][0]);
+                                            row_addition_to_another_row(c,2,1,f);
+                                            printf("E%d\n",l++);
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       printf("%f ",c[i][j]);
+                                                }
+                                                printf("\n");
+                                            }
+                                            p=0;
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                  {
+                                                       if(d[i][j]==0)
+                                                           p++;
+                                                }
+                                            }
+                                            if(p==9)
+                                            {
+                                                   for(i=0;i<3;i++)
+                                                   {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           d[i][j]=c[i][j];
+                                                    }
+                                                }
+                                            }
+                                            else  
+                                            {
+                                                matrix_multi(d,c);
+                                            }
+                                            printf("\n");
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       c[i][j]=b[i][j];
+                                                }
+                                            }
+                                        }
+                                        if(a[2][0]!=0)
+                                        {
+                                            float f=a[2][0];
+                                            row_addition_to_another_row(a,3,1,-1*a[2][0]);
+                                            row_addition_to_another_row(c,3,1,f);
+                                            printf("E%d\n",l++);
+                                            for(i=0;i<3;i++)
+                                            {
+                                                for(j=0;j<3;j++)
+                                                {
+                                                       printf("%f ",c[i][j]);
+                                                }
+                                                printf("\n");
+                                            }
+                                            p=0;
+                                            for(i=0;i<3;i++)
+                                            {
+                                                for(j=0;j<3;j++)
+                                                {
+                                                    if(d[i][j]==0)
+                                                           p++;
+                                                }
+                                            }
+                                            if(p==9)
+                                            {
+                                                for(i=0;i<3;i++)
+                                                {
+                                                      for(j=0;j<3;j++)
+                                                            {
+                                                               d[i][j]=c[i][j];
+                                                           }
+                                                }
+                                            }
+                                            else  
+                                            {		   	
+                                                matrix_multi(d,c);
+                                            }
+                                            printf("\n");
+                                            for(i=0;i<3;i++)
+                                            {
+                                                  for(j=0;j<3;j++)
+                                                   {
+                                                       c[i][j]=b[i][j];
+                                                }
+                                            }
+                                        }		
+                                        if(a[1][1]==0)
+                                        {
+                                            row_addition_to_another_row(a,2,1,1);
+                                            if(a[1][1]!=0)
+                                            {
+                                                   row_addition_to_another_row(c,2,1,-1);
+                                                printf("E%d\n",l++);
+                                                for(i=0;i<3;i++)
+                                                {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                           printf("%f ",c[i][j]);
+                                                   }
+                                                   printf("\n");
+                                                }
+                                                p=0;
+                                                for(i=0;i<3;i++)
+                                                {
+                                                    for(j=0;j<3;j++)
+                                                    {
+                                                           if(d[i][j]==0)
+                                                           p++;
+                                                    }
+                                                }
+                                                if(p==9)
+                                                {
+                                                       for(i=0;i<3;i++)
+                                                       {
+                                                           for(j=0;j<3;j++)
+                                                           {
+                                                               d[i][j]=c[i][j];
+                                                        }
+                                                    }
+                                                }
+                                                else  
+                                                {
+                                                       matrix_multi(d,c);
+                                                }
+                                                printf("\n");
+                                                for(i=0;i<3;i++)
+                                                {
+                                                       for(j=0;j<3;j++)
+                                                   {
+                                                           c[i][j]=b[i][j];
+                                                   }
+                                                }
+                                            }
+                                            if(a[1][1]==0)
+                                            {      
+                                                row_addition_to_another_row(a,2,1,-1);
+                                                row_addition_to_another_row(a,2,3,1/a[2][1]);
+                                                row_addition_to_another_row(c,2,3,-1/a[2][1]);
+                                                printf("E%d\n",l++);
+                                                for(i=0;i<3;i++)
+                                                {
+                                                    for(j=0;j<3;j++)
+                                                       {
+                                                        printf("%f ",c[i][j]);
+                                                    }
+                                                    printf("\n");
+                                                }
+                                                p=0;
+                                                for(i=0;i<3;i++)
+                                                {
+                                                    for(j=0;j<3;j++)
+                                                    {
+                                                           if(d[i][j]==0)
+                                                           p++;
+                                                    }
+                                                }
+                                                if(p==9)
+                                                {
+                                                    for(i=0;i<3;i++)
+                                                    {
+                                                           for(j=0;j<3;j++)
+                                                           {
+                                                               d[i][j]=c[i][j];
+                                                        }
+                                                    }
+                                                }
+                                                else  
+                                                {
+                                                    matrix_multi(d,c);
+                                                }
+                                                printf("\n");
+                                                for(i=0;i<3;i++)
+                                                {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           c[i][j]=b[i][j];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if(a[1][1]!=1)
+                                        {
+                                            float f=a[1][1];
+                                            row_multiplication(a,2,1/a[1][1]);
+                                            row_multiplication(c,2,f);      		
+                                            printf("E%d\n",l++);
+                                            for(i=0;i<3;i++)
+                                            {
+                                                  for(j=0;j<3;j++)
+                                                   {
+                                                       printf("%f ",c[i][j]);
+                                                }
+                                                printf("\n");
+                                            }
+                                            p=0;
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                {
+                                                       if(d[i][j]==0)
+                                                           p++;
+                                                }
+                                            }
+                                            if(p==9)
+                                            {
+                                                  for(i=0;i<3;i++)
+                                                   {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           d[i][j]=c[i][j];
+                                                    }
+                                                }
+                                            }
+                                            else  
+                                            {
+                                                matrix_multi(d,c);
+                                            }
+                                            printf("\n");
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       c[i][j]=b[i][j];
+                                                }
+                                            }
+                                        }
+                                        if(a[0][1]!=0)
+                                        {
+                                            float f=a[0][1];
+                                            row_addition_to_another_row(a,1,2,-1*a[0][1]);
+                                            row_addition_to_another_row(c,1,2,f);
+                                            printf("E%d\n",l++);
+                                            for(i=0;i<3;i++)
+                                           {
+                                                   for(j=0;j<3;j++)
+                                               {
+                                                       printf("%f ",c[i][j]);
+                                                }
+                                               printf("\n");
+                                           }
+                                           p=0;
+                                           for(i=0;i<3;i++)
+                                           {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       if(d[i][j]==0)
+                                                           p++;
+                                                }
+                                            }
+                                            if(p==9)
+                                            {
+                                                   for(i=0;i<3;i++)
+                                                   {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           d[i][j]=c[i][j];
+                                                    }
+                                                }
+                                            }
+                                            else  
+                                            {
+                                                matrix_multi(d,c);
+                                            }
+                                            printf("\n");
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       c[i][j]=b[i][j];
+                                                }
+                                            }
+                                        }
+                                        if(a[2][1]!=0)
+                                        {
+                                            float f=a[2][1];
+                                            row_addition_to_another_row(a,3,2,-1*a[2][1]);
+                                            row_addition_to_another_row(c,3,2,f);
+                                            printf("E%d\n",l++);
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                {
+                                                       printf("%f ",c[i][j]);
+                                                }
+                                                printf("\n");
+                                            }
+                                            p=0;
+                                            for(i=0;i<3;i++)
+                                            {
+                                                  for(j=0;j<3;j++)
+                                                {
+                                                    if(d[i][j]==0)
+                                                        p++;
+                                                }
+                                            }
+                                            if(p==9)
+                                            {
+                                                  for(i=0;i<3;i++)
+                                                {
+                                                       for(j=0;j<3;j++)
+                                                      {
+                                                           d[i][j]=c[i][j];
+                                                    }
+                                                }
+                                            }
+                                            else  
+                                            {
+                                                matrix_multi(d,c);
+                                            }
+                                            printf("\n");
+                                            for(i=0;i<3;i++)
+                                            { 
+                                                   for(j=0;j<3;j++)
+                                                  {
+                                                       c[i][j]=b[i][j];
+                                                }
+                                            }
+                                        }
+                                        if(a[2][2]==0)
+                                        {
+                                            row_addition_to_another_row(a,3,1,1);
+                                            if(a[2][2]!=0)
+                                            {
+                                                row_addition_to_another_row(c,3,1,-1);
+                                                printf("E%d\n",l++);
+                                                for(i=0;i<3;i++)
+                                                {
+                                                      for(j=0;j<3;j++)
+                                                       {
+                                                           printf("%f ",c[i][j]);
+                                                           
+                                                    }
+                                                    printf("\n");
+                                                }
+                                                p=0;
+                                                for(i=0;i<3;i++)
+                                                {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           if(d[i][j]==0)
+                                                               p++;
+                                                    }
+                                                }
+                                                if(p==9)
+                                                {
+                                                       for(i=0;i<3;i++)
+                                                       {
+                                                           for(j=0;j<3;j++)
+                                                           {
+                                                               d[i][j]=c[i][j];
+                                                       }
+                                                    }
+                                                }
+                                                else  
+                                                {  	
+                                                   matrix_multi(d,c);
+                                                }		
+                                                printf("\n");
+                                                for(i=0;i<3;i++)
+                                                {
+                                                      for(j=0;j<3;j++)
+                                                       {
+                                                           c[i][j]=b[i][j];
+                                                    }
+                                                }
+                                            }
+                                            if(a[2][2]==0)
+                                            {        
+                                                   row_addition_to_another_row(a,3,1,-1);
+                                                row_addition_to_another_row(a,3,2,1/a[1][2]);
+                                                   row_addition_to_another_row(c,3,2,-1/a[1][2]);
+                                                printf("E%d\n",l++);
+                                                for(i=0;i<3;i++)
+                                                {
+                                                      for(j=0;j<3;j++)
+                                                       {
+                                                           printf("%f ",c[i][j]);
+                                                    }
+                                                    printf("\n");
+                                                }
+                                                p=0;
+                                                for(i=0;i<3;i++)
+                                                {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           if(d[i][j]==0)
+                                                               p++;
+                                                    }
+                                                }
+                                                if(p==9)
+                                                {
+                                                       for(i=0;i<3;i++)
+                                                       {
+                                                           for(j=0;j<3;j++)
+                                                           {
+                                                               d[i][j]=c[i][j];
+                                                        }
+                                                    }
+                                                }
+                                                else  
+                                                {
+                                                    matrix_multi(d,c);
+                                                }
+                                                printf("\n");
+                                                for(i=0;i<3;i++)
+                                                {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           c[i][j]=b[i][j];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if(a[2][2]!=1)
+                                        {
+                                            float f=a[2][2];
+                                            row_multiplication(a,3,1/a[2][2]);
+                                            row_multiplication(c,3,f);      		
+                                            printf("E%d\n",l++);
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       printf("%f ",c[i][j]);
+                                                }
+                                                printf("\n");
+                                            }
+                                            p=0;
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       if(d[i][j]==0)
+                                                          p++;
+                                                }
+                                            }
+                                            if(p==9)
+                                            {
+                                                   for(i=0;i<3;i++)
+                                                   {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           d[i][j]=c[i][j];
+                                                     }
+                                                }
+                                            }
+                                            else  
+                                            {
+                                                matrix_multi(d,c);
+                                            }
+                                            printf("\n");
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       c[i][j]=b[i][j];
+                                                }
+                                            }
+                                        }
+                                        if(a[0][2]!=0)
+                                        {   
+                                            float f=a[0][2];
+                                            row_addition_to_another_row(a,1,3,-1*a[0][2]);
+                                            row_addition_to_another_row(c,1,3,f);
+                                            printf("E%d\n",l++);
+                                            for(i=0;i<3;i++)
+                                            {
+                                                  for(j=0;j<3;j++)
+                                                   {
+                                                       printf("%f ",c[i][j]);
+                                                }
+                                                printf("\n");
+                                            }
+                                            p=0;
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       if(d[i][j]==0)
+                                                           p++;
+                                                }
+                                            }
+                                            if(p==9)
+                                            {
+                                                   for(i=0;i<3;i++)
+                                                  {
+                                                       for(j=0;j<3;j++)
+                                                     {
+                                                           d[i][j]=c[i][j];
+                                                      }
+                                                }
+                                            }
+                                            else  
+                                            {
+                                                matrix_multi(d,c);
+                                            }
+                                            printf("\n");
+                                            for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                  {
+                                                       c[i][j]=b[i][j];
+                                                }
+                                            }
+                                            if(a[1][2]!=0)
+                                            {    
+                                                float f=a[1][2];
+                                                row_addition_to_another_row(a,2,3,-1*a[1][2]);
+                                                row_addition_to_another_row(c,2,3,f);
+                                                printf("E%d\n",l++);
+                                                for(i=0;i<3;i++)
+                                                {
+                                                     for(j=0;j<3;j++)
+                                                       {
+                                                           printf("%f ",c[i][j]);
+                                                    }
+                                                    printf("\n");
+                                                }
+                                                p=0;
+                                                for(i=0;i<3;i++)
+                                                {
+                                                       for(j=0;j<3;j++)
+                                                       {
+                                                           if(d[i][j]==0)
+                                                               p++;
+                                                    }
+                                                }
+                                                if(p==9)
+                                                {
+                                                      for(i=0;i<3;i++)
+                                                       {
+                                                           for(j=0;j<3;j++)
+                                                           {
+                                                               d[i][j]=c[i][j];
+                                                        }
+                                                    }
+                                                }
+                                                else  
+                                                 {
+                                                    matrix_multi(d,c);
+                                                }
+                                                printf("\n");
+                                                for(i=0;i<3;i++)
+                                                {
+                                                      for(j=0;j<3;j++)
+                                                       {
+                                                           c[i][j]=b[i][j];
+                                                    }
+                                                }
+                                            }	
+                                            printf("After multiplying all the calculated elementary operation the matrix obtained is\n\n");
+                                               for(i=0;i<3;i++)
+                                            {
+                                                   for(j=0;j<3;j++)
+                                                   {
+                                                       printf("%f ",d[i][j]);
+                                                }
+                                                printf("\n");
+                                            }
+                                        }
+                                    }
+                                    return 0;
+                                }
+                                float determinant(float a[3][3])
+                                {
+                                    return a[0][0]*(a[1][1]*a[2][2]-a[2][1]*a[1][2])-a[0][1]*(a[1][0]*a[2][2]-a[2][0]*a[1][2])+a[0][2]*(a[1][0]*a[2][1]-a[2][0]*a[1][1]);
+                                }
+                                
+                                void row_multiplication(float a[3][3],int row,float constant)
+                                {
+                                    int j;
+                                    for(j=0;j<3;j++)
+                                    {
+                                        a[row-1][j]*=constant;
+                                    }
+                                }
+                                void row_addition_to_another_row(float a[3][3],int row1,int row2,float constant)
+                                {
+                                    int j;
+                                    for(j=0;j<3;j++)
+                                    {
+                                        a[row1-1][j]+=a[row2-1][j]*constant;
+                                    }
+                                }
+                                void matrix_multi(float a[3][3],float b[3][3])
+                                {
+                                    float multiply[3][3];
+                                    float sum=0;
+                                    for ( int i = 0 ; i < 3 ; i++ )
+                                    {
+                                      for ( int j= 0 ; j < 3 ; j++ )
+                                      {
+                                        for (int k = 0 ; k < 3 ; k++ )
+                                        {
+                                          sum = sum + a[i][k]*b[k][j];
+                                        }
+                                        multiply[i][j] = sum;
+                                        sum = 0;
+                                      }
+                                    }
+                                    for(int i=0;i<3;i++)
+                                    {
+                                        for(int j=0;j<3;j++)
+                                        {
+                                            a[i][j]=multiply[i][j];
+                                        }
+                                    }
+                                }                                
+                        </div>
+                    </div>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="./LabPage/js/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./LabPage/js/lib/ace.js"></script>
+    <script src="./LabPage/js/jquery.min.js"></script>
+    <script src="./LabPage/js/jquery.dataTables.min.js"></script>
+    <script src="./LabPage/js/script.js"></script>
+
+
+
+    
+    <!-- <script src="./LabPage/js/lib/theme-solarized_light.js"></script> -->
+</body>
+</html>
