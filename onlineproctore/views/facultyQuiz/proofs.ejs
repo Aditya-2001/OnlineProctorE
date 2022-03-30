@@ -56,7 +56,9 @@
                                                 Mobile
                                             <% }else if(illegalAttempt.activity == screen){ %>
                                                 Tab Change
-                                            <% } %>
+                                            <% }else if(illegalAttempt.activity == headPose){ %>
+                                                Head Pose Change    
+                                            <% }%>
                                         </a></h4>
                                     </div>
                                     <div class="post-hover text-center">
@@ -69,7 +71,9 @@
                                                     Using Mobile
                                                 <% }else if(illegalAttempt.activity == screen){ %>
                                                     Changing Browser
-                                                <% } %>
+                                                <% }else if(illegalAttempt.activity == headPose){ %>
+                                                    Not Looking in Front (seconds)   
+                                                <% }%>
                                             </p>
                                         </div>
                                     </div>

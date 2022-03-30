@@ -18,6 +18,12 @@ async function updateTable(){
         else if((a.writtenScore+a.mcqScore) == (b.writtenScore+b.mcqScore) && a.browserSwitched == b.browserSwitched && 
           a.mobileDetected == b.mobileDetected && 
           a.multiplePerson == b.multiplePerson &&
+          a.changeInHeadPose > b.changeInHeadPose)
+          val = -1;
+        else if((a.writtenScore+a.mcqScore) == (b.writtenScore+b.mcqScore) && a.browserSwitched == b.browserSwitched && 
+          a.mobileDetected == b.mobileDetected && 
+          a.multiplePerson == b.multiplePerson &&
+          a.changeInHeadPose == b.changeInHeadPose &&
           a.audioDetected > b.audioDetected)
           val = -1;
         return val;
@@ -34,6 +40,12 @@ async function updateTable(){
         else if(a.browserSwitched == b.browserSwitched && 
           a.mobileDetected == b.mobileDetected && 
           a.multiplePerson == b.multiplePerson &&
+          a.changeInHeadPose > b.changeInHeadPose)
+          val = -1;
+        else if(a.browserSwitched == b.browserSwitched && 
+          a.mobileDetected == b.mobileDetected && 
+          a.multiplePerson == b.multiplePerson &&
+          a.changeInHeadPose == b.changeInHeadPose &&
           a.audioDetected > b.audioDetected)
           val = -1;
         return val;
@@ -52,6 +64,7 @@ async function updateTable(){
       html += '<td>'+ submission.browserSwitched +'</td>';
       html += '<td>'+ submission.mobileDetected +'</td>';
       html += '<td>'+ submission.multiplePerson +'</td>';
+      html += '<td>'+ submission.changeInHeadPose +'</td>';
       html += '<td>'+ submission.audioDetected +'</td>';
       html += '<td>'+ submission.ipAddress +'</td>';
       tbody.insertAdjacentHTML("beforeend", html);

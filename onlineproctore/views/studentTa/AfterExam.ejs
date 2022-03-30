@@ -216,8 +216,8 @@
                                         <% questions.forEach(question => { %>
                                             <% if(question.mcq){ %>
                                               <tr data-toggle="modal" data-target="#modal40" onclick="viewMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')">
-                                                <td><%= question.question %></td>
-                                                <td><%= question.options %></td>
+                                                <td class="question-short-desc"><%= question.question %></td>
+                                                <td class="question-short-desc"><%= question.options %></td>
                                                 <td><%= question.set %></td>
                                                 <td><%= question.correctOptions %></td>
                                                 <td><%= question.maximumMarks %></td>
@@ -238,7 +238,7 @@
                                         <% questions.forEach(question => { %>
                                             <% if(!question.mcq){ %>
                                               <tr data-toggle="modal" onclick="viewWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal41">
-                                                <td><%= question.question %></td>
+                                                <td class="question-short-desc"><%= question.question %></td>
                                                 <td><%= question.set %></td>
                                                 <td><%= question.maximumMarks %></td>
                                               </tr>

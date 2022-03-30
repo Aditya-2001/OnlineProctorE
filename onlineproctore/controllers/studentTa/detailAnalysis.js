@@ -55,6 +55,7 @@ exports.getIllegalActivities = async (req, res) => {
     illegalAttempts: illegalAttempts, 
     multipleFace: config.multipleFace, 
     mobile: config.mobile,
-    screen: config.screen
+    screen: config.screen,
+    headPose: config.headPose
   })
 }

@@ -863,6 +863,13 @@ exports.faceDetectorSetting = async (req, res) => {
   return res.status(204).send();
 }
 
+exports.headPoseDetectorSetting = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  quiz.headPoseDetector = !quiz.headPoseDetector;
+  quiz.save();
+  return res.status(204).send();
+}
+
 exports.mobileDetectorSetting = async (req, res) => {
   var quiz = await Quiz.findOneQuiz({_id: req.quizId});
   quiz.mobileDetector = !quiz.mobileDetector;

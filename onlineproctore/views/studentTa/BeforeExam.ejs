@@ -152,8 +152,8 @@
                                               data-toggle="modal" onclick="editMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal40"
                                             <% } %>
                                           >
-                                            <td><%= question.question %></td>
-                                            <td><%= question.options %></td>
+                                            <td class="question-short-desc"><%= question.question %></td>
+                                            <td class="question-short-desc"><%= question.options %></td>
                                             <td><%= question.set %></td>
                                             <td><%= question.correctOptions %></td>
                                             <td><%= question.maximumMarks %></td>
@@ -184,7 +184,7 @@
                                               data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal41"
                                             <% } %>
                                           >
-                                            <td><%= question.question %></td>
+                                            <td class="question-short-desc"><%= question.question %></td>
                                             <td><%= question.set %></td>
                                             <td><%= question.maximumMarks %></td>
                                             <% if(enrolledUser.headTa){ %>

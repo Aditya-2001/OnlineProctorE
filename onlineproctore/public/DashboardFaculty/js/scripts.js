@@ -271,6 +271,21 @@ if(window.location.pathname.split('/')[window.location.pathname.split('/').lengt
     }
   });
 
+  headPoseDetector = document.getElementById('headPoseDetector');
+  headPoseDetector.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#headPoseDetectorSpan').html('Turned On');
+    } else {
+      $('#headPoseDetectorSpan').html('Turned Off');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.post(quizId+'/headPoseDetectorSetting', {});
+    }catch(error){
+      console.log(error.response);
+    }
+  });
+
   mobileDetector = document.getElementById('mobileDetector');
   mobileDetector.addEventListener('change', e => {
     if(e.target.checked){
