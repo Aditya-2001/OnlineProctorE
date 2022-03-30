@@ -78,7 +78,8 @@ exports.getQuizDetectionSettings = async (req, res) => {
     mobileDetector: quiz.mobileDetector,
     tabSwitchDetector: quiz.tabSwitchDetector,
     ipAddressDetector: quiz.ipAddressDetector,
-    audioDetector: quiz.audioDetector
+    audioDetector: quiz.audioDetector,
+    headPoseDetector: quiz.headPoseDetector
   });
 }
 
@@ -192,6 +193,21 @@ exports.noPerson = async (req, res) => {
     var submission = await Submission.findOne({_id: req.body.submissionId})
     submission.noPerson += 1;
     submission.save();
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
+}
+
+exports.headPoseDetection = async (req, res) => {
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
+    submission.changeInHeadPose += 1;
+    submission.save();
+    var illegalAttempts = await IllegalAttempt.find({submission: req.body.submissionId, activity: req.body.type});
+    if(illegalAttempts.length <= 40){
+      await IllegalAttempt.create({submission: req.body.submissionId, activity: req.body.type, image: req.body.frame});
+    }
   }catch(err){
     console.log(err);
   }

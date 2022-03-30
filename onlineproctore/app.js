@@ -62,6 +62,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, './weights')));
+app.use(express.static(path.join(__dirname, './dist')));
 
 app.use('/', index);
 app.get('/.well-known/pki-validation/1C037F04249B0088AB3D82E23FBB70E3.txt', (req, res) => {

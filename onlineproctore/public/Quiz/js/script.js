@@ -106,7 +106,11 @@ quizDetectionResponse.then( result => {
             model = loadedModel;
             enableCam();
         });
-    }    
+    }
+    if(detections.headPoseDetector){
+        headposeEstimationInitialise();
+        headposeEstimation();
+    }
 })
 getQuizQuestions();
 socket = io("/");
@@ -823,6 +827,88 @@ function predictWebcam() {
     });
 }
 
+function getTop(l) {
+    return l
+      .map((a) => a.y)
+        .reduce((a, b) => Math.min(a, b));
+}
+
+function getMeanPosition(l) {
+    return l
+        .map((a) => [a.x, a.y])
+        .reduce((a, b) => [a[0] + b[0], a[1] + b[1]])
+        .map((a) => a / l.length);
+}
+
+async function headposeEstimationInitialise(){
+  await faceapi.nets.tinyFaceDetector.load('/');
+  await faceapi.loadFaceLandmarkModel('/')
+}
+
+async function headposeEstimation(){
+  setInterval(async () => {
+    if(!!faceapi.nets.tinyFaceDetector.params){
+      let inputSize = parseInt(160)
+      let scoreThreshold = 0.5
+      const options = new faceapi.TinyFaceDetectorOptions({inputSize, scoreThreshold})
+      let canvas = document.querySelector("#canvas");
+      canvas.width  = 150;
+      canvas.height = 150;
+      const context = canvas.getContext("2d");
+      context.drawImage(video, 0, 0, 150, 150);
+      const frame = canvas.toDataURL();
+      const res = await faceapi.detectSingleFace(canvas, options).withFaceLandmarks();
+      if (res) {
+        var eye_right = getMeanPosition(res.landmarks.getRightEye());
+        var eye_left = getMeanPosition(res.landmarks.getLeftEye());
+        var nose = getMeanPosition(res.landmarks.getNose());
+        var mouth = getMeanPosition(res.landmarks.getMouth());
+        var jaw = getTop(res.landmarks.getJawOutline());
+
+        var rx = (jaw - mouth[1]) / res.detection.box.height + 0.5;
+        var ry = (eye_left[0] + (eye_right[0] - eye_left[0]) / 2 - nose[0]) /
+          res.detection.box.width;
+
+        console.log(
+          res.detection.score, //Face detection score
+          ry, //Closest to 0 is looking forward
+          rx // Closest to 0.5 is looking forward, closest to 0 is looking up
+        );
+
+        let state = "undetected";
+        if (res.detection.score > 0.3) {
+          state = "front";
+          if (rx > 0.2) {
+            state = "top";
+          } else {
+            if (ry < -0.04) {
+              state = "left";
+            }
+            if (ry > 0.04) {
+              state = "right";
+            }
+          }
+        }
+        console.log(state);
+        if(state !== "undetected" && state !== "front" && testStarted){
+            var quizId = document.getElementById("quizId").value;
+            var submissionId = document.getElementById("submissionId").value;
+            var data = {
+                submissionId: submissionId,
+                frame: frame,
+                type: 211
+            };
+            try{
+                axios.post(quizId + '/changeInHeadPose', data);
+            }
+            catch(error){
+                console.log("Error :", error);
+            }
+        }
+      }
+    }
+  }, 500);
+}
 
 function idMapping(ID){
     getMapping();
@@ -854,6 +940,7 @@ function shuffledArray(array, seed) {
     }
     return array;
 }
+
 function random(seed) {
     var x = Math.sin(seed++) * 10000; 
     return x - Math.floor(x);

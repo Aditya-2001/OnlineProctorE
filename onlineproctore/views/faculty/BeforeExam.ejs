@@ -141,8 +141,8 @@
                                       <% questions.forEach(question => { %>
                                         <% if(question.mcq){ %>
                                           <tr data-toggle="modal" data-target="#modal40" onclick="editMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')">
-                                            <td><%= question.question %></td>
-                                            <td><%= question.options.toString().split(',').join(', ') %></td>
+                                            <td class="question-short-desc"><%= question.question %></td>
+                                            <td class="question-short-desc"><%= question.options.toString().split(',').join(', ') %></td>
                                             <td><%= question.set %></td>
                                             <td><%= question.correctOptions.toString().split(',').join(', ') %></td>
                                             <td><%= question.maximumMarks %></td>
@@ -165,7 +165,7 @@
                                       <% questions.forEach(question => { %>
                                         <% if(!question.mcq){ %>
                                           <tr data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal41">
-                                            <td><%= question.question %></td>
+                                            <td class="question-short-desc"><%= question.question %></td>
                                             <td><%= question.set %></td>
                                             <td><%= question.maximumMarks %></td>
                                             <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
@@ -469,6 +469,27 @@
                               <label class="switch">
                                 <input type="checkbox" id="faceDetector"
                                   <% if(quiz.faceDetector) { %> 
+                                    checked
+                                  <% } %>
+                                >
+                                <span class="slider round"></span>
+                              </label>
+                            </span>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="bmd-label">HeadPose Detection</label><br>
+                            <span class="col-xs-6" id="headPoseDetectorSpan">
+                              <% if(quiz.headPoseDetector) { %> 
+                                Turned On
+                              <% }else{ %>
+                                Turned Off
+                              <% } %>
+                            </span>
+                            <span class="col-xs-6 pull-right">
+                              <label class="switch">
+                                <input type="checkbox" id="headPoseDetector"
+                                  <% if(quiz.headPoseDetector) { %> 
                                     checked
                                   <% } %>
                                 >

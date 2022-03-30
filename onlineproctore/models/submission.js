@@ -61,6 +61,10 @@ const Submission = new Schema({
     type: Number,
     default: 0
   },
+  changeInHeadPose: {
+    type: Number,
+    default: 0
+  },
   screenShared: {
     type: Boolean,
     default: true

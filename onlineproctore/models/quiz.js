@@ -83,6 +83,10 @@ const Quiz = new Schema({
     type: Boolean,
     default: true
   },
+  headPoseDetector: {
+    type: Boolean,
+    default: true
+  },
   audioDetector: {
     type: Boolean,
     default: true

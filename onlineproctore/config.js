@@ -14,6 +14,7 @@ module.exports ={
   'multipleFace': 239,
   'mobile': 554,
   'screen': 796,
+  'headPose': 211,
   'webPlagAPI': "58bb1b56a18453b0a7ef2dc19c50c3b7",
   'webPlagURL': 'https://www.prepostseo.com/apis/checkPlag'
 };

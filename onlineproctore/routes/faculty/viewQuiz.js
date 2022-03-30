@@ -9,12 +9,12 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   viewStream, downloadQuizResults, downloadStudentSubmissions,
   assignSets, renderPreviewQuiz, previewQuiz, faceDetectorSetting,
   mobileDetectorSetting, tabSwitchDetectorSetting, ipAddressDetectorSetting,
-  audioDetectorSetting, viewDetailAnalysisData} = require('../../controllers/faculty/viewEachQuiz');
+  audioDetectorSetting, viewDetailAnalysisData, headPoseDetectorSetting} = require('../../controllers/faculty/viewEachQuiz');
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
   tabChanged, mobileDetected, multipleFace, noPerson, 
-  getTime, getQuizDetectionSettings} = require('../../controllers/studentTa/quiz');
+  getTime, getQuizDetectionSettings, headPoseDetection} = require('../../controllers/studentTa/quiz');
 
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
 
@@ -94,6 +94,9 @@ router.route('/deleteQuestion')
 router.route('/faceDetectorSetting')
   .post(authFacultyTaQuiz, faceDetectorSetting)
 
+router.route('/headPoseDetectorSetting')
+  .post(authFacultyTaQuiz, headPoseDetectorSetting)
+
 router.route('/mobileDetectorSetting')
   .post(authFacultyTaQuiz, mobileDetectorSetting)
 
@@ -147,6 +150,9 @@ router.route('/mobileDetected')
 
 router.route('/multipleFace')
   .post(authStudentQuiz, multipleFace);
+
+router.route('/changeInHeadPose')
+  .post(authStudentQuiz, headPoseDetection);
 
 router.route('/noPerson')
   .post(authStudentQuiz, noPerson);
