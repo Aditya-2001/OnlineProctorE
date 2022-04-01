@@ -30,7 +30,6 @@ function viewCamera(){
             video.srcObject = userVideoStream;
         })
     })
-    document.getElementById('f2').click();
 };
 
 function viewScreen(){

@@ -486,3 +486,6 @@ td{
         height: 50px !important;
     }
 }
+.ques-ans{
+    white-space: pre-wrap;
+}

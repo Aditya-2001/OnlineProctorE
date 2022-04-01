@@ -172,7 +172,7 @@ async function getQuizQuestions(){
                 displayQuestion += ' none"';
             }
             displayQuestion += 'id="' + questions[j]._id + '"><div class="question"><span class="que">Q</span><span class="question-number">';
-            displayQuestion += (i+1) + '.</span>' + questions[j].question;
+            displayQuestion += (i+1) + '.</span>' + questions[j].question + '<br><br>';
             displayQuestion += '<div style="text-align: center;">'
             for(var ic=0; ic<questions[j].imageLinks.length; ic++){
                 if(ic==0){
@@ -822,7 +822,6 @@ function predictWebcam() {
                 }
             }
         }
-        // Call this function again to keep predicting when the browser is ready.
         window.requestAnimationFrame(predictWebcam);
     });
 }
@@ -870,9 +869,9 @@ async function headposeEstimation(){
           res.detection.box.width;
 
         console.log(
-          res.detection.score, //Face detection score
-          ry, //Closest to 0 is looking forward
-          rx // Closest to 0.5 is looking forward, closest to 0 is looking up
+          res.detection.score,
+          ry,
+          rx
         );
 
         let state = "undetected";
