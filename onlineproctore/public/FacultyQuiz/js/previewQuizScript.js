@@ -52,7 +52,7 @@ async function getQuizQuestions(){
                 displayQuestion += ' none"';
             }
             displayQuestion += 'id="' + questions[j]._id + '"><div class="question"><span class="que">Q</span><span class="question-number">';
-            displayQuestion += (i+1) + '.</span>' + questions[j].question;
+            displayQuestion += (i+1) + '.</span>' + questions[j].question + '<br><br>';
             displayQuestion += '<div style="text-align: center;">'
             for(var ic=0; ic<questions[j].imageLinks.length; ic++){
                 if(ic==0){

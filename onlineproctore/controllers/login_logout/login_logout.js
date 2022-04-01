@@ -219,12 +219,12 @@ exports.passwordChange = async (req, res) => {
 }
 
 exports.passwordChangePage = async (req, res) => {
-  return res.status(200).render('faculty/Password', {page: 'Password Change'});
+  return res.status(200).render('faculty/Password', {page: 'Password Change', backLink: '/dashboard'});
 }
 
 exports.profileDisplay = async (req, res) => {
   await User.findByToken(req.cookies.auth, async (err, user) => {
-    return res.status(200).render('faculty/Profile', {page: 'Dashboard', user: user});
+    return res.status(200).render('faculty/Profile', {page: 'Dashboard', user: user, backLink: '/dashboard'});
   })
 }
 

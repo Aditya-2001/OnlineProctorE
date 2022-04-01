@@ -281,6 +281,7 @@ exports.addMCQQuestion = async (req, res) => {
   try{
     const quizId = req.quizId;
     const question = req.body.question;
+    console.log(question);
     const maximumMarks = req.body.maximumMarks;
     const partialMarking = req.body.markingScheme;
     const set = req.body.set;

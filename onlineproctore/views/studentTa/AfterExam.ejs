@@ -215,7 +215,7 @@
                                     <tbody>
                                         <% questions.forEach(question => { %>
                                             <% if(question.mcq){ %>
-                                              <tr data-toggle="modal" data-target="#modal40" onclick="viewMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')">
+                                              <tr data-toggle="modal" data-target="#modal40" onclick="editMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question.question) %>', '<%= question.maximumMarks %>', '<%= question.set %>', '<%= JSON.stringify(question.options) %>', '<%= JSON.stringify(question.imageLinks) %>', '<%= JSON.stringify(question.correctOptions) %>', '<%= question.markingScheme %>', '<%= question.negativeMarking %>')">
                                                 <td class="question-short-desc"><%= question.question %></td>
                                                 <td class="question-short-desc"><%= question.options %></td>
                                                 <td><%= question.set %></td>
@@ -237,7 +237,7 @@
                                     <tbody>
                                         <% questions.forEach(question => { %>
                                             <% if(!question.mcq){ %>
-                                              <tr data-toggle="modal" onclick="viewWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question) %>')" data-target="#modal41">
+                                              <tr data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question.question) %>', '<%= question.maximumMarks %>', '<%= JSON.stringify(question.note) %>', '<%= question.set %>', '<%= JSON.stringify(question.imageLinks) %>')" data-target="#modal41">
                                                 <td class="question-short-desc"><%= question.question %></td>
                                                 <td><%= question.set %></td>
                                                 <td><%= question.maximumMarks %></td>
@@ -322,7 +322,7 @@
               <form id="editMCQQuestion">
                   <div class="form-group">
                     <label class="bmd-label-floating">Question</label><br>
-                    <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" disabled></textarea>
+                    <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}' disabled></textarea>
                   </div>
                   <input type="text" name="questionId" id="mcqQuestionId" hidden/>
                   <div class="form-group">
@@ -372,12 +372,12 @@
                 <form id="editWrittenQuestion">
                     <div class="form-group">
                       <label class="bmd-label-floating">Question</label><br>
-                      <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" disabled></textarea>
+                      <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}' disabled></textarea>
                     </div>
                     <input type="text" name="questionId" id="writtenQuestionId" hidden/>
                     <div class="form-group">
                       <label class="bmd-label-floating">Note regarding Question</label><br>
-                      <textarea class="form-control" name="note" id="writtenQuestionNote" autocomplete="off" rows="2" disabled></textarea>
+                      <textarea class="form-control" name="note" id="writtenQuestionNote" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}' disabled></textarea>
                     </div>
                     <div class="form-group">
                         <label class="bmd-label-floating">Maximum Marks</label><br>

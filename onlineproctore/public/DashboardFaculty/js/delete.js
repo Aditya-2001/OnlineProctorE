@@ -28,13 +28,16 @@ async function deleteQuestion(id){
   }
 }
 
-async function editMCQQuestion(id, question){
-  question = JSON.parse(question);
+async function editMCQQuestion(id, question, maximumMarks, set, options, imageLinks, CorrectOptions, markingScheme, negativeMarking){
   document.getElementById('mcqQuestionId').value = id;
-  document.getElementById('mcqQuestion').value = question.question;
-  document.getElementById('mcqMarks').value = question.maximumMarks;
-  document.getElementById('mcqSet').value = question.set;
+  question = question.slice(1, question.length-1);
+  document.getElementById('mcqQuestion').value = question;
+  document.getElementById('mcqMarks').value = maximumMarks;
+  document.getElementById('mcqSet').value = set;
   var correctOptions = [];
+  options = JSON.parse(options);
+  CorrectOptions = JSON.parse(CorrectOptions);
+  imageLinks = JSON.parse(imageLinks);
   var n = $('#editMCQQuestionOptions').children().length;
   for(let i=0; i<n; i++){
     $('#editMCQQuestionOptions').children().last().remove();
@@ -43,31 +46,31 @@ async function editMCQQuestion(id, question){
   for(let i=0; i<n; i++){
     $('#editMCQQuestionImageLink').children().last().remove();
   }
-  for(let i=0;i<question.options.length; i++){
+  for(let i=0;i<options.length; i++){
     var option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="option'+(i+1)+'" id="mcqOption'+(i+1)+'" placeholder="Enter Option '+(i+1)+'"></div>'
     $('#editMCQQuestionOptions').append(option);
-    document.getElementById('mcqOption'+(i+1)).value = question.options[i];
-    if(question.correctOptions.includes(question.options[i])){
+    document.getElementById('mcqOption'+(i+1)).value = options[i];
+    if(CorrectOptions.includes(options[i])){
       correctOptions.push(i+1);
     }
   }
-  if(question.imageLinks.length == 0){
+  if(imageLinks.length == 0){
     addImageLinkInEditMode();
   }
-  for(let i=0;i<question.imageLinks.length; i++){
-    var option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="imageLink'+(i+1)+'" onClick="parent.open(\''+question.imageLinks[i]+'\')" id="imageLink'+(i+1)+'" placeholder="Enter Image Link '+(i+1)+'"></div>';
+  for(let i=0;i<imageLinks.length; i++){
+    var option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="imageLink'+(i+1)+'" onClick="parent.open(\''+imageLinks[i]+'\')" id="imageLink'+(i+1)+'" placeholder="Enter Image Link '+(i+1)+'"></div>';
     $('#editMCQQuestionImageLink').append(option);
-    document.getElementById('imageLink'+(i+1)).value = question.imageLinks[i];
+    document.getElementById('imageLink'+(i+1)).value = imageLinks[i];
   }
   
   document.getElementById('mcqCorrectOptions').value = correctOptions;
-  if(question.markingScheme){
+  if(markingScheme){
     document.getElementById('yes').setAttribute('selected', 'true');
   }
   else{
     document.getElementById('no').setAttribute('selected', 'true');
   }
-  document.getElementById('mcqNegativeMarking').value = question.negativeMarking;
+  document.getElementById('mcqNegativeMarking').value = negativeMarking;
 }
 
 async function viewMCQQuestion(id, question){
@@ -142,24 +145,26 @@ $("#editMCQQuestion").submit(async function (e) {
   }
 })
 
-async function editWrittenQuestion(id, question){
-  question = JSON.parse(question);
+async function editWrittenQuestion(id, question, maximumMarks, note, set, imageLinks){
   document.getElementById('writtenQuestionId').value = id;
-  document.getElementById('writtenQuestion').value = question.question;
-  document.getElementById('writtenQuestionMarks').value = question.maximumMarks;
-  document.getElementById('writtenQuestionNote').value = question.note;
-  document.getElementById('writtenSet').value = question.set;
+  question = question.slice(1, question.length-1);
+  note = note.slice(1, note.length-1);
+  document.getElementById('writtenQuestion').value = question;
+  document.getElementById('writtenQuestionMarks').value = maximumMarks;
+  document.getElementById('writtenQuestionNote').value = note;
+  document.getElementById('writtenSet').value = set;
   n = $('#editWrittenQuestionImageLink').children().length;
   for(let i=0; i<n; i++){
     $('#editWrittenQuestionImageLink').children().last().remove();
   }
-  if(question.imageLinks.length == 0){
+  imageLinks = JSON.parse(imageLinks);
+  if(imageLinks.length == 0){
     addImageLinkInWrittenEditMode();
   }
-  for(let i=0;i<question.imageLinks.length; i++){
-    var option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="imageLink'+(i+1)+'" onClick="parent.open(\''+question.imageLinks[i]+'\')" id="imageLinkWritten'+(i+1)+'" placeholder="Enter Image Link '+(i+1)+'"></div>';
+  for(let i=0;i<imageLinks.length; i++){
+    var option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="imageLink'+(i+1)+'" onClick="parent.open(\''+imageLinks[i]+'\')" id="imageLinkWritten'+(i+1)+'" placeholder="Enter Image Link '+(i+1)+'"></div>';
     $('#editWrittenQuestionImageLink').append(option);
-    document.getElementById('imageLinkWritten'+(i+1)).value = question.imageLinks[i];
+    document.getElementById('imageLinkWritten'+(i+1)).value = imageLinks[i];
   }
 }
 
