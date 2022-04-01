@@ -73,7 +73,9 @@ async function updateTable(){
     console.log(error.response);
   }
 }
-updateTable();
-setInterval(async ()=> {
+if(window.location.pathname.split('/')[window.location.pathname.split('/').length - 1] == "viewDetailAnalysis"){
   updateTable();
-}, 10000);
+  setInterval(async ()=> {
+    updateTable();
+  }, 10000);
+}
