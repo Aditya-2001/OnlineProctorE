@@ -87,19 +87,19 @@
                         <div class="" id="navbarText">
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link selectd-page" aria-current="page" href="#">Questions</a>
+                                <a class="nav-link descBar selectd-page" id="labQuestion" onclick="changeDiv('labQuestion')">Questions</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./question.html">Description</a>
+                                <a class="nav-link descBar" id="labDescription" onclick="changeDiv('labDescription')">Description</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./submissions.html">Submissions</a>
+                                <a class="nav-link descBar" href="./submissions.html">Submissions</a>
                             </li>
                             </ul>
                         </div>
                         </div>
                     </div>
-                    <div class="row external">
+                    <div class="row external" id="labQuestion1">
                         <div class="col-sm-12 pad-unset pad hgt">
                             <div class="marg">
                                 <div class="card-body">
@@ -140,6 +140,210 @@
                                         </table>
                                     </div>
                                   </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row external none" id="labDescription1">
+                        <div class="col-lg-4 pad-unset pad hgt">
+                            <div class="marg">
+                                <div class="quiz ">
+                                    <div id="addQuestions">
+                                        <div class="ques-ans" id="page01">
+                                            <div class="question">
+                                                <div class="problem">
+                                                    <span class="que">Qusetion</span><span class="question-number">1.</span> You are provided an array A of size N that contains non-negative integers. Your task is to determine whether the number that is formed by selecting the last digit of all the N numbers is divisible by 10.
+                                                    <div style="text-align: center;">
+                                                        <img src="https://drive.google.com/uc?export=view&id=1W9KY0Pd33L1XavWug8haqdOE17EMYT73" alt="image" style="width: 90%; height: auto;">
+                                                        <!-- <iframe class="questionImage" src="https://drive.google.com/file/d/1W9KY0Pd33L1XavWug8haqdOE17EMYT73/preview" allow="autoplay" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>  -->
+                                                    </div>
+                                                </div><br>
+                                                <div class="input-format">
+                                                    <span class="que">Input Format</span>
+                                                    <ul>
+                                                        <li>First line: A single integer N denoting the size of array A.</li>
+                                                        <li>Second line:  space-separated Nintegers.</li>
+                                                    </ul>
+                                                </div><br>
+                                                <div class="output-format">
+                                                    <span class="que">Output Format</span><br>
+                                                    If the number is divisible by 10, then print "Yes", otherwise, print "No".
+                                                </div><br>
+                                                <div class="constrained">
+                                                    <span class="que">Constraints</span>
+                                                    <ul>
+                                                        <li>1 &le; N &le; 10<sup>5</sup></li>
+                                                        <li>1 &le; A[i] &le; 10<sup>5</sup></li>
+                                                    </ul>
+                                                    <table class="sample-table table table-hover table-striped table-sm">
+                                                        <thead class="sample-table-head text-warning">
+                                                            <tr class="sample-table-row">
+                                                                <th class="th-sm samp"><b>Sample Input</b> 
+                                                                    <span class="material-icons icon CopyColumn" id="not-copied1" data-target=".input" onclick="copy_testcase(1)">content_copy</span>
+                                                                    <span class="material-icons icon CopyColumn" id="copied1" style="display: none;">done_all</span>
+                                                                </th>
+                                                                <th class="th-sm samp"><b>Sample Output</b>
+                                                                    <span class="material-icons icon CopyColumn" id="not-copied2" data-target=".output" onclick="copy_testcase(2)">content_copy</span>
+                                                                    <span class="material-icons icon CopyColumn" id="copied2" style="display: none;">done_all</span>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="sample-table-body">
+                                                            <tr class="sample-table-row">
+                                                                <td class="sample-table-data input">
+                                                                    5 <br>
+                                                                    85 25 65 21 84 
+                                                                </td>
+                                                                <td class="sample-table-data output">
+                                                                    No
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="sample-table-row">
+                                                                <td class="sample-table-data input">
+                                                                    5 <br>
+                                                                    85 25 65 21 84 
+                                                                </td>
+                                                                <td class="sample-table-data output">
+                                                                    No
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <span class="TM">
+                                                    <ul>
+                                                        <li><b>Time Limit: </b>1 sec</li>
+                                                        <li><b>Memory Limit: </b>256MB</li>
+                                                    </ul></span>
+                                                </div><br>
+                                                <div class="explain">
+                                                    <span class="que">Explaination</span><br>
+                                                    Explain the test case
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="line"><hr></div>
+                        </div>
+                        <div class="col-lg-8 pad-unset hgt">
+                            <div class="marg">
+                                <div class="quiz ">
+                                    <div class="control">
+                                        <div class="row">
+                                            <div class="col-md-4 col-sm-12 upl">
+                                                <input id="upload" type="file" accept=".c,.cpp,.py,.java"/>
+                                                <span class="control-panel-theme upload_link">
+                                                    <span class="que1 custom-select custom-select-sm form-control form-control-sm themes"><a href="" id="upload_link">Upload the code</a> as file.</span>
+                                                    <span class="material-icons icon1 CopyColumn" id="content_copy"  onclick="copy_code()">content_copy</span>
+                                                    <span class="material-icons icon1 CopyColumn" id="done_all" style="display: none;">done_all</span>
+                                                </span>
+                                            </div>
+                                            <div class="col-md-8 col-sm-12 upl" style="text-align: right;">
+                                                <span class="control-panel-theme">
+                                                    <span class="que">Theme: </span>
+                                                    <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm themes" id="themes" onchange="changeTheme()">
+                                                        <option value="monokali"> Black Dark </option>
+                                                        <option value="cobalt"> Blue Dark </option>
+                                                        <option value="eclipse"> White Light</option>
+                                                        <option value="solarized_light"> Yellow Light </option>
+                                                    </select>
+                                                </span>
+                                                <span class="control-panel">
+                                                    <span class="que">Language: </span>
+                                                    <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm languages" id="languages" onchange="changeLanguage()">
+                                                        <option value="c"> C </option>
+                                                        <option value="cpp"> C++ </option>
+                                                        <option value="java"> Java </option>
+                                                        <option value="python"> Python3 </option>
+                                                    </select>
+                                                </span>
+                                                <span>
+                                                    <i class="fa fa-expand expand-compress-icon"></i>
+                                                    <i class="fa fa-compress expand-compress-icon none"></i>
+                                                </span>
+                                                <!-- <span class="material-icons" onclick="">settings</span> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="editor" id="editor"></div>
+                                    <div class="button-container">
+                                        <!-- <a href="#" style="float: left;">Custom Input</a> -->
+                                        <button data-bs-toggle="modal" data-bs-target="#modal1" href="#" class="btn btn-primary btn-width"> Run </button>
+                                        <button data-bs-toggle="modal" data-bs-target="#modal2" href="#" class="btn btn-danger btn-width"> Submit </button>
+                                    </div>
+                                    <!-- <div class="output"></div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal 1 -->
+                        <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                            <div class="modal-content card">
+                                <div class="card-header card-header-green">
+                                <h4 class="modal-title">Sample Test Case</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="#" method="POST" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                        <label class="bmd-label">Sample Input</label>
+                                        <h6>5 <br> 85 25 65 21 84</h6>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="bmd-label">Expected Output</label>
+                                            <h6>No</h6>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="bmd-label">Output</label>
+                                            <h6>No</h6>
+                                        </div>
+                                        <div class="form-group">
+                                        <h6 class="pass">Sample Test Case Pass</h6>
+                                        <h6 class="fail">Sample Test Case Fail</h6>
+                                        </div>
+                                        <div class="form-group">
+                                            <h6 class="red">Error Messge</h6>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal 2 -->
+                        <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                            <div class="modal-content card">
+                                <div class="card-header card-header-green">
+                                <h4 class="modal-title">Submission</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="#" method="POST" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                        <label class="bmd-label">Score: <span class="green">4</span></label>
+                                        </div>
+                                        <div class="form-group">
+                                        <div class="row center">
+                                            <div class="col-md-4 col-6">
+                                                <!-- <input type="checkbox" disabled checked><i class="fa icon-checkbox"></i><span class="options">Potato</span> -->
+                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 1</span>
+                                            </div>
+                                            <div class="col-md-4 col-6">
+                                                <i class="icon fa fa-remove text-danger fa-fw red"></i><span class="incorrect-test">Test Case 2</span>
+                                            </div>
+                                            <div class="col-md-4 col-6">
+                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 3</span>
+                                            </div>
+                                            <div class="col-md-4 col-6">
+                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 4</span>
+                                            </div>
+                                            <div class="col-md-4 col-6">
+                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 5</span>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                             </div>
                         </div>
                     </div>
