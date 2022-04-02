@@ -898,3 +898,17 @@ exports.audioDetectorSetting = async (req, res) => {
   quiz.save();
   return res.status(204).send();
 }
+
+exports.pdfUploadSetting = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  quiz.pdfUpload = !quiz.pdfUpload;
+  quiz.save();
+  return res.status(204).send();
+}
+
+exports.pdfUploadDuration = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
+  quiz.pdfUploadDuration = req.body.pdfUploadDuration;
+  quiz.save();
+  return res.status(204).send();
+}

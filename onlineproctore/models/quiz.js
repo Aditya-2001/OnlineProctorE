@@ -27,6 +27,14 @@ const Quiz = new Schema({
     type: Boolean,
     default: false
   },
+  pdfUpload: {
+    type: Boolean,
+    default: false
+  },
+  pdfUploadDuration: {
+    type: Number,
+    default: 10
+  },
   startDate: {
     type: Date,
     required: true

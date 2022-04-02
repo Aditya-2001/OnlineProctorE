@@ -1,12 +1,16 @@
 var questionsType = new Map();
 var questionMarking = new Map();
+var questionSubmissionLocked = new Map();
 var optionsCount = new Map();
+var pdfUpload = false;
+var pdfUploadDuration = 10;
+var lastQuestionId;
 const peers = {};
 const peersScreen = {};
 var socket;
 let setHeight;
 var myPeer, myPeerScreen;
-var leftTime=10;
+var leftTime = 1;
 var testStarted = false;
 var currentElement = null;
 azchar = "abcdefghijklmnopqrstuvwxyz"
@@ -66,7 +70,15 @@ time.then( t => {
         document.getElementById("hours").innerHTML = hours + ":" 
         document.getElementById("mins").innerHTML = minutes + ":" 
         document.getElementById("secs").innerHTML = seconds 
-            
+        
+        if(timeleft < pdfUploadDuration*60*1000 && pdfUpload){
+            if(!document.getElementById('quizInstructionsDiv').classList.contains('none')){
+                document.getElementById('quizInstructionsDiv').classList.add('none');
+            }
+            displayUploadPDFDiv();
+            $('#cancelUpload').attr('disabled', true);
+        }
+
         // Display the message when countdown is over
         if (timeleft < 0) {
             clearInterval(myfunc);
@@ -155,6 +167,7 @@ async function getQuizQuestions(){
             return;
         }
         const quiz = response.data.quiz;
+        pdfUpload = quiz.pdfUpload;
         const questions = response.data.questions;
         const questionSubmissions = response.data.questionSubmissions;
         if(Date.now() >= quiz.endDate || questionSubmissions[0].submission.submitted){
@@ -164,7 +177,9 @@ async function getQuizQuestions(){
         var submissionId=document.getElementById("submissionId").value;
         if(quiz.disablePrevious){
             $('#previous').attr("disabled", true);
+            document.getElementById('previous').classList.add('none');
             $('#markForReview').attr("disabled", true);
+            document.getElementById('markForReview').classList.add('none');
         }
         var questionCount = questions.length;
         var shuffleOrder = [];
@@ -228,9 +243,15 @@ async function getQuizQuestions(){
                 setMarks();
             }
             if(!questions[j].mcq){
-                document.getElementById("text1"+questions[j]._id).value = submission.textfield;
+                if(quiz.pdfUpload){
+                    document.getElementById("text1"+questions[j]._id).value = 'Kindly write the anwser on a A4 size sheet';
+                    $("#text1"+questions[j]._id).attr("disabled", true);
+                }
+                else{
+                    document.getElementById("text1"+questions[j]._id).value = submission.textfield;
+                }
                 var answer = $.trim($("#text1"+questions[j]._id).val());
-                if(answer == ''){}
+                if(answer == '' || answer == 'Kindly write the anwser on a A4 size sheet'){}
                 else{
                     flag=true;
                 }
@@ -256,7 +277,8 @@ async function getQuizQuestions(){
                 navigation += '>';
             }
             navigation += i+1 + '</button></li>'
-            if(submission.answerLocked){
+            questionSubmissionLocked.set(questions[j]._id, submission.answerLocked);
+            if(submission.answerLocked && quiz.disablePrevious){
                 if(questions[j].mcq){
                     for(var k=0; k<optionsCount.get(questions[j]._id)-1; k++){
                         $("#option"+ (k+1) + questions[j]._id).attr("disabled", true);
@@ -268,6 +290,9 @@ async function getQuizQuestions(){
             }
             // console.log(navigation);
             $('#navigator').append(navigation);
+            if(i == questionCount-1){
+                lastQuestionId = questions[j]._id;
+            }
         }
     }
     catch(error){
@@ -283,57 +308,64 @@ function nextOrPrevQuestion() {
     var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
     var markedAnswer;
     var notAnswered = false;
-    if(questionsType.get(questionId)){
-        var count = 0;
-        markedAnswer = [];
-        for(var i=0; i<optionsCount.get(questionId)-1; i++){
-            var optionId = "#option"+(i+1)+questionId;
-            var textId = "#text"+(i+1)+questionId;
-            if($(optionId).is(':checked')){
-                count++;
-                markedAnswer.push($(textId)[0].innerHTML);
+    if(!questionSubmissionLocked.get(questionId) || (!pdfUpload && !questionsType.get(questionId))){
+        if(questionsType.get(questionId)){
+            var count = 0;
+            markedAnswer = [];
+            for(var i=0; i<optionsCount.get(questionId)-1; i++){
+                var optionId = "#option"+(i+1)+questionId;
+                var textId = "#text"+(i+1)+questionId;
+                if($(optionId).is(':checked')){
+                    count++;
+                    markedAnswer.push($(textId)[0].innerHTML);
+                }
+            }
+            document.getElementById('display'+questionId).classList='test-ques disable';
+            if(count == 0){
+                document.getElementById('display'+questionId).classList.add('que-not-answered');
+                notAnswered = true;
+            }
+            else{
+                document.getElementById('display'+questionId).classList.add('que-save');
+            }
+            // console.log($('.quiz-card').find('.ques-ans.active').find('.answer')[0].childNodes[1].childNodes[1].checked)
+        }
+        else{
+            markedAnswer = $.trim($("#text1"+questionId).val());
+            // console.log(document.getElementById('text1'+questionId).value);
+            document.getElementById('display'+questionId).classList='test-ques disable';
+            if(markedAnswer !== 'Kindly write the anwser on a A4 size sheet'){
+                if(markedAnswer == ''){
+                    document.getElementById('display'+questionId).classList.add('que-not-answered');
+                    notAnswered = true;
+                }
+                else{
+                    document.getElementById('display'+questionId).classList.add('que-save');
+                }
+            }
+            else{
+                document.getElementById('display'+questionId).classList.add('que-not-attempted');
             }
         }
-        document.getElementById('display'+questionId).classList='test-ques disable';
-        if(count == 0){
-            document.getElementById('display'+questionId).classList.add('que-not-answered');
-            notAnswered = true;
+        var answerLocked = false;
+        if($('#previous').attr("disabled")){
+            answerLocked = true;
         }
-        else{
-            document.getElementById('display'+questionId).classList.add('que-save');
+        var data = {
+            questionId: questionId,
+            submissionId: submissionId,
+            mcq: questionsType.get(questionId),
+            markedAnswer: markedAnswer,
+            answerLocked: answerLocked,
+            notAnswered: notAnswered,
+            markedForReview: false
         }
-        // console.log($('.quiz-card').find('.ques-ans.active').find('.answer')[0].childNodes[1].childNodes[1].checked)
-    }
-    else{
-        markedAnswer = $.trim($("#text1"+questionId).val());
-        // console.log(document.getElementById('text1'+questionId).value);
-        document.getElementById('display'+questionId).classList='test-ques disable';
-        if(markedAnswer == ''){
-            document.getElementById('display'+questionId).classList.add('que-not-answered');
-            notAnswered = true;
+        try{
+            axios.post(quizId + '/markAnswer', data);
         }
-        else{
-            document.getElementById('display'+questionId).classList.add('que-save');
+        catch(error){
+            console.log("Error :", error);
         }
-    }
-    var answerLocked = false;
-    if($('#previous').attr("disabled")){
-        answerLocked = true;
-    }
-    var data = {
-        questionId: questionId,
-        submissionId: submissionId,
-        mcq: questionsType.get(questionId),
-        markedAnswer: markedAnswer,
-        answerLocked: answerLocked,
-        notAnswered: notAnswered,
-        markedForReview: false
-    }
-    try{
-        axios.post(quizId + '/markAnswer', data);
-    }
-    catch(error){
-        console.log("Error :", error);
     }
 }
 
@@ -344,44 +376,47 @@ function markQuestion() {
     var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
     var markedAnswer;
     var notAnswered = false;
-    if(questionsType.get(questionId)){
-        var count = 0;
-        markedAnswer = [];
-        for(var i=1; i<optionsCount.get(questionId); i++){
-            var optionId = "#option"+i+questionId;
-            var textId = "#text"+i+questionId;
-            if($(optionId).is(':checked')){
-                count++;
-                markedAnswer.push($(textId)[0].innerHTML);
+    if(!questionSubmissionLocked.get(questionId) || (!pdfUpload && !questionsType.get(questionId))){
+        if(questionsType.get(questionId)){
+            var count = 0;
+            markedAnswer = [];
+            for(var i=1; i<optionsCount.get(questionId); i++){
+                var optionId = "#option"+i+questionId;
+                var textId = "#text"+i+questionId;
+                if($(optionId).is(':checked')){
+                    count++;
+                    markedAnswer.push($(textId)[0].innerHTML);
+                }
             }
+            document.getElementById('display'+questionId).classList='test-ques disable que-mark';
+            // console.log($('.quiz-card').find('.ques-ans.active').find('.answer')[0].childNodes[1].childNodes[1].checked)
         }
-        document.getElementById('display'+questionId).classList='test-ques disable que-mark';
-        // console.log($('.quiz-card').find('.ques-ans.active').find('.answer')[0].childNodes[1].childNodes[1].checked)
-    }
-    else{
-        markedAnswer = $.trim($("#text1"+questionId).val());
-        document.getElementById('display'+questionId).classList='test-ques disable que-mark';
-    }
-    var answerLocked = false;
-    if($('#previous').attr("disabled")){
-        answerLocked = true;
-    }
-    var data = {
-        questionId: questionId,
-        submissionId: submissionId,
-        mcq: questionsType.get(questionId),
-        markedAnswer: markedAnswer,
-        answerLocked: answerLocked,
-        notAnswered: notAnswered,
-        markedForReview: true
-    }
-    try{
-        axios.post(quizId + '/markAnswer', data);
-    }
-    catch(error){
-        console.log("Error :", error);
+        else{
+            markedAnswer = $.trim($("#text1"+questionId).val());
+            document.getElementById('display'+questionId).classList='test-ques disable que-mark';
+        }
+        var answerLocked = false;
+        if($('#previous').attr("disabled")){
+            answerLocked = true;
+        }
+        var data = {
+            questionId: questionId,
+            submissionId: submissionId,
+            mcq: questionsType.get(questionId),
+            markedAnswer: markedAnswer,
+            answerLocked: answerLocked,
+            notAnswered: notAnswered,
+            markedForReview: true
+        }
+        try{
+            axios.post(quizId + '/markAnswer', data);
+        }
+        catch(error){
+            console.log("Error :", error);
+        }
     }
 }
+
 function setMarks(){
     var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
     document.getElementById('mm').innerHTML = questionMarking.get(questionId).mm;
@@ -399,9 +434,30 @@ function setMarks(){
     }
 }
 
+function displayUploadPDFDiv(){
+    document.getElementById('quizQuestionsDiv').classList.add('none');
+    document.getElementById('quizUploadPDFDiv').classList.remove('none');
+}
+
+function cancelUploadPDF(){
+    document.getElementById('quizUploadPDFDiv').classList.add('none');
+    document.getElementById('quizQuestionsDiv').classList.remove('none');
+    document.getElementById('uploadPDF').classList.add('none');
+    document.getElementById('saveAndNext').classList.remove('none');
+}
+
 $(document).ready(function(){
     $('.next').click(function(){
         nextOrPrevQuestion();
+        var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
+        if(pdfUpload && questionId == lastQuestionId){
+            document.getElementById('saveAndNext').classList.add('none');
+            document.getElementById('uploadPDF').classList.remove('none');
+        }
+        else{
+            document.getElementById('uploadPDF').classList.add('none');
+            document.getElementById('saveAndNext').classList.remove('none');
+        }
         $('.quiz-card').find('.ques-ans.active').next().removeClass('none');
         $('.quiz-card').find('.ques-ans.active').next().addClass('active');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('none');
@@ -410,6 +466,15 @@ $(document).ready(function(){
     })
     $('.mark').click(function(){
         markQuestion();
+        var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
+        if(pdfUpload && questionId == lastQuestionId){
+            document.getElementById('saveAndNext').classList.add('none');
+            document.getElementById('uploadPDF').classList.remove('none');
+        }
+        else{
+            document.getElementById('uploadPDF').classList.add('none');
+            document.getElementById('saveAndNext').classList.remove('none');
+        }
         $('.quiz-card').find('.ques-ans.active').next().removeClass('none');
         $('.quiz-card').find('.ques-ans.active').next().addClass('active');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('none');
@@ -418,6 +483,11 @@ $(document).ready(function(){
     })
     $('.prev').click(function(){
         nextOrPrevQuestion();
+        var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
+        if(pdfUpload && questionId == lastQuestionId){
+            document.getElementById('uploadPDF').classList.add('none');
+            document.getElementById('saveAndNext').classList.remove('none');
+        }
         $('.quiz-card').find('.ques-ans.active').prev().removeClass('none');
         $('.quiz-card').find('.ques-ans.active').prev().addClass('active');
         $('.quiz-card').find('.ques-ans.active').next().addClass('none');
@@ -458,6 +528,7 @@ async function display(id){
     $('.quiz-card').find('.ques-ans.active').removeClass('active');
     document.getElementById(id).classList.add('active');
     document.getElementById(id).classList.remove('none');
+    setMarks()
 }
 
 setInterval(()=>{

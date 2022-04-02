@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const {getCourseQuiz, addQuestions, uploadExcelFile, 
   hideQuiz, disablePrevious, generateScore, 
   generateSimilarityReport, generatePlagiarismReport, 
@@ -9,7 +10,8 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   viewStream, downloadQuizResults, downloadStudentSubmissions,
   assignSets, renderPreviewQuiz, previewQuiz, faceDetectorSetting,
   mobileDetectorSetting, tabSwitchDetectorSetting, ipAddressDetectorSetting,
-  audioDetectorSetting, viewDetailAnalysisData, headPoseDetectorSetting} = require('../../controllers/faculty/viewEachQuiz');
+  audioDetectorSetting, viewDetailAnalysisData, headPoseDetectorSetting,
+  pdfUploadSetting, pdfUploadDuration} = require('../../controllers/faculty/viewEachQuiz');
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
@@ -62,6 +64,9 @@ router.route('/viewDetailAnalysis/submission/:submissionId/illegalActivities')
 router.route('/disablePrevious')
   .get(authFacultyTaQuiz, disablePrevious)
 
+router.route('/pdfUploadSetting')
+  .get(authFacultyTaQuiz, pdfUploadSetting)
+
 router.route('/generateScore')
   .get(authFacultyTaQuiz, generateScore)
 
@@ -85,6 +90,9 @@ router.route('/editWrittenQuestion')
 
 router.route('/editCourseQuiz')
   .post(authFacultyTaQuiz, editCourseQuiz)
+
+router.route('/pdfUploadDuration')
+  .post(authFacultyTaQuiz, pdfUploadDuration)
 
 router.route('/deleteQuiz')
   .post(authFacultyTaQuiz, deleteQuiz)

@@ -361,6 +361,26 @@ if(window.location.pathname.split('/')[window.location.pathname.split('/').lengt
     }
   });
 
+  pdfUpload = document.getElementById('pdfUpload');
+  pdfUpload.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#pdfUploadSpan').html('Input through Keyboard');
+    } else {
+      $('#pdfUploadSpan').html('Hand Written Paper');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.get(quizId+'/pdfUploadSetting');
+    }catch(error){
+      console.log(error.response);
+    }
+  });
+
+  $("#pdfUpload").click(function(){
+    $("#pdfUploadDuration").toggle( 'slow', function(){
+    });
+  });
+
   disablePrevious = document.getElementById('disablePrevious');
   disablePrevious.addEventListener('change', e => {
     if(e.target.checked){

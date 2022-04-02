@@ -627,6 +627,27 @@
                           </div>
 
                           <div class="form-group">
+                            <label class="bmd-label">Quiz Input Through Keyboard</label><br>
+                            <span class="col-xs-6" id="pdfUploadSpan">
+                              <% if(quiz.pdfUpload) { %> 
+                                Hand Written Paper
+                              <% }else{ %>
+                                Input through Keyboard
+                              <% } %>
+                            </span>
+                            <span class="col-xs-6 pull-right">
+                              <label class="switch">
+                                <input type="checkbox" id="pdfUpload"
+                                  <% if(!quiz.pdfUpload) { %> 
+                                    checked
+                                  <% } %>
+                                >
+                                <span class="slider round"></span>
+                              </label>
+                            </span>
+                          </div>
+
+                          <div class="form-group">
                             <label class="bmd-label">Previously Attempted Question Access</label><br>
                             <span class="col-xs-6" id="disablePreviousSpan">
                               <% if(quiz.disablePrevious) { %> 

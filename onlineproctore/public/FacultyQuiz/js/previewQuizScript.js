@@ -147,6 +147,7 @@ async function display(id){
     $('.quiz-card').find('.ques-ans.active').removeClass('active');
     document.getElementById(id).classList.add('active');
     document.getElementById(id).classList.remove('none');
+    setMarks();
 }
 
 function idMapping(ID){

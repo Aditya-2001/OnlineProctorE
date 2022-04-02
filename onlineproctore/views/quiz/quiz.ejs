@@ -110,7 +110,8 @@
                                         <button id="markForReview" class="btn btn-purple rev-btn mark disable" type="button">Mark For Review</button>
                                     </div>
                                     <div class="col-sm-4">
-                                        <button class="btn btn-primary save-btn btn-save-answer next disable" type="button">Save and Next</button>
+                                        <button id="saveAndNext" class="btn btn-primary save-btn btn-save-answer next disable" type="button">Save and Next</button>
+                                        <button id="uploadPDF" class="btn btn-primary save-btn btn-save-answer next disable none" onclick="displayUploadPDFDiv()" type="button">Upload PDF</button>
                                     </div>
                                 </div>
                             </div>
@@ -161,7 +162,7 @@
                     </div>
                 </div>
             </div>
-            <div class="content none">
+            <div class="content none" id="quizUploadPDFDiv">
                 <div class="container-fluid">
                     <div class="row ">
                         <div class="modal-content card">
@@ -172,11 +173,13 @@
                                 <form method="POST" enctype="multipart/form-data" action="#"><input type="hidden" name="csrfmiddlewaretoken" value="Mc81OD05CwmsNbwlYlnNjiF4KPgZ20MSDf2EFxnkBNacN8DgAAB8NqpdikcXMFRF">
                                     <input type="hidden" name="course_id" id="course_id" class="form-control" required>
                                     <h4>Upload PDF file in the form rollNumber.pdf (eg. IIT2000100.pdf)</h4>
-                                    <p style="padding-bottom: 10px">1. You have total 15 minutes to generate and upload the pdf file.</p>
+                                    <p style="padding-bottom: 10px">1. Total time left to scan and upload your PDF is shown in the top bar.</p>
                                     <input type="file" name="image"  required><br><br>
+                                    <span class="start timer">
+                                        <button type="button" class="btn btn-primary" id="cancelUpload" onclick="cancelUploadPDF()">Cancel</button>
+                                    </span>
                                     <span class="pull-right start timer">
-                                        <span id="quiz-start-time">10</span> <br>
-                                        <button type="button" id="start-the-test" class="btn btn-primary pull-right" onclick="startTest()">Upload PDF</button>
+                                        <button type="button" class="btn btn-primary pull-right" onclick="startTest()">Upload PDF</button>
                                     </span>
                                 </form>
                             </div>

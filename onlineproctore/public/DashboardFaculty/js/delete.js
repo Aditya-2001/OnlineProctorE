@@ -218,3 +218,18 @@ $("#editCourseQuiz").submit(async function (e) {
     // fader('#setError')
   }
 })
+
+$("#pdfUploadDurationForm").submit(async function (e) {
+  e.preventDefault();
+  const quizId = document.getElementById('quizId').value;
+  var serializedData = $(this).serialize();
+  var errorr = document.getElementById("setError1");
+  try{
+    await axios.post(quizId + '/pdfUploadDuration', serializedData);
+    errorr.style.color="green";
+    errorr.innerHTML = "PDF Upload Time Updated";
+    fader("#setError1");
+  }catch(error){
+    console.log(error);
+  }
+})
