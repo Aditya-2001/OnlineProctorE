@@ -20,20 +20,31 @@ function startTest(){
     testStarted = true;
     document.getElementById('quizInstructionsDiv').classList.add('none');
     document.getElementById('quizQuestionsDiv').classList.remove('none');
+    var submissionId=document.getElementById("submissionId").value;
+    var quizId = document.getElementById("quizId").value;
+    axios.post(quizId + '/givingQuiz', {submissionId: submissionId});
 }
 
-var myfunc = setInterval(function() {
-    var quizId = document.getElementById("quizId").value;
-    var time = axios.post(quizId + '/getTime', {});
-    var now;
-    time.then( t => {
-        now = t.data.time;
-        countDownDate = t.data.countDownDate;
-        if(t.data.redirect){
-            nextOrPrevQuestion();
-            window.location.href = t.data.url;
-        }
+var subId = document.getElementById("submissionId").value;
+var qId = document.getElementById("quizId").value;
+var d={submissionId: subId};
+var url = qId + '/givingQuiz/' + subId;
+window.addEventListener("unload", function (e) { 
+    navigator.sendBeacon(url, d);
+});
+
+var quizId = document.getElementById("quizId").value;
+var time = axios.post(quizId + '/getTime', {});
+time.then( t => {
+    var now = t.data.time;
+    countDownDate = t.data.countDownDate;
+    if(t.data.redirect){
+        nextOrPrevQuestion();
+        window.location.href = t.data.url;
+    }
+    var myfunc = setInterval(function() {
         var timeleft = countDownDate - now;
+        now += 999;
         // Calculating the days, hours, minutes and seconds left
         var hoursrem = Math.floor((timeleft) / (1000 * 60 * 60));
         var hours=hoursrem
@@ -79,8 +90,8 @@ var myfunc = setInterval(function() {
                 console.log(error);
             }
         }
-    })
-}, 1000);
+    }, 1000);
+})
 
 var leftTimeInterval=setInterval(function(){
     if(leftTime==0){
@@ -456,7 +467,6 @@ setInterval(()=>{
     }).then((result) => {
 
     }).catch(e => {
-        alert('You are not connected to Internet.');
         location.reload();
     })
 }, 1000);

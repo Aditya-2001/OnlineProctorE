@@ -4,6 +4,13 @@ async function updateTable(){
     var {data} = await axios.post('', {});
     var submissions = data.submissions;
     const quizHeld = document.getElementById('quizHeld').value;
+    document.getElementById('total').innerHTML = submissions.length;
+    document.getElementById('taking').innerHTML = submissions.filter(function(submission){
+      return submission.givingQuiz;
+    }).length;
+    document.getElementById('submitted').innerHTML = submissions.filter(function(submission){
+      return submission.submitted;
+    }).length;
     if(quizHeld === 'true'){
       submissions = submissions.sort((a,b) => {
         var val = 1;
@@ -59,7 +66,14 @@ async function updateTable(){
         html += '<td><a href=\'viewDetailAnalysis/submission/' + submission._id + '\'class="btn btn-primary">view</a></td><td>'+ submission.mcqScore + submission.writtenScore + '</td>';
       }
       else{
-        html += '<td><a href=\'viewDetailAnalysis/viewStream/submission/' + submission._id + '\'class="btn btn-primary">view</a></td>'
+        html += '<td><a href=\'viewDetailAnalysis/viewStream/submission/' + submission._id + '\'class="btn btn-primary">view</a></td><td>';
+        if(submission.submitted)
+          html += 'Submitted';
+        else if(submission.givingQuiz)
+          html += 'Giving';
+        else
+          html += 'Not Giving';
+        html += '</td>';
       }
       html += '<td>'+ submission.browserSwitched +'</td>';
       html += '<td>'+ submission.mobileDetected +'</td>';

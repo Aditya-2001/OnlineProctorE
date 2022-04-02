@@ -110,6 +110,28 @@ exports.ipAddress = async (req, res) => {
   return res.status(204).send();
 }
 
+exports.givingQuiz = async (req, res) => {
+  try{
+    var submission = await Submission.findOne({_id: req.body.submissionId});
+    submission.givingQuiz = true;
+    submission.save();
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
+}
+
+exports.exitingQuiz = async (req, res) => {
+  try{
+    var submission = await Submission.findOne({_id: req.params.submissionId});
+    submission.givingQuiz = false;
+    submission.save();
+  }catch(err){
+    console.log(err);
+  }
+  return res.status(204).send();
+}
+
 exports.audio = async (req, res) => {
   try{
     var submission = await Submission.findOne({_id: req.body.submissionId});
