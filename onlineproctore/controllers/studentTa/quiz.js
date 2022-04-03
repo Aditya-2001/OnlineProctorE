@@ -9,6 +9,7 @@ const AnswerPDF = require('../../models/answerPDF');
 const fs = require('fs');
 const path = require('path');
 const { removeFile } = require("../../functions");
+const {Duplex} = require('stream');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -263,17 +264,48 @@ exports.headPoseDetection = async (req, res) => {
 }
 
 exports.uploadPDF = async (req, res) => {
-  const quizId = req.quizId;
-  const filePath = path.resolve(__dirname, '../../' + req.file.path);
-  var pdfSubmissions = await AnswerPDF.findAnswerPDFs({submission: req.body.submissionId});
-  if(pdfSubmissions.length == 0){
-    await AnswerPDF.create({submission: req.body.submissionId});
-    pdfSubmissions = await AnswerPDF.findAnswerPDFs({submission: req.body.submissionId});
+  try{
+    const filePath = path.resolve(__dirname, '../../' + req.file.path);
+    console.log(req.file);
+    var submission = await Submission.findOne({_id: req.body.submissionId});
+    var pdfSubmissions = await AnswerPDF.findAnswerPDFs({submission: req.body.submissionId});
+    submission.pdfUploaded = true;
+    submission.save();
+    if(pdfSubmissions.length == 0){
+      await AnswerPDF.create({submission: req.body.submissionId});
+      pdfSubmissions = await AnswerPDF.findAnswerPDFs({submission: req.body.submissionId});
+    }
+    pdfSubmissions[0].uploadedfile.data = fs.readFileSync(filePath);
+    pdfSubmissions[0].uploadedfile.filename = req.file.filename;
+    console.log(fs.readFileSync(filePath));
+    pdfSubmissions[0].save();
+    console.log(filePath);
+    removeFile(filePath);
+  }catch(err){
+    console.log(err);
   }
-  pdfSubmissions[0].uploadedfile.data = fs.readFileSync(filePath);
-  console.log(fs.readFileSync(filePath));
-  pdfSubmissions[0].save();
-  console.log(filePath);
-  removeFile(filePath);
   res.status(204).send();
+}
+
+exports.downloadSubmission = async (req, res) => {
+  try{
+    var pdfSubmissions = await AnswerPDF.findAnswerPDFs({submission: req.params.studentsubmissionId});
+    console.log(pdfSubmissions.length);
+    console.log(req.params.studentsubmissionId)
+    if(pdfSubmissions.length != 0){
+      const fileName = pdfSubmissions[0].uploadedfile.filename;
+      res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Transfer-Encoding': 'chunked',
+      });
+      res.end(pdfSubmissions[0].uploadedfile.data, 'binary');
+    }
+    else{
+      res.status(204).send();
+    }
+  }catch(err){
+    console.log(err);
+    res.status(204).send();
+  }
 }

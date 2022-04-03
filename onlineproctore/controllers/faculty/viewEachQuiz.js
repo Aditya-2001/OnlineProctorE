@@ -18,6 +18,9 @@ const Excel = require('exceljs');
 const AdmZip = require('adm-zip');
 const ejs = require('ejs');
 let pdf = require("html-pdf");
+const AnswerPDF = require('../../models/answerPDF');
+const hummus = require('hummus');
+const memoryStreams = require('memory-streams');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -739,10 +742,29 @@ exports.downloadQuizResults = async (req, res) => {
   }).clone().catch(function(err){console.log(err)});
 }
 
+const combinePDFBuffers = (firstBuffer, secondBuffer) => {
+  var outStream = new memoryStreams.WritableStream();
+  try {
+    var firstPDFStream = new hummus.PDFRStreamForBuffer(firstBuffer);
+    var secondPDFStream = new hummus.PDFRStreamForBuffer(secondBuffer);
+    var pdfWriter = hummus.createWriterToModify(firstPDFStream, new hummus.PDFStreamForResponse(outStream));
+    pdfWriter.appendPDFPagesFromPDF(secondPDFStream);
+    pdfWriter.end();
+    var newBuffer = outStream.toBuffer();
+    outStream.end();
+    return newBuffer;
+  }
+  catch(e){
+    outStream.end();
+    throw new Error('Error during PDF combination: ' + e.message);
+  }
+};
+
 //unmodified and unoptimized
 exports.downloadStudentSubmissions = async (req, res) => {
   await Submission.find({quiz: req.quizId}, async (err, submissions) => {
-    const fileName = 'submissions.zip';
+    var q = await Quiz.findOne({_id: req.quizId});
+    const fileName = q.quizName + ' Submissions.zip';
     const fileType = 'application/zip';
     res.writeHead(200, {
       'Content-Disposition': `attachment; filename="${fileName}"`,
@@ -811,8 +833,17 @@ exports.downloadStudentSubmissions = async (req, res) => {
                   },
                 };
                 pdf.create(data, options).toBuffer(function(err, buffer){
-                  zip.addFile(String(submission.user.username.toUpperCase()+"_"+String(submission.quiz._id)+".pdf"), Buffer.from(buffer, "utf8"));
-                  resolve();
+                  if(submission.pdfUploaded){
+                    AnswerPDF.findOne({submission: submission._id}, (err, answerPdf) => {
+                      var buf = combinePDFBuffers(buffer, answerPdf.uploadedfile.data);
+                      zip.addFile(String(submission.user.username.toUpperCase()+"_"+String(submission.quiz._id)+".pdf"), Buffer.from(buf, "utf8"));
+                      resolve();
+                    })
+                  }
+                  else{
+                    zip.addFile(String(submission.user.username.toUpperCase()+"_"+String(submission.quiz._id)+".pdf"), Buffer.from(buffer, "utf8"));
+                    resolve();
+                  }
                 });
               })
             })

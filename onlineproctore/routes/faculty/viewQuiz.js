@@ -17,7 +17,8 @@ const {getQuestions, markAnswer, submit, endTest,
   ipAddress, audio, windowBlurred, screenSharingOff, 
   tabChanged, mobileDetected, multipleFace, noPerson, 
   getTime, getQuizDetectionSettings, headPoseDetection,
-  givingQuiz, exitingQuiz, uploadPDF, uploadPDFFile} = require('../../controllers/studentTa/quiz');
+  givingQuiz, exitingQuiz, uploadPDF, uploadPDFFile,
+  downloadSubmission} = require('../../controllers/studentTa/quiz');
 
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
 
@@ -51,6 +52,9 @@ router.route('/viewDetailAnalysis')
 
 router.route('/viewDetailAnalysis/submission/:submissionId')
   .get(authFacultyTaQuizAnalysis, getUserSubmission)
+
+router.route('/viewDetailAnalysis/submission/:submissionId/downloadSubmission/:studentsubmissionId')
+  .get(authFacultyTaQuizAnalysis, downloadSubmission)
 
 router.route('/viewDetailAnalysis/viewStream/submission/:submissionId')
   .get(authFacultyTaQuizAnalysis, viewStream)
@@ -171,5 +175,8 @@ router.route('/noPerson')
 
 router.route('/uploadPDF')
   .post([uploadPDFFile.single('pdfFile'), authStudentQuiz], uploadPDF)
+
+router.route('/downloadSubmission/:studentsubmissionId')
+  .get(authStudentQuiz, downloadSubmission)
 
 module.exports = router;

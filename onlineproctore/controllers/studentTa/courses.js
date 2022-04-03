@@ -116,6 +116,22 @@ exports.authFacultyTaQuiz = async (req, res, next) => {
   }
 }
 
+exports.authAllUsersQuiz = async (req, res, next) => {
+  try{
+    const quizId = req.quizId;
+    var user = await User.findOneUser(req.cookies.auth);
+    var quiz = await Quiz.findOneQuiz({_id: quizId});
+    const courseId = quiz.course._id;
+    var course = await Course.findOneCourse({_id: courseId, instructors: {$all: [user._id]}});
+    var enrollment = await Enrollment.findOneEnrollment({course: courseId, user: user._id});
+    if(!course && !enrollment) throw new Error('Invalid Access to Quiz');
+    next();
+  }catch(err){
+    console.log(err);
+    return res.status(400).render('error/error');
+  }
+}
+
 exports.authFacultyTaQuizAnalysis = async (req, res, next) => {
   try{
     const quizId = req.quizId;
