@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
 const QuestionSubmission = require('./questionSubmission');
 const IllegalAttempt = require('./illegalAttempt');
+const AnswerPDF = require('./answerPDF');
 
 const Submission = new Schema({
   quiz: {
@@ -93,6 +94,11 @@ Submission.post("remove", async function(res, next) {
   await IllegalAttempt.find({submission: this._id}, async (err, illegalAttempts) => {
     for await (let illegalAttempt of illegalAttempts){
       illegalAttempt.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await AnswerPDF.find({submission: this._id}, async (err, answerPDFs) => {
+    for await (let answerPDF of answerPDFs){
+      answerPDF.remove();
     }
   }).clone().catch(function(err){console.log(err)});
   next();

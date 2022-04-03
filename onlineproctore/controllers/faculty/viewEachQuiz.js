@@ -18,8 +18,6 @@ const Excel = require('exceljs');
 const AdmZip = require('adm-zip');
 const ejs = require('ejs');
 let pdf = require("html-pdf");
-const axios = require('axios');
-const quiz = require('../../models/quiz');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -929,13 +927,6 @@ exports.ipAddressDetectorSetting = async (req, res) => {
 exports.audioDetectorSetting = async (req, res) => {
   var quiz = await Quiz.findOneQuiz({_id: req.quizId});
   quiz.audioDetector = !quiz.audioDetector;
-  quiz.save();
-  return res.status(204).send();
-}
-
-exports.pdfUploadSetting = async (req, res) => {
-  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
-  quiz.pdfUpload = !quiz.pdfUpload;
   quiz.save();
   return res.status(204).send();
 }

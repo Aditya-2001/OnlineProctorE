@@ -686,7 +686,11 @@
                       </div>
 
                       <form id="pdfUploadDurationForm">
-                        <div class="form-group" id="pdfUploadDuration">
+                        <div class="form-group" id="pdfUploadDuration"
+                          <% if(!quiz.pdfUpload) { %>
+                            style="display: none;"
+                          <% } %>
+                        >
                           <label class="bmd-label">PDF Upload Time Limit</label><br>
                           <input type="number" class="form-control" autocomplete="off" name="pdfUploadDuration" value="<%= quiz.pdfUploadDuration %>" step="0.01" required/>
                           <span class="col-xs-6 pull-right">

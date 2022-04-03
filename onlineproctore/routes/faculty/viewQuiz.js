@@ -11,13 +11,13 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   assignSets, renderPreviewQuiz, previewQuiz, faceDetectorSetting,
   mobileDetectorSetting, tabSwitchDetectorSetting, ipAddressDetectorSetting,
   audioDetectorSetting, viewDetailAnalysisData, headPoseDetectorSetting,
-  pdfUploadSetting, pdfUploadDuration} = require('../../controllers/faculty/viewEachQuiz');
+  pdfUploadDuration} = require('../../controllers/faculty/viewEachQuiz');
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
   tabChanged, mobileDetected, multipleFace, noPerson, 
   getTime, getQuizDetectionSettings, headPoseDetection,
-  givingQuiz, exitingQuiz} = require('../../controllers/studentTa/quiz');
+  givingQuiz, exitingQuiz, uploadPDF, uploadPDFFile} = require('../../controllers/studentTa/quiz');
 
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
 
@@ -63,9 +63,6 @@ router.route('/viewDetailAnalysis/submission/:submissionId/illegalActivities')
 
 router.route('/disablePrevious')
   .get(authFacultyTaQuiz, disablePrevious)
-
-router.route('/pdfUploadSetting')
-  .get(authFacultyTaQuiz, pdfUploadSetting)
 
 router.route('/generateScore')
   .get(authFacultyTaQuiz, generateScore)
@@ -171,5 +168,8 @@ router.route('/changeInHeadPose')
 
 router.route('/noPerson')
   .post(authStudentQuiz, noPerson);
+
+router.route('/uploadPDF')
+  .post([uploadPDFFile.single('pdfFile'), authStudentQuiz], uploadPDF)
 
 module.exports = router;
