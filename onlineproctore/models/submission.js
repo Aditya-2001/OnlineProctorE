@@ -21,6 +21,10 @@ const Submission = new Schema({
     type: String,
     default: ''
   },
+  givingQuiz: {
+    type: Boolean,
+    default: false
+  },
   submitted: {
     type: Boolean,
     default: false

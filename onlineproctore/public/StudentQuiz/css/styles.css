@@ -489,3 +489,7 @@ td{
 .ques-ans{
     white-space: pre-wrap;
 }
+
+.inline-block{
+    display: inline-block;
+}

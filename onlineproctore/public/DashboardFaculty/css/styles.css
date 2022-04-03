@@ -290,3 +290,33 @@ input:checked + .slider:before {
   white-space: nowrap;
   height: 30px;
 }
+
+.test-info-img{
+  height: 3.25rem !important;
+}
+
+.test-info-div{
+  display: inline !important;
+  border-radius: 50px;
+  vertical-align: middle;
+  padding: 10px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.test-info-row{
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+.count{
+  margin-left: 10px;
+  font-family: cursive;
+  color: #5BB12F;
+  line-height: 1.5;
+}
+
+.margin20{
+  margin-bottom: 20px;
+}

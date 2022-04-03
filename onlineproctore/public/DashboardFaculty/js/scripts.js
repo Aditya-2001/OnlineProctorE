@@ -361,6 +361,44 @@ if(window.location.pathname.split('/')[window.location.pathname.split('/').lengt
     }
   });
 
+  pdfUpload = document.getElementById('pdfUpload');
+  pdfUpload.addEventListener('change', e => {
+    if(e.target.checked){
+      $('#pdfUploadSpan').html('Hand Written Paper');
+    } else {
+      $('#pdfUploadSpan').html('Input through Keyboard');
+    }
+    var quizId = document.getElementById("quizId").value;
+    try{
+      axios.get(quizId+'/pdfUploadSetting');
+    }catch(error){
+      console.log(error.response);
+    }
+  });
+
+  $("#pdfUpload").click(function(){
+    $("#pdfUploadDuration").toggle( 'slow', function(){
+    });
+  });
+
+  $("#addWrittenQuestionPdfUploadInput").click(function(){
+    if($("#addWrittenQuestionPdfUploadInput").is(':checked')){
+      $("#addWrittenQuestionPdfUploadSpan").html('Handwritten');
+    }
+    else{
+      $("#addWrittenQuestionPdfUploadSpan").html('Typed');
+    }
+  });
+
+  $("#editWrittenQuestionPdfUploadInput").click(function(){
+    if($("#editWrittenQuestionPdfUploadInput").is(':checked')){
+      $("#editWrittenQuestionPdfUploadSpan").html('Handwritten');
+    }
+    else{
+      $("#editWrittenQuestionPdfUploadSpan").html('Typed');
+    }
+  });
+
   disablePrevious = document.getElementById('disablePrevious');
   disablePrevious.addEventListener('change', e => {
     if(e.target.checked){

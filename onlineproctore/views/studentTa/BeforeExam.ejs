@@ -181,7 +181,7 @@
                                         <% if(!question.mcq){ %>
                                           <tr 
                                             <% if(enrolledUser.headTa){ %>
-                                              data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question.question) %>', '<%= question.maximumMarks %>', '<%= JSON.stringify(question.note) %>', '<%= question.set %>', '<%= JSON.stringify(question.imageLinks) %>')" data-target="#modal41"
+                                              data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question.question) %>', '<%= question.maximumMarks %>', '<%= JSON.stringify(question.note) %>', '<%= question.set %>', '<%= JSON.stringify(question.imageLinks) %>', '<%= question.pdfUpload %>')" data-target="#modal41"
                                             <% } %>
                                           >
                                             <td class="question-short-desc"><%= question.question %></td>
@@ -236,105 +236,113 @@
           <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
             <div class="modal-content card">
               <div class="col-lg-12 col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-tabs card-header-green">
-                        <div class="nav-tabs-navigation">
-                            <div class="nav-tabs-wrapper">
-                                <ul class="nav nav-tabs" data-tabs="tabs">
-                                    <li class="nav-item col-md-6">
-                                        <a class="nav-link active" href="#Multiple_Choice_Question" data-toggle="tab">
-                                            <i class="material-icons">flaky</i> Multiple Choice Question
-                                            <div class="ripple-container"></div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item col-md-6">
-                                        <a class="nav-link" href="#Written_Question" data-toggle="tab">
-                                            <i class="material-icons">create</i> Written Question
-                                            <div class="ripple-container"></div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                <div class="card-header card-header-tabs card-header-green">
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                <li class="nav-item col-md-6">
+                                    <a class="nav-link active" href="#Multiple_Choice_Question" data-toggle="tab">
+                                        <i class="material-icons">flaky</i> Multiple Choice Question
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                <li class="nav-item col-md-6">
+                                    <a class="nav-link" href="#Written_Question" data-toggle="tab">
+                                        <i class="material-icons">create</i> Written Question
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="card-body">
-                      <div class="tab-content">
-                        <div class="tab-pane active" id="Multiple_Choice_Question">
-                          <form id="addMCQQuestion">
-                            <div class="form-group">
-                              <label class="bmd-label-floating">Type the question below</label>
-                              <textarea class="form-control" name="question" autocomplete="off" id="question_written" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label class="bmd-label-floating">Maximum Marks for the question</label>
-                              <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required>
-                            </div><br>
-                            <div class="form-group">
-                              <label class="bmd-label">Enter the Set</label><br>
-                              <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
-                            </div><br>
-                            <div id="questionImages">
-                              <div class="form-group">
-                                <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
-                              </div>
-                            </div>
-                            <input type="button" onclick="addImageLink()" class="btn btn-primary" value="Add Image Link"/>
-                            <br>
-                            <div id="questionOptions">
-                              <div class="form-group">
-                                <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Option 1">
-                              </div>
-                            </div>
-                            <input type="button" onclick="addOption()" class="btn btn-primary" value="Add Option"/>
-                            <br>
-                            <div class="form-group">
-                              <label class="bmd-label">Enter Correct Options</label><br>
-                              <input type="text" class="form-control" autocomplete="off" name="correctOptions" placeholder="Correct Options Number. eg: 1,2" required/>
-                            </div><br>
-                            <div class="form-group">
-                              <label class="bmd-label">Marking Scheme</label><br>
-                              <select class="form-control" name="markingScheme">
-                                <option value="Yes">Partial Marking</option>
-                                <option value="No">No Partial Marking</option>
-                              </select>
-                            </div><br>
-                            <div class="form-group">
-                              <label class="bmd-label">Negative Marking</label><br>
-                              <input type="number" class="form-control" autocomplete="off" name="negativeMarking" step="0.01" min="0" placeholder="Enter marks that will be awarded when answer is wrong">
-                            </div><br>
-                            <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
-                          </form>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="Multiple_Choice_Question">
+                      <form id="addMCQQuestion">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Type the question below</label>
+                          <textarea class="form-control" name="question" autocomplete="off" id="question_written" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
                         </div>
-                        <div class="tab-pane" id="Written_Question">
-                          <form id="addWrittenQuestion">
-                            <div class="form-group">
-                              <input type="text" id="quizId" value="<%= quizId %>" hidden/>
-                              <label class="bmd-label-floating">Type the question below</label>
-                              <textarea class="form-control" name="question" id="question_written" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
-                            </div>
-                            <div class="form-group">
-                              <label class="bmd-label-floating">Add a note regarding Question if you wish</label>
-                              <textarea class="form-control" name="note" id="question_note" autocomplete="off" rows="2"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label class="bmd-label-floating">Maximum Marks for the question</label>
-                                <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required/>
-                            </div><br>
-                            <div class="form-group">
-                              <label class="bmd-label">Enter the Set</label><br>
-                              <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
-                            </div><br>
-                            <div id="writtenQuestionImages">
-                              <div class="form-group">
-                                <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
-                              </div>
-                            </div>
-                            <input type="button" onclick="addWrittenImageLink()" class="btn btn-primary" value="Add Image Link"/>
-                            <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
-                          </form>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Maximum Marks for the question</label>
+                          <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required>
+                        </div><br>
+                        <div class="form-group">
+                          <label class="bmd-label">Enter the Set</label><br>
+                          <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                        </div><br>
+                        <div id="questionImages">
+                          <div class="form-group">
+                            <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
+                          </div>
                         </div>
-                      </div>
+                        <input type="button" onclick="addImageLink()" class="btn btn-primary" value="Add Image Link"/>
+                        <br>
+                        <div id="questionOptions">
+                          <div class="form-group">
+                            <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Option 1">
+                          </div>
+                        </div>
+                        <input type="button" onclick="addOption()" class="btn btn-primary" value="Add Option"/>
+                        <br>
+                        <div class="form-group">
+                          <label class="bmd-label">Enter Correct Options</label><br>
+                          <input type="text" class="form-control" autocomplete="off" name="correctOptions" placeholder="Correct Options Number. eg: 1,2" required/>
+                        </div><br>
+                        <div class="form-group">
+                          <label class="bmd-label">Marking Scheme</label><br>
+                          <select class="form-control" name="markingScheme">
+                            <option value="Yes">Partial Marking</option>
+                            <option value="No">No Partial Marking</option>
+                          </select>
+                        </div><br>
+                        <div class="form-group">
+                          <label class="bmd-label">Negative Marking</label><br>
+                          <input type="number" class="form-control" autocomplete="off" name="negativeMarking" step="0.01" min="0" placeholder="Enter marks that will be awarded when answer is wrong">
+                        </div><br>
+                        <input type="submit" class="btn btn-primary pull-right margin20" value="Add Question"/>
+                      </form>
                     </div>
+                    <div class="tab-pane" id="Written_Question">
+                      <form id="addWrittenQuestion">
+                        <div class="form-group">
+                          <input type="text" id="quizId" value="<%= quizId %>" hidden/>
+                          <label class="bmd-label-floating">Type the question below</label>
+                          <textarea class="form-control" name="question" id="question_written" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Add a note regarding Question if you wish</label>
+                          <textarea class="form-control" name="note" id="question_note" autocomplete="off" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Maximum Marks for the question</label>
+                            <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required/>
+                        </div><br>
+                        <div class="form-group">
+                          <label class="bmd-label">Enter the Set</label><br>
+                          <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                        </div><br>
+                        <div class="form-group">
+                          <label class="bmd-label">Handwritten/Typed</label><br>
+                          <span class="col-xs-6" id="addWrittenQuestionPdfUploadSpan">Typed</span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" name="pdfUpload" id="addWrittenQuestionPdfUploadInput">
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
+                        </div><br>
+                        <div id="writtenQuestionImages">
+                          <div class="form-group">
+                            <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
+                          </div>
+                        </div>
+                        <input type="button" onclick="addWrittenImageLink()" class="btn btn-primary" value="Add Image Link"/>
+                        <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
+                      </form>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -439,6 +447,16 @@
                         <label class="bmd-label">Enter the Set</label><br>
                         <input type="text" class="form-control" autocomplete="off" id="writtenSet" name="set" placeholder="Enter name of set to which this question belongs to" required/>
                       </div><br>
+                      <div class="form-group">
+                        <label class="bmd-label">Handwritten/Typed</label><br>
+                        <span class="col-xs-6" id="editWrittenQuestionPdfUploadSpan">Typed</span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" name="pdfUpload" id="editWrittenQuestionPdfUploadInput">
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div><br>
                       <label class="bmd-label">Image Links</label>
                       <div id="editWrittenQuestionImageLink"></div>
                       <input type="button" onclick="addImageLinkInWrittenEditMode()" class="btn btn-primary" value="Add Image Links"/>
@@ -453,193 +471,244 @@
           <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
             <div class="modal-content card">
               <div class="col-lg-12 col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-tabs card-header-green">
-                        <div class="nav-tabs-navigation">
-                            <div class="nav-tabs-wrapper">
-                                <ul class="nav nav-tabs" data-tabs="tabs">
-                                    <li class="nav-item col-md-6">
-                                        <a class="nav-link active" href="#proctoring_settings" data-toggle="tab">
-                                            <i class="material-icons">visibility</i> Proctoring Settings
-                                            <div class="ripple-container"></div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item col-md-6">
-                                        <a class="nav-link" href="#advanced_settings" data-toggle="tab">
-                                            <i class="material-icons">sync_alt</i> Advanced Options
-                                            <div class="ripple-container"></div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                <div class="card-header card-header-tabs card-header-green">
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                <li class="nav-item col-md-6">
+                                    <a class="nav-link active" href="#proctoring_settings" data-toggle="tab">
+                                        <i class="material-icons">visibility</i> Proctoring Settings
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                <li class="nav-item col-md-6">
+                                    <a class="nav-link" href="#advanced_settings" data-toggle="tab">
+                                        <i class="material-icons">sync_alt</i> Advanced Options
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="card-body">
-                      <div class="tab-content">
-                        <div class="tab-pane active" id="proctoring_settings">
-                          <div class="form-group">
-                            <label class="bmd-label">Face Detection</label><br>
-                            <span class="col-xs-6" id="faceDetectorSpan">
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="proctoring_settings">
+                      <div class="form-group">
+                        <label class="bmd-label">Face Detection</label><br>
+                        <span class="col-xs-6" id="faceDetectorSpan">
+                          <% if(quiz.faceDetector) { %> 
+                            Turned On
+                          <% }else{ %>
+                            Turned Off
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" id="faceDetector"
                               <% if(quiz.faceDetector) { %> 
-                                Turned On
-                              <% }else{ %>
-                                Turned Off
+                                checked
                               <% } %>
-                            </span>
-                            <span class="col-xs-6 pull-right">
-                              <label class="switch">
-                                <input type="checkbox" id="faceDetector"
-                                  <% if(quiz.faceDetector) { %> 
-                                    checked
-                                  <% } %>
-                                >
-                                <span class="slider round"></span>
-                              </label>
-                            </span>
-                          </div>
-  
-                          <div class="form-group">
-                            <label class="bmd-label">Mobile Detection</label><br>
-                            <span class="col-xs-6" id="mobileDetectorSpan">
+                            >
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="bmd-label">HeadPose Detection</label><br>
+                        <span class="col-xs-6" id="headPoseDetectorSpan">
+                          <% if(quiz.headPoseDetector) { %> 
+                            Turned On
+                          <% }else{ %>
+                            Turned Off
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" id="headPoseDetector"
+                              <% if(quiz.headPoseDetector) { %> 
+                                checked
+                              <% } %>
+                            >
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="bmd-label">Mobile Detection</label><br>
+                        <span class="col-xs-6" id="mobileDetectorSpan">
+                          <% if(quiz.mobileDetector) { %> 
+                            Turned On
+                          <% }else{ %>
+                            Turned Off
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" id="mobileDetector"
                               <% if(quiz.mobileDetector) { %> 
-                                Turned On
-                              <% }else{ %>
-                                Turned Off
+                                checked
                               <% } %>
-                            </span>
-                            <span class="col-xs-6 pull-right">
-                              <label class="switch">
-                                <input type="checkbox" id="mobileDetector"
-                                  <% if(quiz.mobileDetector) { %> 
-                                    checked
-                                  <% } %>
-                                >
-                                <span class="slider round"></span>
-                              </label>
-                            </span>
-                          </div>
-  
-                          <div class="form-group">
-                            <label class="bmd-label">Tab Switch Detection</label><br>
-                            <span class="col-xs-6" id="tabSwitchDetectorSpan">
+                            >
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="bmd-label">Tab Switch Detection</label><br>
+                        <span class="col-xs-6" id="tabSwitchDetectorSpan">
+                          <% if(quiz.tabSwitchDetector) { %> 
+                            Turned On
+                          <% }else{ %>
+                            Turned Off
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" id="tabSwitchDetector"
                               <% if(quiz.tabSwitchDetector) { %> 
-                                Turned On
-                              <% }else{ %>
-                                Turned Off
+                                checked
                               <% } %>
-                            </span>
-                            <span class="col-xs-6 pull-right">
-                              <label class="switch">
-                                <input type="checkbox" id="tabSwitchDetector"
-                                  <% if(quiz.tabSwitchDetector) { %> 
-                                    checked
-                                  <% } %>
-                                >
-                                <span class="slider round"></span>
-                              </label>
-                            </span>
-                          </div>
-  
-                          <div class="form-group">
-                            <label class="bmd-label">IP Address Detection</label><br>
-                            <span class="col-xs-6" id="ipAddressDetectorSpan">
+                            >
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="bmd-label">IP Address Detection</label><br>
+                        <span class="col-xs-6" id="ipAddressDetectorSpan">
+                          <% if(quiz.ipAddressDetector) { %> 
+                            Turned On
+                          <% }else{ %>
+                            Turned Off
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" id="ipAddressDetector"
                               <% if(quiz.ipAddressDetector) { %> 
-                                Turned On
-                              <% }else{ %>
-                                Turned Off
+                                checked
                               <% } %>
-                            </span>
-                            <span class="col-xs-6 pull-right">
-                              <label class="switch">
-                                <input type="checkbox" id="ipAddressDetector"
-                                  <% if(quiz.ipAddressDetector) { %> 
-                                    checked
-                                  <% } %>
-                                >
-                                <span class="slider round"></span>
-                              </label>
-                            </span>
-                          </div>
-  
-                          <div class="form-group">
-                            <label class="bmd-label">Audio Detection</label><br>
-                            <span class="col-xs-6" id="audioDetectorSpan">
+                            >
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="bmd-label">Audio Detection</label><br>
+                        <span class="col-xs-6" id="audioDetectorSpan">
+                          <% if(quiz.audioDetector) { %> 
+                            Turned On
+                          <% }else{ %>
+                            Turned Off
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right margin20">
+                          <label class="switch">
+                            <input type="checkbox" id="audioDetector"
                               <% if(quiz.audioDetector) { %> 
-                                Turned On
-                              <% }else{ %>
-                                Turned Off
+                                checked
                               <% } %>
-                            </span>
-                            <span class="col-xs-6 pull-right">
-                              <label class="switch">
-                                <input type="checkbox" id="audioDetector"
-                                  <% if(quiz.audioDetector) { %> 
-                                    checked
-                                  <% } %>
-                                >
-                                <span class="slider round"></span>
-                              </label>
-                            </span>
-                          </div>
-                        </div>
-                        <div class="tab-pane" id="advanced_settings">
-                          <p id="setError1"></p>
-                          <div class="form-group">
-                            <label class="bmd-label">Quiz visibility</label><br>
-                            <span class="col-xs-6" id="visibilitySpan">
-                              <% if(quiz.hidden) { %> 
-                                Hidden
-                              <% }else{ %>
-                                Visible
-                              <% } %>
-                            </span>
-                            <span class="col-xs-6 pull-right">
-                              <label class="switch">
-                                <input type="checkbox" id="visibility"
-                                  <% if(!quiz.hidden) { %> 
-                                    checked
-                                  <% } %>
-                                >
-                                <span class="slider round"></span>
-                              </label>
-                            </span>
-                          </div>
-
-                          <div class="form-group">
-                            <label class="bmd-label">Previously Attempted Question Access</label><br>
-                            <span class="col-xs-6" id="disablePreviousSpan">
-                              <% if(quiz.disablePrevious) { %> 
-                                Not Allowed
-                              <% }else{ %>
-                                Allowed
-                              <% } %>
-                            </span>
-                            <span class="col-xs-6 pull-right">
-                              <label class="switch">
-                                <input type="checkbox" id="disablePrevious"
-                                  <% if(!quiz.disablePrevious) { %> 
-                                    checked
-                                  <% } %>
-                                >
-                                <span class="slider round"></span>
-                              </label>
-                            </span>
-                          </div>
-
-                          <form id="editCourseQuiz">
-                            <div class="form-group">
-                              <label class="bmd-label">Start Datetime of Quiz</label><br>
-                              <input type="datetime-local" class="form-control" id="start_date" name="startDate" value='<%= (new Date(quiz.startDate)).getFullYear()+"-"+("0" + ((new Date(quiz.startDate)).getMonth()+1)).slice(-2)+"-"+("0"+(new Date(quiz.startDate)).getDate()).slice(-2)+"T"+(new Date(quiz.startDate)).toString().slice(16,21); %>' required>
-                            </div>
-                            <div class="form-group">
-                              <label class="bmd-label">End Datetime of Quiz</label><br>
-                              <input type="datetime-local" class="form-control" id="end_date" name="endDate" value='<%= (new Date(quiz.endDate)).getFullYear()+"-"+("0" + ((new Date(quiz.endDate)).getMonth()+1)).slice(-2)+"-"+("0"+(new Date(quiz.endDate)).getDate()).slice(-2)+"T"+(new Date(quiz.endDate)).toString().slice(16,21); %>' required>
-                            </div>
-                            <input type="submit" id="course_button" class="btn btn-primary pull-right" value="Edit Time"/>
-                          </form>
-                        </div>
+                            >
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
                       </div>
                     </div>
+                    <div class="tab-pane" id="advanced_settings">
+                      <p id="setError1"></p>
+                      <div class="form-group">
+                        <label class="bmd-label">Quiz visibility</label><br>
+                        <span class="col-xs-6" id="visibilitySpan">
+                          <% if(quiz.hidden) { %> 
+                            Hidden
+                          <% }else{ %>
+                            Visible
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" id="visibility"
+                              <% if(!quiz.hidden) { %> 
+                                checked
+                              <% } %>
+                            >
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="bmd-label">Previously Attempted Question Access</label><br>
+                        <span class="col-xs-6" id="disablePreviousSpan">
+                          <% if(quiz.disablePrevious) { %> 
+                            Not Allowed
+                          <% }else{ %>
+                            Allowed
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" id="disablePrevious"
+                              <% if(!quiz.disablePrevious) { %> 
+                                checked
+                              <% } %>
+                            >
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="bmd-label">PDF Upload</label><br>
+                        <span class="col-xs-6" id="pdfUploadSpan">
+                          <% if(quiz.pdfUpload) { %> 
+                            Allowed
+                          <% }else{ %>
+                            Not Allowed
+                          <% } %>
+                        </span>
+                        <span class="col-xs-6 pull-right">
+                          <label class="switch">
+                            <input type="checkbox" id="pdfUpload"
+                              <% if(!quiz.pdfUpload) { %> 
+                                checked
+                              <% } %>
+                            disabled>
+                            <span class="slider round"></span>
+                          </label>
+                        </span>
+                      </div>
+
+                      <form id="pdfUploadDurationForm">
+                        <div class="form-group" id="pdfUploadDuration">
+                          <label class="bmd-label">PDF Upload Time Limit</label><br>
+                          <input type="number" class="form-control" autocomplete="off" name="pdfUploadDuration" value="<%= quiz.pdfUploadDuration %>" step="0.01" required/>
+                          <span class="col-xs-6 pull-right">
+                            <input type="submit" class="btn btn-primary pull-right" value="Edit Upload Time"/>
+                          </span>
+                        </div>
+                        <br>
+                      </form>
+
+                      <form id="editCourseQuiz">
+                        <div class="form-group">
+                          <label class="bmd-label">Start Datetime of Quiz</label><br>
+                          <input type="datetime-local" class="form-control" id="start_date" name="startDate" value='<%= (new Date(quiz.startDate)).getFullYear()+"-"+("0" + ((new Date(quiz.startDate)).getMonth()+1)).slice(-2)+"-"+("0"+(new Date(quiz.startDate)).getDate()).slice(-2)+"T"+(new Date(quiz.startDate)).toString().slice(16,21); %>' required>
+                        </div>
+                        <div class="form-group">
+                          <label class="bmd-label">End Datetime of Quiz</label><br>
+                          <input type="datetime-local" class="form-control" id="end_date" name="endDate" value='<%= (new Date(quiz.endDate)).getFullYear()+"-"+("0" + ((new Date(quiz.endDate)).getMonth()+1)).slice(-2)+"-"+("0"+(new Date(quiz.endDate)).getDate()).slice(-2)+"T"+(new Date(quiz.endDate)).toString().slice(16,21); %>' required>
+                        </div>
+                        <input type="submit" id="course_button" class="btn btn-primary pull-right margin20" value="Edit Time"/>
+                      </form>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

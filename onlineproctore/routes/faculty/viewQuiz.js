@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const {getCourseQuiz, addQuestions, uploadExcelFile, 
   hideQuiz, disablePrevious, generateScore, 
   generateSimilarityReport, generatePlagiarismReport, 
@@ -9,12 +10,14 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   viewStream, downloadQuizResults, downloadStudentSubmissions,
   assignSets, renderPreviewQuiz, previewQuiz, faceDetectorSetting,
   mobileDetectorSetting, tabSwitchDetectorSetting, ipAddressDetectorSetting,
-  audioDetectorSetting, viewDetailAnalysisData, headPoseDetectorSetting} = require('../../controllers/faculty/viewEachQuiz');
+  audioDetectorSetting, viewDetailAnalysisData, headPoseDetectorSetting,
+  pdfUploadSetting, pdfUploadDuration} = require('../../controllers/faculty/viewEachQuiz');
 
 const {getQuestions, markAnswer, submit, endTest, 
   ipAddress, audio, windowBlurred, screenSharingOff, 
   tabChanged, mobileDetected, multipleFace, noPerson, 
-  getTime, getQuizDetectionSettings, headPoseDetection} = require('../../controllers/studentTa/quiz');
+  getTime, getQuizDetectionSettings, headPoseDetection,
+  givingQuiz, exitingQuiz} = require('../../controllers/studentTa/quiz');
 
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
 
@@ -61,6 +64,9 @@ router.route('/viewDetailAnalysis/submission/:submissionId/illegalActivities')
 router.route('/disablePrevious')
   .get(authFacultyTaQuiz, disablePrevious)
 
+router.route('/pdfUploadSetting')
+  .get(authFacultyTaQuiz, pdfUploadSetting)
+
 router.route('/generateScore')
   .get(authFacultyTaQuiz, generateScore)
 
@@ -84,6 +90,9 @@ router.route('/editWrittenQuestion')
 
 router.route('/editCourseQuiz')
   .post(authFacultyTaQuiz, editCourseQuiz)
+
+router.route('/pdfUploadDuration')
+  .post(authFacultyTaQuiz, pdfUploadDuration)
 
 router.route('/deleteQuiz')
   .post(authFacultyTaQuiz, deleteQuiz)
@@ -132,6 +141,12 @@ router.route('/getTime')
 
 router.route('/ipAddress')
   .post(authStudentQuiz, ipAddress);
+
+router.route('/givingQuiz')
+  .post(authStudentQuiz, givingQuiz);
+
+router.route('/givingQuiz/:submissionId')
+  .post(authStudentQuiz, exitingQuiz);
 
 router.route('/audio')
   .post(authStudentQuiz, audio);
