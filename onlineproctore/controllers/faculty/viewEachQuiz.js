@@ -130,12 +130,12 @@ exports.addQuestions = async (req, res) => {
   const quizId = req.quizId;
   const filePath = path.resolve(__dirname, '../../' + req.file.path);
   const workbook = XLSX.readFile(filePath);
-  var quiz = await Quiz.findOneQuiz({_id: quizId});
   const allSheets = workbook.SheetNames;
   for await (let i of allSheets){
     const questions = XLSX.utils.sheet_to_json(workbook.Sheets[i]);
     for await (let question of questions){
       try{
+        var quiz = await Quiz.findOneQuiz({_id: quizId});
         const questionType = question["Question Type"];
         const quizQuestion = question["Question"];
         const maximumMarks = question["Maximum Marks"];
@@ -143,7 +143,6 @@ exports.addQuestions = async (req, res) => {
         if(!quiz.setNames.includes(set)){
           quiz.setNames.push(set);
           quiz.setCount += 1;
-          quiz.save();
         }
         var note = question["Note"];
         if(note == undefined){
@@ -158,11 +157,16 @@ exports.addQuestions = async (req, res) => {
           }
         }
         if(questionType.toLowerCase() === "subjective"){
-          var writtenQuestion = {quiz: quizId, set: set, question: quizQuestion, maximumMarks: maximumMarks, note: note, imageLinks: imageLinks};
+          const pdfUpload = question["PdfUpload"].toLowerCase() == 'yes' ? true : false;
+          var writtenQuestion = {quiz: quizId, set: set, question: quizQuestion, maximumMarks: maximumMarks, note: note, imageLinks: imageLinks, pdfUpload: pdfUpload};
           const newQuestion = await new Question(writtenQuestion);
           var foundQuestion = await Question.findOneQuestion(writtenQuestion);
           if(foundQuestion) throw new Error('Question Already Exists');
           newQuestion.save();
+          if(pdfUpload){
+            quiz.pdfUpload = quiz.pdfUpload || pdfUpload;
+            quiz.pdfUploadQuestionCount += 1;
+          }
         }
         else{
           var options = [];
@@ -189,6 +193,7 @@ exports.addQuestions = async (req, res) => {
           if(foundQuestion) throw new Error('Question Already Exists');
           newQuestion.save();
         }
+        quiz.save();
       }
       catch(err){
         console.log(err);
@@ -247,6 +252,7 @@ exports.addWrittenQuestion = async (req, res) => {
     const quizQuestion = req.body.question;
     const maximumMarks = req.body.maximumMarks;
     const set = req.body.set;
+    const pdfUpload = req.body.pdfUpload == 'on' ? true : false;
     var note = req.body.note;
     if(note == undefined){
       note = '';
@@ -259,14 +265,18 @@ exports.addWrittenQuestion = async (req, res) => {
         count += 1;
       }
     }
-    var writtenQuestion = {quiz: quizId, set: set, question: quizQuestion, maximumMarks: maximumMarks, note: note, imageLinks: imageLinks};
+    var writtenQuestion = {quiz: quizId, set: set, question: quizQuestion, maximumMarks: maximumMarks, note: note, imageLinks: imageLinks, pdfUpload: pdfUpload};
     const newQuestion = new Question(writtenQuestion);
     var quiz = await Quiz.findOne({_id: quizId});
     if(!quiz.setNames.includes(set)){
       quiz.setNames.push(set);
       quiz.setCount += 1;
-      quiz.save();
     }
+    quiz.pdfUpload = quiz.pdfUpload || pdfUpload;
+    if(pdfUpload){
+      quiz.pdfUploadQuestionCount += 1;
+    }
+    quiz.save();
     var foundQuestion = await Question.findOneQuestion(writtenQuestion);
     if(foundQuestion) throw new Error('Question Already Exists');
     newQuestion.save();
@@ -487,6 +497,14 @@ exports.generatePlagiarismReport = async (req, res) => {
 
 exports.deleteQuestion = async (req, res) => {
   var question = await Question.findOne({_id: req.body.id});
+  if(!question.mcq && question.pdfUpload){
+    var quiz = await Quiz.findOne({_id: req.quizId});
+    quiz.pdfUploadQuestionCount -= 1;
+    if(quiz.pdfUploadQuestionCount == 0){
+      quiz.pdfUpload = false;
+    }
+    quiz.save();
+  }
   question.remove();
   return res.status(204).send();
 }
@@ -547,6 +565,7 @@ exports.editWrittenQuestion = async (req, res) => {
     const questionId = req.body.questionId;
     const quizQuestion = req.body.question;
     const maximumMarks = req.body.maximumMarks;
+    const pdfUpload = req.body.pdfUpload == 'on' ? true : false;
     var note = req.body.note;
     const set = req.body.set;
     if(note == undefined){
@@ -560,12 +579,27 @@ exports.editWrittenQuestion = async (req, res) => {
         count += 1;
       }
     }
+    var quiz = await Quiz.findOne({_id: req.quizId});
     var question = await Question.findOne({_id: questionId});
     question.question = quizQuestion;
     question.note = note;
     question.set = set;
     question.maximumMarks = maximumMarks;
     question.imageLinks = imageLinks;
+    if(question.pdfUpload && !pdfUpload){
+      quiz.pdfUploadQuestionCount -= 1;
+    }
+    else if(!question.pdfUpload && pdfUpload){
+      quiz.pdfUploadQuestionCount += 1;
+    }
+    if(quiz.pdfUploadQuestionCount == 0){
+      quiz.pdfUpload = false;
+    }
+    else{
+      quiz.pdfUpload = true;
+    }
+    quiz.save();
+    question.pdfUpload = pdfUpload;
     question.save();
   }
   catch(err){

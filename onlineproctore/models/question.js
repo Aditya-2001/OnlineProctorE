@@ -22,6 +22,10 @@ const Question = new Schema({
     type: String,
     default: ''
   }],
+  pdfUpload: {
+    type: Boolean,
+    default: false
+  },
   set: {
     type: String,
     default: ''

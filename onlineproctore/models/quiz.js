@@ -31,6 +31,10 @@ const Quiz = new Schema({
     type: Boolean,
     default: false
   },
+  pdfUploadQuestionCount: {
+    type: Number,
+    default: 0
+  },
   pdfUploadDuration: {
     type: Number,
     default: 10

@@ -1,16 +1,18 @@
 var questionsType = new Map();
 var questionMarking = new Map();
 var questionSubmissionLocked = new Map();
+var pdfUploadQuestion = new Map();
 var optionsCount = new Map();
 var pdfUpload = false;
 var pdfUploadDuration = 10;
 var lastQuestionId;
+var disablePrevious = false;
 const peers = {};
 const peersScreen = {};
 var socket;
 let setHeight;
 var myPeer, myPeerScreen;
-var leftTime = 1;
+var leftTime = 0;
 var testStarted = false;
 var currentElement = null;
 azchar = "abcdefghijklmnopqrstuvwxyz"
@@ -123,7 +125,7 @@ quizDetectionResponse.then( result => {
     detections = result.data;
     sendIP();
     AudioVideoDetection();
-    startSharing();
+    // startSharing();
     if(detections.faceDetector && detections.mobileDetector){
         cocoSsd.load().then(function (loadedModel) {
             model = loadedModel;
@@ -168,8 +170,10 @@ async function getQuizQuestions(){
         }
         const quiz = response.data.quiz;
         pdfUpload = quiz.pdfUpload;
+        pdfUploadDuration = quiz.pdfUploadDuration;
         const questions = response.data.questions;
         const questionSubmissions = response.data.questionSubmissions;
+        disablePrevious = quiz.disablePrevious;
         if(Date.now() >= quiz.endDate || questionSubmissions[0].submission.submitted){
             console.log(questionSubmissions[0].submission.submitted);
             window.location.href = '/dashboard/user/course/'+quiz.course._id;
@@ -211,6 +215,7 @@ async function getQuizQuestions(){
             }
             displayQuestion += '</div></div> <hr><div class="answer';
             questionsType.set(questions[j]._id, questions[j].mcq);
+            pdfUploadQuestion.set(questions[j]._id, questions[j].pdfUpload);
             questionMarking.set(questions[j]._id, {'mm': questions[j].maximumMarks, 'nm': questions[j].negativeMarking, 'pm': questions[j].markingScheme})
             var submission = questionSubmissions.find( ({question}) => question._id === questions[j]._id);
             var flag = false;
@@ -224,8 +229,15 @@ async function getQuizQuestions(){
                 for(var k=0; k<optionsCount.get(questions[j]._id)-1; k++){
                     var o = optionsOrder[Math.floor(Math.random() * (optionsCount.get(questions[j]._id)-k-1))];
                     optionsOrder.splice(optionsOrder.indexOf(o), 1);
-                    displayQuestion += '<label><input class="disable" type="checkbox" name="option' + (k+1) + '" value="option' + (k+1) + '" id="option' + (k+1) + questions[j]._id + '"';
-                    if(submission.optionsMarked.includes(questions[j].options[o])){
+                    displayQuestion += '<label><input class="disable" type="';
+                    if(questions[j].correctOptions.length>1){
+                        displayQuestion += 'checkbox';
+                    }
+                    else{
+                        displayQuestion += 'radio';
+                    }
+                    displayQuestion += '" name="option' + questions[j]._id + '" value="option' + (k+1) + '" id="option' + (k+1) + questions[j]._id + '"';
+                    if(submission.optionsMarked.length>0 && submission.optionsMarked.includes(questions[j].options[o])){
                         displayQuestion += ' checked';
                         flag = true;
                     }
@@ -243,7 +255,7 @@ async function getQuizQuestions(){
                 setMarks();
             }
             if(!questions[j].mcq){
-                if(quiz.pdfUpload){
+                if(quiz.pdfUpload && questions[j].pdfUpload){
                     document.getElementById("text1"+questions[j]._id).value = 'Kindly write the anwser on a A4 size sheet';
                     $("#text1"+questions[j]._id).attr("disabled", true);
                 }
@@ -308,7 +320,7 @@ function nextOrPrevQuestion() {
     var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
     var markedAnswer;
     var notAnswered = false;
-    if(!questionSubmissionLocked.get(questionId) || (!pdfUpload && !questionsType.get(questionId))){
+    if(!(questionSubmissionLocked.get(questionId) && disablePrevious) && !pdfUploadQuestion.get(questionId)){
         if(questionsType.get(questionId)){
             var count = 0;
             markedAnswer = [];
@@ -376,7 +388,7 @@ function markQuestion() {
     var questionId = $('.quiz-card').find('.ques-ans.active')[0].id;
     var markedAnswer;
     var notAnswered = false;
-    if(!questionSubmissionLocked.get(questionId) || (!pdfUpload && !questionsType.get(questionId))){
+    if(!(questionSubmissionLocked.get(questionId) && disablePrevious) && !pdfUploadQuestion.get(questionId)){
         if(questionsType.get(questionId)){
             var count = 0;
             markedAnswer = [];
