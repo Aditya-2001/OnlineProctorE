@@ -1037,3 +1037,9 @@ function random(seed) {
     var x = Math.sin(seed++) * 10000; 
     return x - Math.floor(x);
 }
+
+function uploadPDFButton() {
+    var frm = document.getElementById('quizUploadPDFForm');
+    frm.submit();
+    return false;
+}

@@ -170,16 +170,17 @@
                                     <h5 class="modal-title" id="title">Upload PDF File</h5>
                             </div>
                             <div class="modal-body">
-                                <form method="POST" enctype="multipart/form-data" action="#"><input type="hidden" name="csrfmiddlewaretoken" value="Mc81OD05CwmsNbwlYlnNjiF4KPgZ20MSDf2EFxnkBNacN8DgAAB8NqpdikcXMFRF">
+                                <form id="quizUploadPDFForm" method="POST" enctype="multipart/form-data" action="<%= quizId + '/uploadPDF' %>" class="form-inline" method="POST">
                                     <input type="hidden" name="course_id" id="course_id" class="form-control" required>
                                     <h4>Upload PDF file in the form rollNumber.pdf (eg. IIT2000100.pdf)</h4>
                                     <p style="padding-bottom: 10px">1. Total time left to scan and upload your PDF is shown in the top bar.</p>
-                                    <input type="file" name="image"  required><br><br>
+                                    <input type="file" accept="application/pdf" class="" name="pdfFile" required/><br><br>
+                                    <input id="subId" name="submissionId" value="<%= submission._id %>" hidden/>
                                     <span class="start timer">
                                         <button type="button" class="btn btn-primary" id="cancelUpload" onclick="cancelUploadPDF()">Cancel</button>
                                     </span>
                                     <span class="pull-right start timer">
-                                        <button type="button" class="btn btn-primary pull-right" onclick="startTest()">Upload PDF</button>
+                                        <button type="button" class="btn btn-primary pull-right" onclick="uploadPDFButton()">Upload PDF</button>
                                     </span>
                                 </form>
                             </div>

@@ -4,6 +4,32 @@ const Question = require('../../models/question');
 const QuestionSubmission = require('../../models/questionSubmission');
 const Submission = require('../../models/submission');
 const IllegalAttempt = require('../../models/illegalAttempt');
+const multer = require('multer');
+const AnswerPDF = require('../../models/answerPDF');
+const fs = require('fs');
+const path = require('path');
+const { removeFile } = require("../../functions");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/student');
+  },
+
+  filename: async function (req, file, cb) {
+    var user = await User.findOneUser(req.cookies.auth);
+    fileName = user.username.toUpperCase() + '_' + req.quizId + '.pdf';
+    cb(null, fileName);
+  }
+});
+
+const pdfFileFilter = (req, file, cb) => {
+  if(!file.originalname.match(/\.(pdf)$/)) {
+    return cb(new Error('You can upload only PDF files!'), false);
+  }
+  cb(null, true);
+};
+
+exports.uploadPDFFile = multer({ storage: storage, fileFilter: pdfFileFilter});
 
 exports.getQuestions = async (req, res) => {
   try{
@@ -234,4 +260,20 @@ exports.headPoseDetection = async (req, res) => {
     console.log(err);
   }
   return res.status(204).send();
+}
+
+exports.uploadPDF = async (req, res) => {
+  const quizId = req.quizId;
+  const filePath = path.resolve(__dirname, '../../' + req.file.path);
+  var pdfSubmissions = await AnswerPDF.findAnswerPDFs({submission: req.body.submissionId});
+  if(pdfSubmissions.length == 0){
+    await AnswerPDF.create({submission: req.body.submissionId});
+    pdfSubmissions = await AnswerPDF.findAnswerPDFs({submission: req.body.submissionId});
+  }
+  pdfSubmissions[0].uploadedfile.data = fs.readFileSync(filePath);
+  console.log(fs.readFileSync(filePath));
+  pdfSubmissions[0].save();
+  console.log(filePath);
+  removeFile(filePath);
+  res.status(204).send();
 }
