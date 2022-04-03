@@ -11,7 +11,7 @@ const AnswerPDF = new Schema({
   },
   uploadedfile: {
     data: Buffer,
-    contentType: String
+    filename: String
   }},{
     timestamps: true
 })

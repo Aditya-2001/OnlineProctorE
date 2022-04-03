@@ -26,6 +26,10 @@ const Submission = new Schema({
     type: Boolean,
     default: false
   },
+  pdfUploaded: {
+    type: Boolean,
+    default: false
+  },
   submitted: {
     type: Boolean,
     default: false

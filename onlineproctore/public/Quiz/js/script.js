@@ -12,7 +12,7 @@ const peersScreen = {};
 var socket;
 let setHeight;
 var myPeer, myPeerScreen;
-var leftTime = 0;
+var leftTime = 10;
 var testStarted = false;
 var currentElement = null;
 azchar = "abcdefghijklmnopqrstuvwxyz"
@@ -41,6 +41,7 @@ window.addEventListener("unload", function (e) {
 
 var quizId = document.getElementById("quizId").value;
 var time = axios.post(quizId + '/getTime', {});
+var timechange = false;
 time.then( t => {
     var now = t.data.time;
     countDownDate = t.data.countDownDate;
@@ -79,6 +80,19 @@ time.then( t => {
             }
             displayUploadPDFDiv();
             $('#cancelUpload').attr('disabled', true);
+        }
+
+        if(timeleft < (pdfUploadDuration+5)*60*1000 && !timechange){
+            time = axios.post(quizId + '/getTime', {});
+            timechange = true;
+            time.then(t1 => {
+                now = t1.data.time;
+                countDownDate = t1.data.countDownDate;
+                if(t1.data.redirect){
+                    nextOrPrevQuestion();
+                    window.location.href = t1.data.url;
+                }
+            })
         }
 
         // Display the message when countdown is over
@@ -125,7 +139,7 @@ quizDetectionResponse.then( result => {
     detections = result.data;
     sendIP();
     AudioVideoDetection();
-    // startSharing();
+    startSharing();
     if(detections.faceDetector && detections.mobileDetector){
         cocoSsd.load().then(function (loadedModel) {
             model = loadedModel;
