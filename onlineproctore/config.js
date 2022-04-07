@@ -15,6 +15,6 @@ module.exports ={
   'mobile': 554,
   'screen': 796,
   'headPose': 211,
-  'webPlagAPI': "58bb1b56a18453b0a7ef2dc19c50c3b7",
+  'webPlagAPI': "d22734a8387807ec63de86ff641e1bff",
   'webPlagURL': 'https://www.prepostseo.com/apis/checkPlag'
 };

@@ -19,8 +19,6 @@ const AdmZip = require('adm-zip');
 const ejs = require('ejs');
 let pdf = require("html-pdf");
 const AnswerPDF = require('../../models/answerPDF');
-const hummus = require('hummus');
-const memoryStreams = require('memory-streams');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -481,14 +479,11 @@ exports.generatePlagiarismReport = async (req, res) => {
     for await (let submission of submissions){
       var questionSubmissions = await QuestionSubmission.findQuestionSubmissions({submission: submission._id});
       for await (let questionSubmission of questionSubmissions){
-        if(questionSubmission && !questionSubmission.mcq && questionSubmission.textfield !== ''){
+        if(questionSubmission && !questionSubmission.mcq && questionSubmission.textfield !== '' && !questionSubmission.webDetectionDone){
           webPlagiarism.add({id: questionSubmission._id});
         }
       }
     }
-    var quiz = await Quiz.findOne({_id: quizId});
-    quiz.webDetectionDone = true;
-    quiz.save();
   }
   catch(err){
     console.log(err);
@@ -742,24 +737,6 @@ exports.downloadQuizResults = async (req, res) => {
   }).clone().catch(function(err){console.log(err)});
 }
 
-const combinePDFBuffers = (firstBuffer, secondBuffer) => {
-  var outStream = new memoryStreams.WritableStream();
-  try {
-    var firstPDFStream = new hummus.PDFRStreamForBuffer(firstBuffer);
-    var secondPDFStream = new hummus.PDFRStreamForBuffer(secondBuffer);
-    var pdfWriter = hummus.createWriterToModify(firstPDFStream, new hummus.PDFStreamForResponse(outStream));
-    pdfWriter.appendPDFPagesFromPDF(secondPDFStream);
-    pdfWriter.end();
-    var newBuffer = outStream.toBuffer();
-    outStream.end();
-    return newBuffer;
-  }
-  catch(e){
-    outStream.end();
-    throw new Error('Error during PDF combination: ' + e.message);
-  }
-};
-
 //unmodified and unoptimized
 exports.downloadStudentSubmissions = async (req, res) => {
   await Submission.find({quiz: req.quizId}, async (err, submissions) => {
@@ -835,8 +812,8 @@ exports.downloadStudentSubmissions = async (req, res) => {
                 pdf.create(data, options).toBuffer(function(err, buffer){
                   if(submission.pdfUploaded){
                     AnswerPDF.findOne({submission: submission._id}, (err, answerPdf) => {
-                      var buf = combinePDFBuffers(buffer, answerPdf.uploadedfile.data);
-                      zip.addFile(String(submission.user.username.toUpperCase()+"_"+String(submission.quiz._id)+".pdf"), Buffer.from(buf, "utf8"));
+                      zip.addFile(String(submission.user.username.toUpperCase()+"_HTML_Answers.pdf"), Buffer.from(buffer, "utf8"));
+                      zip.addFile(String(submission.user.username.toUpperCase()+"_Uploaded_PDF.pdf"), Buffer.from(answerPdf.uploadedfile.data, "utf8"));
                       resolve();
                     })
                   }

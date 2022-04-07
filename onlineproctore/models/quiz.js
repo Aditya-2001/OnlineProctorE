@@ -59,10 +59,6 @@ const Quiz = new Schema({
     type: Boolean,
     default: false
   },
-  webDetectionDone: {
-    type: Boolean,
-    default: false
-  },
   studentAnswersMatched: {
     type: Boolean,
     default: false
