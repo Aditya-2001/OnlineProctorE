@@ -27,6 +27,10 @@ const QuestionSubmission = new Schema({
     type: Boolean,
     default: true
   },
+  webDetectionDone: {
+    type: Boolean,
+    default: false
+  },
   optionsMarked: [{
     type: String
   }],
