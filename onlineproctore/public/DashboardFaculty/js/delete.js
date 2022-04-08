@@ -148,11 +148,15 @@ $("#editCourseQuiz").submit(async function (e) {
   const quizId = document.getElementById('quizId').value;
   var serializedData = $(this).serialize();
   var errorr = document.getElementById("setError1");
+  var endDate = new Date(document.getElementById("end_date").value);
   try{
     await axios.post(quizId + '/editCourseQuiz', serializedData);
     errorr.style.color="green";
     errorr.innerHTML = "Timing Changed";
     fader("#setError1");
+    if(endDate <= Date.now()){
+      location.reload();
+    }
   }catch(error){
     console.log(error);
     // errorr.style.color="red";

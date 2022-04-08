@@ -64,7 +64,6 @@ exports.getCourseQuiz = async (req, res) => {
       quiz.quizHeld = true;
       quiz.save();
     }
-    var submissions = await Submission.findSubmissions({quiz: quizId});
     if(req.cookies.accountType == config.faculty){
       var data = {
         quizId: quizId, 
@@ -74,7 +73,6 @@ exports.getCourseQuiz = async (req, res) => {
         backLink: '/dashboard/faculty/course/' + quiz.course._id
       }
       if(quiz.quizHeld){
-        data.submissions = submissions;
         return res.status(200).render('faculty/AfterExam', data);
       }
       else{
