@@ -3,20 +3,19 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card card-stats">
-                    <div class="card-header card-header-warning card-header-icon">
-                      <div class="card-icon">
-                        <i class="material-icons">verified</i>
-                      </div>
-                      <p class="card-category">Assign Marks</p>
-                      <h5 class="card-title"><small>Written</small></h5>
-                    </div>
-                    <div class="card-footer">
-                      <div class="stats">
-                        <a href=<%= quizId + '/viewDetailAnalysis' %>>Assign Marks</a>
-                      </div>
-                    </div>
+              <div class="card card-stats">
+                <div class="card-header card-header-info card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">verified</i>
+                  </div>
+                  <p class="card-category">Test Analysis</p>
                 </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a data-toggle="modal" data-target="#modal4" href="#">Advanced Detections & Settings</a>
+                  </div>
+                </div>
+              </div>
             </div>
             <input type="text" name="quizId" id="quizId" value="<%= quizId %>" hidden>
             <div class="col-lg-4 col-md-6 col-sm-12">
@@ -36,44 +35,23 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card card-stats">
-                    <div class="card-header card-header-success card-header-icon">
-                      <div class="card-icon">
-                        <i class="material-icons">create</i>
-                      </div>
-                      <p class="card-category">Plagiarism</p>
-                      <h5 class="card-title"><small>Written</small></h5>
-                    </div>
-                    <div class="card-footer">
-                      <div class="stats">
-                        <a href="" onclick="generatePlagiarismReport()">Detect Web Sources</a>
-                      </div>
-                    </div>
+              <div class="card card-stats">
+                <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">co_present_outlined</i>
+                  </div>
+                  <p class="card-category">Preview</p>
                 </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <a href="<%= quizId + '/previewQuiz' %>">See all Quiz Questions</a>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="card card-stats">
-                    <div class="card-header card-header-success card-header-icon">
-                      <div class="card-icon">
-                        <i class="material-icons">create</i>
-                      </div>
-                      <p class="card-category">Similarity</p>
-                      <h5 class="card-title"><small>Written</small></h5>
-                    </div>
-                    <div class="card-footer">
-                        <div class="stats">
-                          <a href=""
-                          <% if(!quiz.studentAnswersMatched){ %>
-                            onclick="generateSimilarityReport()"
-                          <% } %>
-                          >Match Student's Answers</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card card-stats">
-                    <div class="card-header card-header-info card-header-icon">
+                    <div class="card-header card-header-purple card-header-icon">
                       <div class="card-icon">
                         <i class="material-icons">visibility</i>
                       </div>
@@ -110,55 +88,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card card-stats">
-                  <div class="card-header card-header-info card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">emoji_events</i>
-                    </div>
-                    <p class="card-category">Result</p>
-                    <h5 class="card-title">
-                      <small>Amelioration</small></h5>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <a href="<%= quizId + '/downloadQuizResults' %>">Download Excel File</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card card-stats">
-                  <div class="card-header card-header-warning card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">book</i>
-                    </div>
-                    <p class="card-category">Submissions</p>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <a href="<%= quizId + '/downloadStudentSubmissions' %>">Download Student Submissions</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card card-stats">
-                  <div class="card-header card-header-alert card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">co_present_outlined</i>
-                    </div>
-                    <p class="card-category">Preview</p>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <a href="<%= quizId + '/previewQuiz' %>">See all Quiz Questions</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
           </div>
-          <p></p>
           <div class="row">
             <div class="col-lg-12 col-md-12">
                 <div class="card">
@@ -166,25 +96,19 @@
                         <div class="nav-tabs-navigation">
                             <div class="nav-tabs-wrapper">
                                 <ul class="nav nav-tabs" data-tabs="tabs">
-                                    <li class="nav-item col-lg-3 col-md-6">
+                                    <li class="nav-item col-lg-4 col-md-6">
                                         <a class="nav-link active" href="#mcqs" data-toggle="tab">
                                             <i class="material-icons">flaky</i> MCQ Questions
                                             <div class="ripple-container"></div>
                                         </a>
                                     </li>
-                                    <li class="nav-item col-lg-3 col-md-6">
+                                    <li class="nav-item col-lg-4 col-md-6">
                                         <a class="nav-link" href="#writtens" data-toggle="tab">
                                             <i class="material-icons">create</i> Written Questions
                                             <div class="ripple-container"></div>
                                         </a>
                                     </li>
-                                    <li class="nav-item col-lg-3 col-md-6">
-                                        <a class="nav-link" href="#assign" data-toggle="tab">
-                                            <i class="material-icons">turned_in</i> View Scores
-                                            <div class="ripple-container"></div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item col-lg-3 col-md-6">
+                                    <li class="nav-item col-lg-4 col-md-6">
                                         <a class="nav-link" href=<%= quizId + '/viewDetailAnalysis' %>>
                                             <i class="material-icons">turned_in</i> View Detailed Analysis
                                             <div class="ripple-container"></div>
@@ -241,30 +165,86 @@
                                     </tbody>
                                 </table>              
                             </div>
-                            <div class="tab-pane" id="assign">
-                                <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
-                                    <thead class="text-warning">
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Score</th>
-                                    </thead>
-                                    <tbody>
-                                        <% submissions.forEach(submission => { %>
-                                            <tr>
-                                                <td><%= submission.user.username.toUpperCase() %></td>
-                                                <td><%= submission.user.email %></td>
-                                                <td><%= submission.mcqScore + submission.writtenScore %></td>
-                                            </tr>
-                                        <% }) %>
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
           </div>
         </div>
+      <!-- Modal 4 -->
+      <div class="modal fade" id="modal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+          <div class="modal-content card">
+            <div class="col-lg-12 col-md-12">
+              <div class="card-header card-header-tabs card-header-green">
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                        <ul class="nav nav-tabs" data-tabs="tabs">
+                            <li class="nav-item col-md-6">
+                                <a class="nav-link active" href="#proctoring_settings" data-toggle="tab">
+                                    <i class="material-icons">book</i> Advanced Detections
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                            <li class="nav-item col-md-6">
+                                <a class="nav-link" href="#download_submissions" data-toggle="tab">
+                                    <i class="material-icons">download</i> Submissions
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="proctoring_settings">
+                    <div class="form-group">
+                      <span class="col-xs-6">
+                        <label class="bmd-label" style="margin-top: 15px;">Web Source Detection</label>
+                      </span>
+                      <span class="col-xs-6 pull-right">
+                        <a class="btn btn-primary" href="" onclick="generatePlagiarismReport()">Detect</a>
+                      </span>
+                    </div>
+
+                    <div class="form-group">
+                      <span class="col-xs-6">
+                        <label class="bmd-label" style="margin-top: 15px;">Student to Student Answer Similarity Detection</label>
+                      </span>
+                      <span class="col-xs-6 pull-right">
+                        <a class="btn btn-primary" href="" 
+                        <% if(!quiz.studentAnswersMatched){ %>
+                          onclick="generateSimilarityReport()"
+                        <% } %>>Match</a>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane" id="download_submissions">
+                    <div class="form-group">
+                      <span class="col-xs-6">
+                        <label class="bmd-label" style="margin-top: 15px;">Generate Quiz Result</label>
+                      </span>
+                      <span class="col-xs-6 pull-right">
+                        <a class="btn btn-primary" href="<%= quizId + '/downloadQuizResults' %>">Generate</a>
+                      </span>
+                    </div>
+                    <div class="form-group">
+                      <span class="col-xs-6">
+                        <label class="bmd-label" style="margin-top: 15px;">Download Student Submissions</label>
+                      </span>
+                      <span class="col-xs-6 pull-right">
+                        <a class="btn btn-primary" href="<%= quizId + '/downloadStudentSubmissions' %>">Download</a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
         <!-- Modal 7 -->
       <div class="modal fade" id="modal7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable-centered modal-md" role="document">

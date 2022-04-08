@@ -89,7 +89,10 @@ async function updateTable(){
 }
 if(window.location.pathname.split('/')[window.location.pathname.split('/').length - 1] == "viewDetailAnalysis"){
   updateTable();
-  setInterval(async ()=> {
-    updateTable();
-  }, 10000);
+  const quizHeld = document.getElementById('quizHeld').value;
+  if(quizHeld === 'false'){
+    setInterval(async ()=> {
+      updateTable();
+    }, 10000);
+  }
 }
