@@ -8,6 +8,7 @@ const Course = require('./course');
 const Enrollment = require('./enrollment');
 const Announcement = require('./announcement');
 const Submission = require('./submission');
+const LabSubmission = require('./labSubmission');
 const salt = 10;
 
 const User = new Schema({
@@ -92,6 +93,11 @@ User.post("remove", async function(res, next) {
   await Submission.find({user: this._id}, async (err, submissions) => {
     for await (let submission of submissions){
       submission.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await LabSubmission.find({user: this._id}, async (err, labSubmissions) => {
+    for await (let labSubmission of labSubmissions){
+      labSubmission.remove();
     }
   }).clone().catch(function(err){console.log(err)});
   next();

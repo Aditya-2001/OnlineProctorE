@@ -1,24 +1,9 @@
 <%- include('./baseEjs/header')%>
-      <div class="content">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card card-stats">
-                    <div class="card-header card-header-warning card-header-icon">
-                      <div class="card-icon">
-                        <i class="material-icons">verified</i>
-                      </div>
-                      <p class="card-category">Upload Questions</p>
-                      <h5 class="card-title"><small>Both Type</small></h5>
-                    </div>
-                    <div class="card-footer">
-                      <div class="stats">
-                          <a data-toggle="modal" data-target="#modal0" href="#">Upload File For Question</a>
-                      </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
+      <% if(quiz.labQuiz){ %>
+        <div class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="card card-stats">
                     <div class="card-header card-header-alert card-header-icon">
                       <div class="card-icon">
@@ -33,90 +18,320 @@
                       </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-              <div class="card card-stats">
-                <div class="card-header card-header-info card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">settings</i>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                  <div class="card-header card-header-danger card-header-icon">
+                    <div class="card-icon">
+                      <i class="material-icons">delete</i>
+                    </div>
+                    <p class="card-category">Delete Quiz</p>
                   </div>
-                  <p class="card-category">Advanced Settings</p>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <a data-toggle="modal" data-target="#modal4" href="#">Change Settings</a>
+                  <div class="card-footer">
+                    <div class="stats">
+                      <a data-toggle="modal" data-target="#modal8" href="#">Delete This Quiz</a>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-              <div class="card card-stats">
-                <div class="card-header card-header-green card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">animation_outlined</i>
-                  </div>
-                  <p class="card-category">Assign Set</p>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <a href="<%= quizId + '/assignSets' %>">Assign Set to Students</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-              <div class="card card-stats">
-                <div class="card-header card-header-purple card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">co_present_outlined</i>
-                  </div>
-                  <p class="card-category">Preview</p>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <a href="<%= quizId + '/previewQuiz' %>">See all Quiz Questions</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-              <div class="card card-stats">
-                <div class="card-header card-header-danger card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">delete</i>
-                  </div>
-                  <p class="card-category">Delete Quiz</p>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <a data-toggle="modal" data-target="#modal8" href="#">Delete This Quiz</a>
+              <!-- Add Question -->
+              <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+                  <div class="modal-content card">
+                    <div class="card-header card-header-green">
+                      <h4 class="modal-title">Add Question</h4>
+                    </div>
+                    <div class="modal-body">
+                      <form >
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Type the question below</label>
+                          <textarea class="form-control" name="question" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Maximum Marks for the question</label>
+                          <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required>
+                        </div><br>
+                        <div id="questionImages">
+                          <div class="form-group">
+                            <label>Add Images for Question</label><br>
+                            <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
+                          </div>
+                        </div>
+                        <input type="button" onclick="addLabImageLink('questionImages', 'imageLink')" class="btn btn-primary" value="Add Image Link"/>
+                        <br><br>
+                        <div id="questionContraints">
+                          <div class="form-group">
+                            <label>Add constraints</label><br>
+                            <input type="text" class="form-control" autocomplete="off" name="constraint1" placeholder="Enter Constraint 1">
+                          </div>
+                        </div>
+                        <input type="button" onclick="addConstraints('questionContraints', 'constraint')" class="btn btn-primary" value="Add Constraints"/>
+                        <br><br>
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Enter the sample test case</label>
+                          <textarea class="form-control" name="sampleInputTestCase" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                        </div><br>
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Enter the output of sample test case</label>
+                          <textarea class="form-control" name="sampleOutputTestCase" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                        </div><br>
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Enter the Explanation for Sample Test Case</label>
+                          <textarea class="form-control" name="sampleTestCaseExplanation" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                        </div><br>
+                        <div id="explanationImages">
+                          <div class="form-group">
+                            <label>Add Images for Explanation</label><br>
+                            <input type="text" class="form-control" autocomplete="off" name="explanationImageLink1" placeholder="Enter Image Link 1">
+                          </div>
+                        </div>
+                        <input type="button" onclick="addLabImageLink('explanationImages', 'explanationImageLink')" class="btn btn-primary" value="Add Image Link"/>
+                        <br><br>
+                        <p style="color: brown;">While uploading testcases rename the testcase file as "TestCase01.txt" and the corresponding output files as "Output01.txt"</p>
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Enter the output of sample test case</label>
+                        </div>
+                        <input type="file" accept=".txt" class="" name="TestCases" multiple/><br><br>
+                        <input type="submit" class="btn btn-primary pull-right margin20" value="Add Question"/>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-12 col-md-12">
-                <div class="card">
+        </div>
+      <% }else{ %>
+        <div class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                  <div class="card card-stats">
+                      <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                          <i class="material-icons">verified</i>
+                        </div>
+                        <p class="card-category">Upload Questions</p>
+                        <h5 class="card-title"><small>Both Type</small></h5>
+                      </div>
+                      <div class="card-footer">
+                        <div class="stats">
+                            <a data-toggle="modal" data-target="#modal0" href="#">Upload File For Question</a>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                  <div class="card card-stats">
+                      <div class="card-header card-header-alert card-header-icon">
+                        <div class="card-icon">
+                          <i class="material-icons">add_circle_outline_outlined</i>
+                        </div>
+                        <p class="card-category">Question</p>
+                        <h5 class="card-title"><small></small></h5>
+                      </div>
+                      <div class="card-footer">
+                        <div class="stats">
+                          <a data-toggle="modal" data-target="#modal1" href="#">Add Question to quiz</a>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                  <div class="card-header card-header-info card-header-icon">
+                    <div class="card-icon">
+                      <i class="material-icons">settings</i>
+                    </div>
+                    <p class="card-category">Advanced Settings</p>
+                  </div>
+                  <div class="card-footer">
+                    <div class="stats">
+                      <a data-toggle="modal" data-target="#modal4" href="#">Change Settings</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                  <div class="card-header card-header-green card-header-icon">
+                    <div class="card-icon">
+                      <i class="material-icons">animation_outlined</i>
+                    </div>
+                    <p class="card-category">Assign Set</p>
+                  </div>
+                  <div class="card-footer">
+                    <div class="stats">
+                      <a href="<%= quizId + '/assignSets' %>">Assign Set to Students</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                  <div class="card-header card-header-purple card-header-icon">
+                    <div class="card-icon">
+                      <i class="material-icons">co_present_outlined</i>
+                    </div>
+                    <p class="card-category">Preview</p>
+                  </div>
+                  <div class="card-footer">
+                    <div class="stats">
+                      <a href="<%= quizId + '/previewQuiz' %>">See all Quiz Questions</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card card-stats">
+                  <div class="card-header card-header-danger card-header-icon">
+                    <div class="card-icon">
+                      <i class="material-icons">delete</i>
+                    </div>
+                    <p class="card-category">Delete Quiz</p>
+                  </div>
+                  <div class="card-footer">
+                    <div class="stats">
+                      <a data-toggle="modal" data-target="#modal8" href="#">Delete This Quiz</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                  <div class="card">
+                      <div class="card-header card-header-tabs card-header-green">
+                          <div class="nav-tabs-navigation">
+                              <div class="nav-tabs-wrapper">
+                                  <ul class="nav nav-tabs" data-tabs="tabs">
+                                      <li class="nav-item col-md-4">
+                                          <a class="nav-link active" href="#mcqs" data-toggle="tab">
+                                              <i class="material-icons">flaky</i> MCQ Questions
+                                              <div class="ripple-container"></div>
+                                          </a>
+                                      </li>
+                                      <li class="nav-item col-md-4">
+                                          <a class="nav-link" href="#writtens" data-toggle="tab">
+                                              <i class="material-icons">create</i> Written Questions
+                                              <div class="ripple-container"></div>
+                                          </a>
+                                      </li>
+                                      <li class="nav-item col-md-4">
+                                          <a class="nav-link" href=<%= quizId + '/viewDetailAnalysis' %>>
+                                              <i class="material-icons">turned_in</i> View Detailed Analysis
+                                              <div class="ripple-container"></div>
+                                          </a>
+                                      </li>
+                                  </ul>
+                              </div>
+                          </div>
+                      </div>
+                      <p style="display: none;" id="quiz_id">13</p>
+                      <div class="card-body">
+                          <div class="tab-content">
+                              <div class="tab-pane active" id="mcqs">
+                                  <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
+                                      <thead class="text-warning">
+                                      <th>Question</th>
+                                      <th>Options</th>
+                                      <th>Set</th>
+                                      <th>Correct Options</th>
+                                      <th>Maximum Marks</th>
+                                      <th></th>
+                                      </thead>
+                                      <tbody>
+                                        <% questions.forEach(question => { %>
+                                          <% if(question.mcq){ %>
+                                            <tr data-toggle="modal" data-target="#modal40" onclick="editMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question.question) %>', '<%= question.maximumMarks %>', '<%= question.set %>', '<%= JSON.stringify(question.options) %>', '<%= JSON.stringify(question.imageLinks) %>', '<%= JSON.stringify(question.correctOptions) %>', '<%= question.markingScheme %>', '<%= question.negativeMarking %>')">
+                                              <td class="question-short-desc"><%= question.question %></td>
+                                              <td class="question-short-desc"><%= question.options.toString().split(',').join(', ') %></td>
+                                              <td><%= question.set %></td>
+                                              <td><%= question.correctOptions.toString().split(',').join(', ') %></td>
+                                              <td><%= question.maximumMarks %></td>
+                                              <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
+                                            </tr>
+                                          <% } %>
+                                        <% }) %>
+                                      </tbody>
+                                  </table>        
+                              </div>
+                              <div class="tab-pane" id="writtens">
+                                  <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
+                                      <thead class="text-warning">
+                                      <th>Question</th>
+                                      <th>Set</th>
+                                      <th>Maximum Marks</th>
+                                      <th></th>
+                                      </thead>
+                                      <tbody>
+                                        <% questions.forEach(question => { %>
+                                          <% if(!question.mcq){ %>
+                                            <tr data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question.question) %>', '<%= question.maximumMarks %>', '<%= JSON.stringify(question.note) %>', '<%= question.set %>', '<%= JSON.stringify(question.imageLinks) %>', '<%= question.pdfUpload %>')" data-target="#modal41">
+                                              <td class="question-short-desc"><%= question.question %></td>
+                                              <td><%= question.set %></td>
+                                              <td><%= question.maximumMarks %></td>
+                                              <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
+                                            </tr>
+                                          <% } %>
+                                        <% }) %>
+                                      </tbody>
+                                  </table>              
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Modal 0 -->
+          <div class="modal fade" id="modal0" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+              <div class="modal-content card">
+                <div class="card-header card-header-green">
+                  <h4 class="modal-title">Upload Questions</h4>
+                </div>
+                <div class="modal-body">
+                    <h5 style="padding-bottom: 12px"><b>Please follow the instructions to add upload questions in a genunine manner.</b></h5>
+                    <p style="padding-bottom: 10px">1. Only EXCEL file is allowed. <a href="/DashboardFaculty/downloads/upload_questions.xlsx">Sample Excel File</a></p>
+                    <p style="padding-bottom: 10px">2. There could be multiple columns, there order does not matter.</p>
+                    <p style="padding-bottom: 10px">3. You can upload both type of questions like Subjective or Objective.</p>
+                    <p style="padding-bottom: 10px">4. Compulsory Columns are : Question Type(Value can be Subjective or Objective), Question, Maximum Marks(Integer).</p>
+                    <p style="padding-bottom: 10px">5. For objective questions, options need to be given, so maximum 6 options can be given and column name must be Option1, Option2, ... Option6, one with Correct Option(out of 1-6) and the Marking Scheme(Yes for partial and No for no partial).</p>
+                    <p style="padding-bottom: 10px">6. Note: If maximum options in any objective question are 3 for example then there no need to mention Option4-Option6. If there are multiple options correct then separate then with comma(,)</p>
+                    <p style="padding-bottom: 10px">7. Do not copy paste in the excel sheet from any kind of browser to avoid any errors.</p>
+  
+                    <form id="addQuizQuestions" action="<%= quizId + '/addQuestions' %>" class="form-inline" method="POST" enctype="multipart/form-data">
+                        <div class="mb-2">
+                          <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="" name="excelFile" required/>
+                        </div>
+                        <input type="hidden" name="question_type" value="3" required>
+                        <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal" onclick="submitForm('addQuizQuestions')">Upload Questions</button>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Add Question -->
+          <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+              <div class="modal-content card">
+                <div class="col-lg-12 col-md-12">
                     <div class="card-header card-header-tabs card-header-green">
                         <div class="nav-tabs-navigation">
                             <div class="nav-tabs-wrapper">
                                 <ul class="nav nav-tabs" data-tabs="tabs">
-                                    <li class="nav-item col-md-4">
-                                        <a class="nav-link active" href="#mcqs" data-toggle="tab">
-                                            <i class="material-icons">flaky</i> MCQ Questions
+                                    <li class="nav-item col-md-6">
+                                        <a class="nav-link active" href="#Multiple_Choice_Question" data-toggle="tab">
+                                            <i class="material-icons">flaky</i> Multiple Choice Question
                                             <div class="ripple-container"></div>
                                         </a>
                                     </li>
-                                    <li class="nav-item col-md-4">
-                                        <a class="nav-link" href="#writtens" data-toggle="tab">
-                                            <i class="material-icons">create</i> Written Questions
-                                            <div class="ripple-container"></div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item col-md-4">
-                                        <a class="nav-link" href=<%= quizId + '/viewDetailAnalysis' %>>
-                                            <i class="material-icons">turned_in</i> View Detailed Analysis
+                                    <li class="nav-item col-md-6">
+                                        <a class="nav-link" href="#Written_Question" data-toggle="tab">
+                                            <i class="material-icons">create</i> Written Question
                                             <div class="ripple-container"></div>
                                         </a>
                                     </li>
@@ -124,578 +339,468 @@
                             </div>
                         </div>
                     </div>
-                    <p style="display: none;" id="quiz_id">13</p>
                     <div class="card-body">
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="mcqs">
-                                <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
-                                    <thead class="text-warning">
-                                    <th>Question</th>
-                                    <th>Options</th>
-                                    <th>Set</th>
-                                    <th>Correct Options</th>
-                                    <th>Maximum Marks</th>
-                                    <th></th>
-                                    </thead>
-                                    <tbody>
-                                      <% questions.forEach(question => { %>
-                                        <% if(question.mcq){ %>
-                                          <tr data-toggle="modal" data-target="#modal40" onclick="editMCQQuestion('<%= question._id %>', '<%= JSON.stringify(question.question) %>', '<%= question.maximumMarks %>', '<%= question.set %>', '<%= JSON.stringify(question.options) %>', '<%= JSON.stringify(question.imageLinks) %>', '<%= JSON.stringify(question.correctOptions) %>', '<%= question.markingScheme %>', '<%= question.negativeMarking %>')">
-                                            <td class="question-short-desc"><%= question.question %></td>
-                                            <td class="question-short-desc"><%= question.options.toString().split(',').join(', ') %></td>
-                                            <td><%= question.set %></td>
-                                            <td><%= question.correctOptions.toString().split(',').join(', ') %></td>
-                                            <td><%= question.maximumMarks %></td>
-                                            <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
-                                          </tr>
-                                        <% } %>
-                                      <% }) %>
-                                    </tbody>
-                                </table>        
+                      <div class="tab-content">
+                        <div class="tab-pane active" id="Multiple_Choice_Question">
+                          <form id="addMCQQuestion">
+                            <div class="form-group">
+                              <label class="bmd-label-floating">Type the question below</label>
+                              <textarea class="form-control" name="question" autocomplete="off" id="addMCQQuestionText" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
                             </div>
-                            <div class="tab-pane" id="writtens">
-                                <table class="dtBasicExample table table-hover table-striped table-lg tab-resp" width="100%">
-                                    <thead class="text-warning">
-                                    <th>Question</th>
-                                    <th>Set</th>
-                                    <th>Maximum Marks</th>
-                                    <th></th>
-                                    </thead>
-                                    <tbody>
-                                      <% questions.forEach(question => { %>
-                                        <% if(!question.mcq){ %>
-                                          <tr data-toggle="modal" onclick="editWrittenQuestion('<%= question._id %>', '<%= JSON.stringify(question.question) %>', '<%= question.maximumMarks %>', '<%= JSON.stringify(question.note) %>', '<%= question.set %>', '<%= JSON.stringify(question.imageLinks) %>', '<%= question.pdfUpload %>')" data-target="#modal41">
-                                            <td class="question-short-desc"><%= question.question %></td>
-                                            <td><%= question.set %></td>
-                                            <td><%= question.maximumMarks %></td>
-                                            <td><i class="material-icons delete" onclick="deleteQuestion('<%= question._id %>')">delete</i></td>
-                                          </tr>
-                                        <% } %>
-                                      <% }) %>
-                                    </tbody>
-                                </table>              
+                            <div class="form-group">
+                                <label class="bmd-label-floating">Maximum Marks for the question</label>
+                              <input type="number" class="form-control" autocomplete="off" id="addMCQQuestionMaxMarks" name="maximumMarks" step="0.01" required>
+                            </div><br>
+                            <div class="form-group">
+                              <label class="bmd-label">Enter the Set</label><br>
+                              <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                            </div><br>
+                            <div id="questionImages">
+                              <div class="form-group">
+                                <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
+                              </div>
                             </div>
+                            <input type="button" onclick="addImageLink()" class="btn btn-primary" value="Add Image Link"/>
+                            <br>
+                            <div id="questionOptions">
+                              <div class="form-group">
+                                <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Option 1">
+                              </div>
+                            </div>
+                            <input type="button" onclick="addOption()" class="btn btn-primary" value="Add Option"/>
+                            <br>
+                            <div class="form-group">
+                              <label class="bmd-label">Enter Correct Options</label><br>
+                              <input type="text" class="form-control" autocomplete="off" name="correctOptions" placeholder="Correct Options Number. eg: 1,2" required/>
+                            </div><br>
+                            <div class="form-group">
+                              <label class="bmd-label">Marking Scheme</label><br>
+                              <select class="form-control" name="markingScheme">
+                                <option value="Yes">Partial Marking</option>
+                                <option value="No">No Partial Marking</option>
+                              </select>
+                            </div><br>
+                            <div class="form-group">
+                              <label class="bmd-label">Negative Marking</label><br>
+                              <input type="number" class="form-control" autocomplete="off" name="negativeMarking" step="0.01" min="0" placeholder="Enter marks that will be awarded when answer is wrong">
+                            </div><br>
+                            <input type="submit" class="btn btn-primary pull-right margin20" value="Add Question"/>
+                          </form>
                         </div>
+                        <div class="tab-pane" id="Written_Question">
+                          <form id="addWrittenQuestion">
+                            <div class="form-group">
+                              <input type="text" id="quizId" value="<%= quizId %>" hidden/>
+                              <label class="bmd-label-floating">Type the question below</label>
+                              <textarea class="form-control" name="question" id="question_written" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                            </div>
+                            <div class="form-group">
+                              <label class="bmd-label-floating">Add a note regarding Question if you wish</label>
+                              <textarea class="form-control" name="note" id="question_note" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="bmd-label-floating">Maximum Marks for the question</label>
+                                <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required/>
+                            </div><br>
+                            <div class="form-group">
+                              <label class="bmd-label">Enter the Set</label><br>
+                              <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                            </div><br>
+                            <div class="form-group">
+                              <label class="bmd-label">Handwritten/Typed</label><br>
+                              <span class="col-xs-6" id="addWrittenQuestionPdfUploadSpan">Typed</span>
+                              <span class="col-xs-6 pull-right">
+                                <label class="switch">
+                                  <input type="checkbox" name="pdfUpload" id="addWrittenQuestionPdfUploadInput">
+                                  <span class="slider round"></span>
+                                </label>
+                              </span>
+                            </div><br>
+                            <div id="writtenQuestionImages">
+                              <div class="form-group">
+                                <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
+                              </div>
+                            </div>
+                            <input type="button" onclick="addWrittenImageLink()" class="btn btn-primary" value="Add Image Link"/>
+                            <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
+                          </form>
+                        </div>
+                      </div>
                     </div>
                 </div>
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- Modal 0 -->
-        <div class="modal fade" id="modal0" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
-            <div class="modal-content card">
-              <div class="card-header card-header-green">
-                <h4 class="modal-title">Upload Questions</h4>
-              </div>
-              <div class="modal-body">
-                  <h5 style="padding-bottom: 12px"><b>Please follow the instructions to add upload questions in a genunine manner.</b></h5>
-                  <p style="padding-bottom: 10px">1. Only EXCEL file is allowed. <a href="/DashboardFaculty/downloads/upload_questions.xlsx">Sample Excel File</a></p>
-                  <p style="padding-bottom: 10px">2. There could be multiple columns, there order does not matter.</p>
-                  <p style="padding-bottom: 10px">3. You can upload both type of questions like Subjective or Objective.</p>
-                  <p style="padding-bottom: 10px">4. Compulsory Columns are : Question Type(Value can be Subjective or Objective), Question, Maximum Marks(Integer).</p>
-                  <p style="padding-bottom: 10px">5. For objective questions, options need to be given, so maximum 6 options can be given and column name must be Option1, Option2, ... Option6, one with Correct Option(out of 1-6) and the Marking Scheme(Yes for partial and No for no partial).</p>
-                  <p style="padding-bottom: 10px">6. Note: If maximum options in any objective question are 3 for example then there no need to mention Option4-Option6. If there are multiple options correct then separate then with comma(,)</p>
-                  <p style="padding-bottom: 10px">7. Do not copy paste in the excel sheet from any kind of browser to avoid any errors.</p>
-
-                  <form id="addQuizQuestions" action="<%= quizId + '/addQuestions' %>" class="form-inline" method="POST" enctype="multipart/form-data">
-                      <div class="mb-2">
-                        <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="" name="excelFile" required/>
+          <!-- Modal edit mcq question -->
+          <div class="modal fade" id="modal40" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+              <div class="modal-content card">
+                <div class="card-header card-header-green">
+                  <h4 class="modal-title">Edit MCQ Question</h4>
+                </div>
+                <div class="modal-body">
+                  <form id="editMCQQuestion">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Edit the question below</label><br>
+                        <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
                       </div>
-                      <input type="hidden" name="question_type" value="3" required>
-                      <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal" onclick="submitForm('addQuizQuestions')">Upload Questions</button>
+                      <input type="text" name="questionId" id="mcqQuestionId" hidden/>
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Edit Maximum Marks</label><br>
+                        <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="mcqMarks" step="0.01" required/>
+                      </div><br>
+                      <div class="form-group">
+                        <label class="bmd-label">Enter the Set</label><br>
+                        <input type="text" class="form-control" autocomplete="off" id="mcqSet" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                      </div><br>
+                      <label class="bmd-label">Options</label>
+                      <div id="editMCQQuestionOptions"></div>
+                      <input type="button" onclick="addOptionInEditMode()" class="btn btn-primary" value="Add Option"/>
+                      <br><br>
+                      <label class="bmd-label">Image Links</label>
+                      <div id="editMCQQuestionImageLink"></div>
+                      <input type="button" onclick="addImageLinkInEditMode()" class="btn btn-primary" value="Add Image Links"/>
+                      <br>
+                      <br>
+                      <div class="form-group">
+                        <label class="bmd-label">Edit Correct Options</label><br>
+                        <input type="text" class="form-control" autocomplete="off" name="correctOptions" id="mcqCorrectOptions" placeholder="Correct Options Number. eg: 1,2" required/>
+                      </div><br>
+                      <div class="form-group">
+                        <label class="bmd-label">Marking Scheme</label><br>
+                        <select class="form-control" name="markingScheme">
+                          <option value="Yes" id="yes">Partial Marking</option>
+                          <option value="No" id="no">No Partial Marking</option>
+                        </select>
+                      </div><br>
+                      <div class="form-group">
+                        <label class="bmd-label">Negative Marking</label><br>
+                        <input type="number" class="form-control" autocomplete="off" name="negativeMarking" min="0" step="0.01" id="mcqNegativeMarking" placeholder="Enter marks that will be awarded when answer is wrong"/>
+                      </div><br>
+                      <input type="submit" class="btn btn-primary pull-right" value="Edit Question"/>
                   </form>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <!-- Add Question -->
-        <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
-            <div class="modal-content card">
-              <div class="col-lg-12 col-md-12">
+          <!-- Modal edit written -->
+          <div class="modal fade" id="modal41" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+              <div class="modal-content card">
+                <div class="card-header card-header-green">
+                  <h4 class="modal-title">Edit written type question</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="editWrittenQuestion">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Edit the question below</label><br>
+                          <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                        </div>
+                        <input type="text" name="questionId" id="writtenQuestionId" hidden/>
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Add a note regarding Question if you wish</label><br>
+                          <textarea class="form-control" name="note" id="writtenQuestionNote" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Maximum Marks for the question</label><br>
+                            <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="writtenQuestionMarks" step="0.01" required/>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                          <label class="bmd-label">Enter the Set</label><br>
+                          <input type="text" class="form-control" autocomplete="off" id="writtenSet" name="set" placeholder="Enter name of set to which this question belongs to" required/>
+                        </div><br>
+                        <div class="form-group">
+                          <label class="bmd-label">Handwritten/Typed</label><br>
+                          <span class="col-xs-6" id="editWrittenQuestionPdfUploadSpan">Typed</span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" name="pdfUpload" id="editWrittenQuestionPdfUploadInput">
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
+                        </div><br>
+                        <label class="bmd-label">Image Links</label>
+                        <div id="editWrittenQuestionImageLink"></div>
+                        <input type="button" onclick="addImageLinkInWrittenEditMode()" class="btn btn-primary" value="Add Image Links"/>
+                          <input type="submit" class="btn btn-primary pull-right" value="Edit Question"/>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modal 4 -->
+          <div class="modal fade" id="modal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
+              <div class="modal-content card">
+                <div class="col-lg-12 col-md-12">
                   <div class="card-header card-header-tabs card-header-green">
-                      <div class="nav-tabs-navigation">
-                          <div class="nav-tabs-wrapper">
-                              <ul class="nav nav-tabs" data-tabs="tabs">
-                                  <li class="nav-item col-md-6">
-                                      <a class="nav-link active" href="#Multiple_Choice_Question" data-toggle="tab">
-                                          <i class="material-icons">flaky</i> Multiple Choice Question
-                                          <div class="ripple-container"></div>
-                                      </a>
-                                  </li>
-                                  <li class="nav-item col-md-6">
-                                      <a class="nav-link" href="#Written_Question" data-toggle="tab">
-                                          <i class="material-icons">create</i> Written Question
-                                          <div class="ripple-container"></div>
-                                      </a>
-                                  </li>
-                              </ul>
-                          </div>
-                      </div>
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                <li class="nav-item col-md-6">
+                                    <a class="nav-link active" href="#proctoring_settings" data-toggle="tab">
+                                        <i class="material-icons">visibility</i> Proctoring Settings
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                <li class="nav-item col-md-6">
+                                    <a class="nav-link" href="#advanced_settings" data-toggle="tab">
+                                        <i class="material-icons">sync_alt</i> Advanced Options
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                   </div>
                   <div class="card-body">
                     <div class="tab-content">
-                      <div class="tab-pane active" id="Multiple_Choice_Question">
-                        <form id="addMCQQuestion">
-                          <div class="form-group">
-                            <label class="bmd-label-floating">Type the question below</label>
-                            <textarea class="form-control" name="question" autocomplete="off" id="addMCQQuestionText" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
-                          </div>
-                          <div class="form-group">
-                              <label class="bmd-label-floating">Maximum Marks for the question</label>
-                            <input type="number" class="form-control" autocomplete="off" id="addMCQQuestionMaxMarks" name="maximumMarks" step="0.01" required>
-                          </div><br>
-                          <div class="form-group">
-                            <label class="bmd-label">Enter the Set</label><br>
-                            <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
-                          </div><br>
-                          <div id="questionImages">
-                            <div class="form-group">
-                              <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
-                            </div>
-                          </div>
-                          <input type="button" onclick="addImageLink()" class="btn btn-primary" value="Add Image Link"/>
-                          <br>
-                          <div id="questionOptions">
-                            <div class="form-group">
-                              <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Option 1">
-                            </div>
-                          </div>
-                          <input type="button" onclick="addOption()" class="btn btn-primary" value="Add Option"/>
-                          <br>
-                          <div class="form-group">
-                            <label class="bmd-label">Enter Correct Options</label><br>
-                            <input type="text" class="form-control" autocomplete="off" name="correctOptions" placeholder="Correct Options Number. eg: 1,2" required/>
-                          </div><br>
-                          <div class="form-group">
-                            <label class="bmd-label">Marking Scheme</label><br>
-                            <select class="form-control" name="markingScheme">
-                              <option value="Yes">Partial Marking</option>
-                              <option value="No">No Partial Marking</option>
-                            </select>
-                          </div><br>
-                          <div class="form-group">
-                            <label class="bmd-label">Negative Marking</label><br>
-                            <input type="number" class="form-control" autocomplete="off" name="negativeMarking" step="0.01" min="0" placeholder="Enter marks that will be awarded when answer is wrong">
-                          </div><br>
-                          <input type="submit" class="btn btn-primary pull-right margin20" value="Add Question"/>
-                        </form>
-                      </div>
-                      <div class="tab-pane" id="Written_Question">
-                        <form id="addWrittenQuestion">
-                          <div class="form-group">
-                            <input type="text" id="quizId" value="<%= quizId %>" hidden/>
-                            <label class="bmd-label-floating">Type the question below</label>
-                            <textarea class="form-control" name="question" id="question_written" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
-                          </div>
-                          <div class="form-group">
-                            <label class="bmd-label-floating">Add a note regarding Question if you wish</label>
-                            <textarea class="form-control" name="note" id="question_note" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
-                          </div>
-                          <div class="form-group">
-                              <label class="bmd-label-floating">Maximum Marks for the question</label>
-                              <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required/>
-                          </div><br>
-                          <div class="form-group">
-                            <label class="bmd-label">Enter the Set</label><br>
-                            <input type="text" class="form-control" autocomplete="off" name="set" placeholder="Enter name of set to which this question belongs to" required/>
-                          </div><br>
-                          <div class="form-group">
-                            <label class="bmd-label">Handwritten/Typed</label><br>
-                            <span class="col-xs-6" id="addWrittenQuestionPdfUploadSpan">Typed</span>
-                            <span class="col-xs-6 pull-right">
-                              <label class="switch">
-                                <input type="checkbox" name="pdfUpload" id="addWrittenQuestionPdfUploadInput">
-                                <span class="slider round"></span>
-                              </label>
-                            </span>
-                          </div><br>
-                          <div id="writtenQuestionImages">
-                            <div class="form-group">
-                              <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
-                            </div>
-                          </div>
-                          <input type="button" onclick="addWrittenImageLink()" class="btn btn-primary" value="Add Image Link"/>
-                          <input type="submit" class="btn btn-primary pull-right" value="Add Question"/>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Modal 8 -->
-        <div class="modal fade" id="modal8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-scrollable-centered modal-md" role="document">
-            <div class="modal-content card">
-              <div class="card-header card-header-green">
-                <h4 class="modal-title">Delete This Quiz</h4>
-              </div>
-              <div class="modal-body">
-                  <h5 style="padding-bottom: 12px"><b>All data related to this quiz will be deleted</b></h5>
-                  <form id="deleteQuiz" action= <%= quizId + '/deleteQuiz' %> method="POST">
-                    <div class="form-group">
-                      <label class="bmd-label">Enter "<b><%= quizId %></b>" to delete this quiz</label><br>
-                      <input type="text" class="form-control" id="random_string" autocomplete="off" name="confirmation" required/>
-                    </div>
-                      <input type="submit" id="quiz_button" class="btn btn-primary pull-right" value="Delete Quiz"/>
-                  </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Modal edit mcq question -->
-        <div class="modal fade" id="modal40" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-            <div class="modal-content card">
-              <div class="card-header card-header-green">
-                <h4 class="modal-title">Edit MCQ Question</h4>
-              </div>
-              <div class="modal-body">
-                <form id="editMCQQuestion">
-                    <div class="form-group">
-                      <label class="bmd-label-floating">Edit the question below</label><br>
-                      <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
-                    </div>
-                    <input type="text" name="questionId" id="mcqQuestionId" hidden/>
-                    <div class="form-group">
-                      <label class="bmd-label-floating">Edit Maximum Marks</label><br>
-                      <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="mcqMarks" step="0.01" required/>
-                    </div><br>
-                    <div class="form-group">
-                      <label class="bmd-label">Enter the Set</label><br>
-                      <input type="text" class="form-control" autocomplete="off" id="mcqSet" name="set" placeholder="Enter name of set to which this question belongs to" required/>
-                    </div><br>
-                    <label class="bmd-label">Options</label>
-                    <div id="editMCQQuestionOptions"></div>
-                    <input type="button" onclick="addOptionInEditMode()" class="btn btn-primary" value="Add Option"/>
-                    <br><br>
-                    <label class="bmd-label">Image Links</label>
-                    <div id="editMCQQuestionImageLink"></div>
-                    <input type="button" onclick="addImageLinkInEditMode()" class="btn btn-primary" value="Add Image Links"/>
-                    <br>
-                    <br>
-                    <div class="form-group">
-                      <label class="bmd-label">Edit Correct Options</label><br>
-                      <input type="text" class="form-control" autocomplete="off" name="correctOptions" id="mcqCorrectOptions" placeholder="Correct Options Number. eg: 1,2" required/>
-                    </div><br>
-                    <div class="form-group">
-                      <label class="bmd-label">Marking Scheme</label><br>
-                      <select class="form-control" name="markingScheme">
-                        <option value="Yes" id="yes">Partial Marking</option>
-                        <option value="No" id="no">No Partial Marking</option>
-                      </select>
-                    </div><br>
-                    <div class="form-group">
-                      <label class="bmd-label">Negative Marking</label><br>
-                      <input type="number" class="form-control" autocomplete="off" name="negativeMarking" min="0" step="0.01" id="mcqNegativeMarking" placeholder="Enter marks that will be awarded when answer is wrong"/>
-                    </div><br>
-                    <input type="submit" class="btn btn-primary pull-right" value="Edit Question"/>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Modal edit written -->
-        <div class="modal fade" id="modal41" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
-            <div class="modal-content card">
-              <div class="card-header card-header-green">
-                <h4 class="modal-title">Edit written type question</h4>
-              </div>
-              <div class="modal-body">
-                  <form id="editWrittenQuestion">
-                      <div class="form-group">
-                        <label class="bmd-label-floating">Edit the question below</label><br>
-                        <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
-                      </div>
-                      <input type="text" name="questionId" id="writtenQuestionId" hidden/>
-                      <div class="form-group">
-                        <label class="bmd-label-floating">Add a note regarding Question if you wish</label><br>
-                        <textarea class="form-control" name="note" id="writtenQuestionNote" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
-                      </div>
-                      <div class="form-group">
-                          <label class="bmd-label-floating">Maximum Marks for the question</label><br>
-                          <input type="number" class="form-control" autocomplete="off" name="maximumMarks" id="writtenQuestionMarks" step="0.01" required/>
-                      </div>
-                      <br>
-                      <div class="form-group">
-                        <label class="bmd-label">Enter the Set</label><br>
-                        <input type="text" class="form-control" autocomplete="off" id="writtenSet" name="set" placeholder="Enter name of set to which this question belongs to" required/>
-                      </div><br>
-                      <div class="form-group">
-                        <label class="bmd-label">Handwritten/Typed</label><br>
-                        <span class="col-xs-6" id="editWrittenQuestionPdfUploadSpan">Typed</span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" name="pdfUpload" id="editWrittenQuestionPdfUploadInput">
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div><br>
-                      <label class="bmd-label">Image Links</label>
-                      <div id="editWrittenQuestionImageLink"></div>
-                      <input type="button" onclick="addImageLinkInWrittenEditMode()" class="btn btn-primary" value="Add Image Links"/>
-                        <input type="submit" class="btn btn-primary pull-right" value="Edit Question"/>
-                  </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Modal 4 -->
-        <div class="modal fade" id="modal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-scrollable-centered modal-lg" role="document">
-            <div class="modal-content card">
-              <div class="col-lg-12 col-md-12">
-                <div class="card-header card-header-tabs card-header-green">
-                  <div class="nav-tabs-navigation">
-                      <div class="nav-tabs-wrapper">
-                          <ul class="nav nav-tabs" data-tabs="tabs">
-                              <li class="nav-item col-md-6">
-                                  <a class="nav-link active" href="#proctoring_settings" data-toggle="tab">
-                                      <i class="material-icons">visibility</i> Proctoring Settings
-                                      <div class="ripple-container"></div>
-                                  </a>
-                              </li>
-                              <li class="nav-item col-md-6">
-                                  <a class="nav-link" href="#advanced_settings" data-toggle="tab">
-                                      <i class="material-icons">sync_alt</i> Advanced Options
-                                      <div class="ripple-container"></div>
-                                  </a>
-                              </li>
-                          </ul>
-                      </div>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div class="tab-content">
-                    <div class="tab-pane active" id="proctoring_settings">
-                      <div class="form-group">
-                        <label class="bmd-label">Face Detection</label><br>
-                        <span class="col-xs-6" id="faceDetectorSpan">
-                          <% if(quiz.faceDetector) { %> 
-                            Turned On
-                          <% }else{ %>
-                            Turned Off
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" id="faceDetector"
-                              <% if(quiz.faceDetector) { %> 
-                                checked
-                              <% } %>
-                            >
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="bmd-label">HeadPose Detection</label><br>
-                        <span class="col-xs-6" id="headPoseDetectorSpan">
-                          <% if(quiz.headPoseDetector) { %> 
-                            Turned On
-                          <% }else{ %>
-                            Turned Off
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" id="headPoseDetector"
-                              <% if(quiz.headPoseDetector) { %> 
-                                checked
-                              <% } %>
-                            >
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="bmd-label">Mobile Detection</label><br>
-                        <span class="col-xs-6" id="mobileDetectorSpan">
-                          <% if(quiz.mobileDetector) { %> 
-                            Turned On
-                          <% }else{ %>
-                            Turned Off
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" id="mobileDetector"
-                              <% if(quiz.mobileDetector) { %> 
-                                checked
-                              <% } %>
-                            >
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="bmd-label">Tab Switch Detection</label><br>
-                        <span class="col-xs-6" id="tabSwitchDetectorSpan">
-                          <% if(quiz.tabSwitchDetector) { %> 
-                            Turned On
-                          <% }else{ %>
-                            Turned Off
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" id="tabSwitchDetector"
-                              <% if(quiz.tabSwitchDetector) { %> 
-                                checked
-                              <% } %>
-                            >
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="bmd-label">IP Address Detection</label><br>
-                        <span class="col-xs-6" id="ipAddressDetectorSpan">
-                          <% if(quiz.ipAddressDetector) { %> 
-                            Turned On
-                          <% }else{ %>
-                            Turned Off
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" id="ipAddressDetector"
-                              <% if(quiz.ipAddressDetector) { %> 
-                                checked
-                              <% } %>
-                            >
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="bmd-label">Audio Detection</label><br>
-                        <span class="col-xs-6" id="audioDetectorSpan">
-                          <% if(quiz.audioDetector) { %> 
-                            Turned On
-                          <% }else{ %>
-                            Turned Off
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right margin20">
-                          <label class="switch">
-                            <input type="checkbox" id="audioDetector"
-                              <% if(quiz.audioDetector) { %> 
-                                checked
-                              <% } %>
-                            >
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="tab-pane" id="advanced_settings">
-                      <p id="setError1"></p>
-                      <div class="form-group">
-                        <label class="bmd-label">Quiz visibility</label><br>
-                        <span class="col-xs-6" id="visibilitySpan">
-                          <% if(quiz.hidden) { %> 
-                            Hidden
-                          <% }else{ %>
-                            Visible
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" id="visibility"
-                              <% if(!quiz.hidden) { %> 
-                                checked
-                              <% } %>
-                            >
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="bmd-label">Previously Attempted Question Access</label><br>
-                        <span class="col-xs-6" id="disablePreviousSpan">
-                          <% if(quiz.disablePrevious) { %> 
-                            Not Allowed
-                          <% }else{ %>
-                            Allowed
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" id="disablePrevious"
-                              <% if(!quiz.disablePrevious) { %> 
-                                checked
-                              <% } %>
-                            >
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="bmd-label">PDF Upload</label><br>
-                        <span class="col-xs-6" id="pdfUploadSpan">
-                          <% if(quiz.pdfUpload) { %> 
-                            Allowed
-                          <% }else{ %>
-                            Not Allowed
-                          <% } %>
-                        </span>
-                        <span class="col-xs-6 pull-right">
-                          <label class="switch">
-                            <input type="checkbox" id="pdfUpload"
-                              <% if(quiz.pdfUpload) { %> 
-                                checked
-                              <% } %>
-                            disabled>
-                            <span class="slider round"></span>
-                          </label>
-                        </span>
-                      </div>
-
-                      <form id="pdfUploadDurationForm">
-                        <div class="form-group" id="pdfUploadDuration"
-                          <% if(!quiz.pdfUpload) { %>
-                            style="display: none;"
-                          <% } %>
-                        >
-                          <label class="bmd-label">PDF Upload Time Limit</label><br>
-                          <input type="number" class="form-control" autocomplete="off" name="pdfUploadDuration" value="<%= quiz.pdfUploadDuration %>" step="0.01" required/>
+                      <div class="tab-pane active" id="proctoring_settings">
+                        <div class="form-group">
+                          <label class="bmd-label">Face Detection</label><br>
+                          <span class="col-xs-6" id="faceDetectorSpan">
+                            <% if(quiz.faceDetector) { %> 
+                              Turned On
+                            <% }else{ %>
+                              Turned Off
+                            <% } %>
+                          </span>
                           <span class="col-xs-6 pull-right">
-                            <input type="submit" class="btn btn-primary pull-right" value="Edit Upload Time"/>
+                            <label class="switch">
+                              <input type="checkbox" id="faceDetector"
+                                <% if(quiz.faceDetector) { %> 
+                                  checked
+                                <% } %>
+                              >
+                              <span class="slider round"></span>
+                            </label>
                           </span>
                         </div>
-                        <br>
-                      </form>
-
-                      <form id="editCourseQuiz">
+  
                         <div class="form-group">
-                          <label class="bmd-label">Start Datetime of Quiz</label><br>
-                          <input type="datetime-local" class="form-control" id="start_date" name="startDate" value='<%= (new Date(quiz.startDate)).getFullYear()+"-"+("0" + ((new Date(quiz.startDate)).getMonth()+1)).slice(-2)+"-"+("0"+(new Date(quiz.startDate)).getDate()).slice(-2)+"T"+(new Date(quiz.startDate)).toString().slice(16,21); %>' required>
+                          <label class="bmd-label">HeadPose Detection</label><br>
+                          <span class="col-xs-6" id="headPoseDetectorSpan">
+                            <% if(quiz.headPoseDetector) { %> 
+                              Turned On
+                            <% }else{ %>
+                              Turned Off
+                            <% } %>
+                          </span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" id="headPoseDetector"
+                                <% if(quiz.headPoseDetector) { %> 
+                                  checked
+                                <% } %>
+                              >
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
                         </div>
+  
                         <div class="form-group">
-                          <label class="bmd-label">End Datetime of Quiz</label><br>
-                          <input type="datetime-local" class="form-control" id="end_date" name="endDate" value='<%= (new Date(quiz.endDate)).getFullYear()+"-"+("0" + ((new Date(quiz.endDate)).getMonth()+1)).slice(-2)+"-"+("0"+(new Date(quiz.endDate)).getDate()).slice(-2)+"T"+(new Date(quiz.endDate)).toString().slice(16,21); %>' required>
+                          <label class="bmd-label">Mobile Detection</label><br>
+                          <span class="col-xs-6" id="mobileDetectorSpan">
+                            <% if(quiz.mobileDetector) { %> 
+                              Turned On
+                            <% }else{ %>
+                              Turned Off
+                            <% } %>
+                          </span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" id="mobileDetector"
+                                <% if(quiz.mobileDetector) { %> 
+                                  checked
+                                <% } %>
+                              >
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
                         </div>
-                        <input type="submit" id="course_button" class="btn btn-primary pull-right margin20" value="Edit Time"/>
-                      </form>
+  
+                        <div class="form-group">
+                          <label class="bmd-label">Tab Switch Detection</label><br>
+                          <span class="col-xs-6" id="tabSwitchDetectorSpan">
+                            <% if(quiz.tabSwitchDetector) { %> 
+                              Turned On
+                            <% }else{ %>
+                              Turned Off
+                            <% } %>
+                          </span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" id="tabSwitchDetector"
+                                <% if(quiz.tabSwitchDetector) { %> 
+                                  checked
+                                <% } %>
+                              >
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
+                        </div>
+  
+                        <div class="form-group">
+                          <label class="bmd-label">IP Address Detection</label><br>
+                          <span class="col-xs-6" id="ipAddressDetectorSpan">
+                            <% if(quiz.ipAddressDetector) { %> 
+                              Turned On
+                            <% }else{ %>
+                              Turned Off
+                            <% } %>
+                          </span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" id="ipAddressDetector"
+                                <% if(quiz.ipAddressDetector) { %> 
+                                  checked
+                                <% } %>
+                              >
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
+                        </div>
+  
+                        <div class="form-group">
+                          <label class="bmd-label">Audio Detection</label><br>
+                          <span class="col-xs-6" id="audioDetectorSpan">
+                            <% if(quiz.audioDetector) { %> 
+                              Turned On
+                            <% }else{ %>
+                              Turned Off
+                            <% } %>
+                          </span>
+                          <span class="col-xs-6 pull-right margin20">
+                            <label class="switch">
+                              <input type="checkbox" id="audioDetector"
+                                <% if(quiz.audioDetector) { %> 
+                                  checked
+                                <% } %>
+                              >
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="tab-pane" id="advanced_settings">
+                        <p id="setError1"></p>
+                        <div class="form-group">
+                          <label class="bmd-label">Quiz visibility</label><br>
+                          <span class="col-xs-6" id="visibilitySpan">
+                            <% if(quiz.hidden) { %> 
+                              Hidden
+                            <% }else{ %>
+                              Visible
+                            <% } %>
+                          </span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" id="visibility"
+                                <% if(!quiz.hidden) { %> 
+                                  checked
+                                <% } %>
+                              >
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
+                        </div>
+  
+                        <div class="form-group">
+                          <label class="bmd-label">Previously Attempted Question Access</label><br>
+                          <span class="col-xs-6" id="disablePreviousSpan">
+                            <% if(quiz.disablePrevious) { %> 
+                              Not Allowed
+                            <% }else{ %>
+                              Allowed
+                            <% } %>
+                          </span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" id="disablePrevious"
+                                <% if(!quiz.disablePrevious) { %> 
+                                  checked
+                                <% } %>
+                              >
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
+                        </div>
+  
+                        <div class="form-group">
+                          <label class="bmd-label">PDF Upload</label><br>
+                          <span class="col-xs-6" id="pdfUploadSpan">
+                            <% if(quiz.pdfUpload) { %> 
+                              Allowed
+                            <% }else{ %>
+                              Not Allowed
+                            <% } %>
+                          </span>
+                          <span class="col-xs-6 pull-right">
+                            <label class="switch">
+                              <input type="checkbox" id="pdfUpload"
+                                <% if(quiz.pdfUpload) { %> 
+                                  checked
+                                <% } %>
+                              disabled>
+                              <span class="slider round"></span>
+                            </label>
+                          </span>
+                        </div>
+  
+                        <form id="pdfUploadDurationForm">
+                          <div class="form-group" id="pdfUploadDuration"
+                            <% if(!quiz.pdfUpload) { %>
+                              style="display: none;"
+                            <% } %>
+                          >
+                            <label class="bmd-label">PDF Upload Time Limit</label><br>
+                            <input type="number" class="form-control" autocomplete="off" name="pdfUploadDuration" value="<%= quiz.pdfUploadDuration %>" step="0.01" required/>
+                            <span class="col-xs-6 pull-right">
+                              <input type="submit" class="btn btn-primary pull-right" value="Edit Upload Time"/>
+                            </span>
+                          </div>
+                          <br>
+                        </form>
+  
+                        <form id="editCourseQuiz">
+                          <div class="form-group">
+                            <label class="bmd-label">Start Datetime of Quiz</label><br>
+                            <input type="datetime-local" class="form-control" id="start_date" name="startDate" value='<%= (new Date(quiz.startDate)).getFullYear()+"-"+("0" + ((new Date(quiz.startDate)).getMonth()+1)).slice(-2)+"-"+("0"+(new Date(quiz.startDate)).getDate()).slice(-2)+"T"+(new Date(quiz.startDate)).toString().slice(16,21); %>' required>
+                          </div>
+                          <div class="form-group">
+                            <label class="bmd-label">End Datetime of Quiz</label><br>
+                            <input type="datetime-local" class="form-control" id="end_date" name="endDate" value='<%= (new Date(quiz.endDate)).getFullYear()+"-"+("0" + ((new Date(quiz.endDate)).getMonth()+1)).slice(-2)+"-"+("0"+(new Date(quiz.endDate)).getDate()).slice(-2)+"T"+(new Date(quiz.endDate)).toString().slice(16,21); %>' required>
+                          </div>
+                          <input type="submit" id="course_button" class="btn btn-primary pull-right margin20" value="Edit Time"/>
+                        </form>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+      <% } %>
+          <!-- Modal 8 -->
+          <div class="modal fade" id="modal8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable-centered modal-md" role="document">
+              <div class="modal-content card">
+                <div class="card-header card-header-green">
+                  <h4 class="modal-title">Delete This Quiz</h4>
+                </div>
+                <div class="modal-body">
+                    <h5 style="padding-bottom: 12px"><b>All data related to this quiz will be deleted</b></h5>
+                    <form id="deleteQuiz" action= <%= quizId + '/deleteQuiz' %> method="POST">
+                      <div class="form-group">
+                        <label class="bmd-label">Enter "<b><%= quizId %></b>" to delete this quiz</label><br>
+                        <input type="text" class="form-control" id="random_string" autocomplete="off" name="confirmation" required/>
+                      </div>
+                        <input type="submit" id="quiz_button" class="btn btn-primary pull-right" value="Delete Quiz"/>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 <%- include('./baseEjs/footer')%>

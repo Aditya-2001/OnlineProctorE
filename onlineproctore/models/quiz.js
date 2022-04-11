@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
 const Question = require('./question');
 const Submission = require('./submission');
+const LabSubmission = require('./labSubmission');
+const LabQuestion = require('./labQuestion');
 
 const Quiz = new Schema({
   course: {
@@ -111,6 +113,16 @@ Quiz.post("remove", async function(res, next) {
   await Submission.find({quiz: this._id}, async (err, submissions) => {
     for await (let submission of submissions){
       submission.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await LabSubmission.find({quiz: this._id}, async (err, labSubmissions) => {
+    for await (let labSubmission of labSubmissions){
+      labSubmission.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await LabQuestion.find({quiz: this._id}, async (err, labQuestions) => {
+    for await (let labQuestion of labQuestions){
+      labQuestion.remove();
     }
   }).clone().catch(function(err){console.log(err)});
   next();

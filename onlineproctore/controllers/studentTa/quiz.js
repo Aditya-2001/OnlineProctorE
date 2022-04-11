@@ -9,7 +9,6 @@ const AnswerPDF = require('../../models/answerPDF');
 const fs = require('fs');
 const path = require('path');
 const { removeFile } = require("../../functions");
-const {Duplex} = require('stream');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

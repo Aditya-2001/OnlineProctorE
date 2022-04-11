@@ -14,9 +14,8 @@ const http = require('http');
 const https = require('https');
 const httpPort = process.env.PORT || 3000;
 const httpsPort = 3443;
-const privateKey = fs.readFileSync('./bin/certificates/private.key')
-const certificate = fs.readFileSync('./bin/certificates/certificate.pem')
-const Course = require('./models/course');
+const privateKey = fs.readFileSync('./certificates/private.key')
+const certificate = fs.readFileSync('./certificates/certificate.pem')
 const credentials = {
   key: privateKey,
   cert: certificate
@@ -25,6 +24,10 @@ var HOST = 'localhost';
 
 const server = http.createServer(app).listen(httpPort, HOST, () => { console.log('Main Server listening to port ' + httpPort) });
 const secureServer = https.createServer(credentials, app).listen(httpsPort, HOST, () => { console.log('Peer Server listening to port ' + httpsPort) })
+server.on('error', onError);
+server.on('listening', onListening);
+secureServer.on('error', onError);
+secureServer.on('listening', onListening);
 const io = require('socket.io')(secureServer);
 // const io = require('socket.io')(server);
 const { ExpressPeerServer } = require('peer');
@@ -66,16 +69,6 @@ app.use(express.static(path.join(__dirname, './weights')));
 app.use(express.static(path.join(__dirname, './dist')));
 
 app.use('/', index);
-app.get('/.well-known/pki-validation/1C037F04249B0088AB3D82E23FBB70E3.txt', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '1C037F04249B0088AB3D82E23FBB70E3.txt'));
-})
-// app.get('/getcourses', async (req, res) => {
-//   // var courses = await Course.findCourses({});
-//   // console.log('ejinjf');
-//   var courses1 = await Course.findOneCourse({_id: "61f0346999984a49b68ccbd7"});
-//   console.log('almkmk');
-//   res.json({courses1: courses1});
-// })
 app.use('/users', users);
 app.use(auth);
 app.use('/dashboard', userRedirect);
@@ -111,13 +104,40 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
   return res.render('error/error', {authorized: true});
 });
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}

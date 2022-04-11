@@ -9,6 +9,7 @@ const {removeFile} = require('../../functions');
 const Announcement = require("../../models/announcement");
 const Quiz = require("../../models/quiz");
 const Submission = require("../../models/submission");
+const LabSubmission = require("../../models/labSubmission");
 const Excel = require('exceljs');
 
 const storage = multer.diskStorage({
@@ -92,13 +93,17 @@ exports.getCourseDetails = async (req,res) => {
         });
       }
       else{
-        var submissions = await Submission.findSubmissions({user: user._id});
+        var quizIds = quizzes.map(q => String(q._id));
+        var submissions = await Submission.findSubmissions({user: user._id, quiz: {$in: quizIds}});
+        var labSubmissions = await LabSubmission.findLabSubmissions({user: user._id, quiz: {$in: quizIds}});
         return res.status(200).render('studentTa/CourseStudent', {
           user: user,
           course_id: course_id,
           enrolledUser: enrolledUser,
           announcements: announcements,
           submissions: submissions,
+          labSubmissions: labSubmissions,
+          quizzes: quizzes,
           page: enrolledUser.course.courseName,
           backLink: '/dashboard'
         });
