@@ -43,14 +43,14 @@
                       <h4 class="modal-title">Add Question</h4>
                     </div>
                     <div class="modal-body">
-                      <form id="addMCQQuestion">
+                      <form >
                         <div class="form-group">
                           <label class="bmd-label-floating">Type the question below</label>
-                          <textarea class="form-control" name="question" autocomplete="off" id="addMCQQuestionText" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="question" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
                         </div>
                         <div class="form-group">
                           <label class="bmd-label-floating">Maximum Marks for the question</label>
-                          <input type="number" class="form-control" autocomplete="off" id="addMCQQuestionMaxMarks" name="maximumMarks" step="0.01" required>
+                          <input type="number" class="form-control" autocomplete="off" name="maximumMarks" step="0.01" required>
                         </div><br>
                         <div id="questionImages">
                           <div class="form-group">
@@ -58,41 +58,41 @@
                             <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
                           </div>
                         </div>
-                        <input type="button" onclick="addImageLink()" class="btn btn-primary" value="Add Image Link"/>
+                        <input type="button" onclick="addLabImageLink('questionImages', 'imageLink')" class="btn btn-primary" value="Add Image Link"/>
                         <br><br>
-                        <div id="questionOptions">
+                        <div id="questionContraints">
                           <div class="form-group">
                             <label>Add constraints</label><br>
-                            <input type="text" class="form-control" autocomplete="off" name="option1" placeholder="Enter Constraint 1">
+                            <input type="text" class="form-control" autocomplete="off" name="constraint1" placeholder="Enter Constraint 1">
                           </div>
                         </div>
-                        <input type="button" onclick="addOption()" class="btn btn-primary" value="Add Option"/>
+                        <input type="button" onclick="addConstraints('questionContraints', 'constraint')" class="btn btn-primary" value="Add Constraints"/>
                         <br><br>
                         <div class="form-group">
                           <label class="bmd-label-floating">Enter the sample test case</label>
-                          <textarea class="form-control" name="question" autocomplete="off" id="addMCQQuestionText" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="sampleInputTestCase" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
                         </div><br>
                         <div class="form-group">
                           <label class="bmd-label-floating">Enter the output of sample test case</label>
-                          <textarea class="form-control" name="question" autocomplete="off" id="addMCQQuestionText" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="sampleOutputTestCase" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
                         </div><br>
                         <div class="form-group">
                           <label class="bmd-label-floating">Enter the Explanation for Sample Test Case</label>
-                          <textarea class="form-control" name="question" autocomplete="off" id="addMCQQuestionText" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="sampleTestCaseExplanation" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
                         </div><br>
-                        <div id="questionImages">
+                        <div id="explanationImages">
                           <div class="form-group">
                             <label>Add Images for Explanation</label><br>
-                            <input type="text" class="form-control" autocomplete="off" name="imageLink1" placeholder="Enter Image Link 1">
+                            <input type="text" class="form-control" autocomplete="off" name="explanationImageLink1" placeholder="Enter Image Link 1">
                           </div>
                         </div>
-                        <input type="button" onclick="addImageLink()" class="btn btn-primary" value="Add Image Link"/>
+                        <input type="button" onclick="addLabImageLink('explanationImages', 'explanationImageLink')" class="btn btn-primary" value="Add Image Link"/>
                         <br><br>
                         <p style="color: brown;">While uploading testcases rename the testcase file as "TestCase01.txt" and the corresponding output files as "Output01.txt"</p>
                         <div class="form-group">
                           <label class="bmd-label-floating">Enter the output of sample test case</label>
                         </div>
-                        <input type="file" accept=".txt" class="" name="TestCases"/><br><br>
+                        <input type="file" accept=".txt" class="" name="TestCases" multiple/><br><br>
                         <input type="submit" class="btn btn-primary pull-right margin20" value="Add Question"/>
                       </form>
                     </div>

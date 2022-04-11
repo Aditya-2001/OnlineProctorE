@@ -58,32 +58,31 @@
                           <th> </th>
                         </tr></thead>
                         <tbody>
-                          <% submissions.forEach(submission => { %>
-                            <% if(!submission.quiz.hidden){ %>
-                              <% if(String(submission.quiz.course._id) == String(course_id)){ %>
+                          <% quizzes.forEach(quiz => { %>
+                            <% if(!quiz.hidden){ %>
                               <tr>
-                                <td> <%= submission.quiz.quizName %> </td>
+                                <td> <%= quiz.quizName %> </td>
                                 <td>
-                                  <%= submission.quiz.startDate.toString().slice(0,16) %>
+                                  <%= quiz.startDate.toString().slice(0,16) %>
                                 </td>
                                 <td>
-                                  <%= submission.quiz.startDate.toString().slice(16,-31) %>
+                                  <%= quiz.startDate.toString().slice(16,-31) %>
                                 </td>
                                 <td>
-                                  <%= submission.quiz.endDate.toString().slice(0,16) %>
+                                  <%= quiz.endDate.toString().slice(0,16) %>
                                 </td>
                                 <td>
-                                  <%= submission.quiz.endDate.toString().slice(16,-31) %>
+                                  <%= quiz.endDate.toString().slice(16,-31) %>
                                 </td>
-                                <% if(submission.quiz.quizHeld || submission.submitted){ %>
+                                <% if(quiz.quizHeld || submissions.filter(submission => submission.quiz._id == quiz._id).submitted || labSubmissions.filter(labSubmission => labSubmission.quiz._id == quiz._id).submitted){ %>
                                   <td>
-                                    <a href="<%= '/dashboard/user/quiz/' + submission.quiz._id %>" type="button" rel="tooltip" title="View Quiz" class="btn btn-primary btn-link btn-sm">
+                                    <a href="<%= '/dashboard/user/quiz/' + quiz._id %>" type="button" rel="tooltip" title="View Quiz" class="btn btn-primary btn-link btn-sm">
                                       <i class="material-icons" style="vertical-align: auto;">visibility</i>
                                     </a>
                                   </td>
                                 <% } else{ %>
                                   <td>
-                                    <a href="<%= '/dashboard/user/quiz/' + submission.quiz._id %>" type="button" rel="tooltip" title="Attempt Quiz" class="btn btn-primary btn-link btn-sm">
+                                    <a href="<%= '/dashboard/user/quiz/' + quiz._id %>" type="button" rel="tooltip" title="Attempt Quiz" class="btn btn-primary btn-link btn-sm">
                                       <i class="material-icons">play_arrow</i>
                                     </a>
                                   </td>
@@ -92,7 +91,6 @@
                                   <a data-toggle="modal" data-target="#modal100" href="#"><i class="material-icons">info_outline</i></a>
                                 </td>
                               </tr>
-                              <% } %>
                             <% } %>
                           <% }) %>
                         </tbody>

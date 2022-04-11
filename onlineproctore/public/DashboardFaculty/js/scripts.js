@@ -74,6 +74,17 @@ function addImageLink(){
   $('#questionImages').append(option);
 }
 
+function addLabImageLink(id, name){
+  var n = $('#' + id).children().length;
+  option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="'+ name +(n+1)+'" placeholder="Enter Image Link '+(n+1)+'"></div>'
+  $('#' + id).append(option);
+}
+function addConstraints(id, name){
+  var n = $('#' + id).children().length;
+  option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="'+name+(n+1)+'" placeholder="Enter Constraint '+(n+1)+'"></div>'
+  $('#' + id).append(option);
+}
+
 function addWrittenImageLink(){
   var n = $('#writtenQuestionImages').children().length;
   option = '<div class="form-group"><input type="text" class="form-control" autocomplete="off" name="imageLink'+(n+1)+'" placeholder="Enter Image Link '+(n+1)+'"></div>'

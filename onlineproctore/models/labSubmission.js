@@ -47,13 +47,13 @@ const LabSubmission = new Schema({
     timestamps: true
 })
 
-LabSubmission.statics.findSubmissions = async function(filter){
+LabSubmission.statics.findLabSubmissions = async function(filter){
   var labSubmission = this;
   var labSubmissions = await labSubmission.find(filter).populate('quiz').populate('user');
   return labSubmissions;
 };
 
-LabSubmission.statics.findOneSubmission = async function(filter){
+LabSubmission.statics.findOneLabSubmission = async function(filter){
   var labSubmission = this;
   var labSubmissions = await labSubmission.findOne(filter).populate('quiz').populate('user');
   return labSubmissions;

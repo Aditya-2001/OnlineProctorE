@@ -20,13 +20,13 @@ const LabTestCase = new Schema({
     timestamps: true
 })
 
-LabTestCase.statics.findAnswerPDFs = async function(filter){
+LabTestCase.statics.findLabTestCases = async function(filter){
   var labTestCase = this;
   var labTestCases = await labTestCase.find(filter).populate('submission');
   return labTestCases;
 };
 
-LabTestCase.statics.findOneAnswerPDF = async function(filter){
+LabTestCase.statics.findOneLabTestCase = async function(filter){
   var labTestCase = this;
   var labTestCases = await labTestCase.findOne(filter).populate('submission');
   return labTestCases;

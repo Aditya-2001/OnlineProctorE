@@ -57,13 +57,13 @@ LabQuestion.post("remove", async function(res, next) {
   next();
 });
 
-LabQuestion.statics.findQuestions = async function(filter){
+LabQuestion.statics.findLabQuestions = async function(filter){
   var labQuestion = this;
   var labQuestions = await labQuestion.find(filter).populate('quiz');
   return labQuestions;
 };
 
-LabQuestion.statics.findOneQuestion = async function(filter){
+LabQuestion.statics.findOneLabQuestion = async function(filter){
   var labQuestion = this;
   var labQuestions = await labQuestion.findOne(filter).populate('quiz');
   return labQuestions;
