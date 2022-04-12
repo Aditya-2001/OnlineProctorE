@@ -1,14 +1,21 @@
+// Packages
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+
+// Functions
+const { removeFile } = require("../../functions");
+
+// Models
 const Quiz = require("../../models/quiz");
 const User = require("../../models/user");
 const Question = require('../../models/question');
-const QuestionSubmission = require('../../models/questionSubmission');
-const Submission = require('../../models/submission');
-const IllegalAttempt = require('../../models/illegalAttempt');
-const multer = require('multer');
 const AnswerPDF = require('../../models/answerPDF');
-const fs = require('fs');
-const path = require('path');
-const { removeFile } = require("../../functions");
+const Submission = require('../../models/submission');
+const LabSubmission = require('../../models/labSubmission');
+const IllegalAttempt = require('../../models/illegalAttempt');
+const QuestionSubmission = require('../../models/questionSubmission');
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -75,7 +82,11 @@ exports.markAnswer = async (req, res) => {
 }
 
 exports.submit = async (req, res) => {
+  var quiz = await Quiz.findOneQuiz({_id: req.quizId});
   var submission = await Submission.findOne({_id: req.body.submissionId});
+  if(quiz.labQuiz){
+    submission = await LabSubmission.findOne({_id: req.body.submissionId});
+  }
   submission.submitted = true;
   submission.save();
   res.status(200).json({

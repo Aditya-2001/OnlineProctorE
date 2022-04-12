@@ -1,6 +1,6 @@
-var countDownDate = new Date("Jan 01, 2023 20:47:00").getTime();
 var wid;
 var leftTime=10;
+var testStarted = true;
 var temp=setInterval(function(){
     leftTime-=1;
     if(leftTime==0){
@@ -12,6 +12,7 @@ var temp=setInterval(function(){
         document.getElementById("quiz-start-time").innerHTML=leftTime+" sec";
     }
 },1000);
+
 var myfunc = setInterval(function() {
     var now = new Date().getTime();
     var timeleft = countDownDate - now;
@@ -47,11 +48,35 @@ var myfunc = setInterval(function() {
         document.getElementById("end").innerHTML = "TIME UP!!";
     }
 }, 1000);
+
 async function start(){
     let video = document.querySelector("#video");
     let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     video.srcObject = stream;
 }
+
+function submitTest(){
+    var result = confirm("Are you sure you want to submit?");
+    if (result) {
+        var submissionId = document.getElementById("submissionId").value;
+        var quizId = document.getElementById("quizId").value;
+        var data = {
+            submissionId: submissionId
+        };
+        if(testStarted){
+            try{
+                var response = axios.post(quizId + '/submit', data);
+                response.then( result => {
+                    window.location.href = result.data.url;
+                })
+            }
+            catch(error){
+                console.log("Error :", error);
+            }
+        }
+    }
+}
+
 $(document).ready(function() {
 
     $(".CopyColumn").click(function(){
@@ -163,4 +188,13 @@ function copy_code(){
 
 function copy_testcase(num){
     copy_helper("not-copied"+num,"copied"+num);
+}
+
+
+function changeDiv(id){
+    var currId = $('.descBar.selectd-page')[0].id;
+    document.getElementById(currId + '1').classList.add('none');
+    document.getElementById(currId).classList.remove('selectd-page');
+    document.getElementById(id).classList.add('selectd-page');
+    document.getElementById(id+'1').classList.remove('none');
 }

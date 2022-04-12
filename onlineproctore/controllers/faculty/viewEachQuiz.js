@@ -95,6 +95,7 @@ exports.getCourseQuiz = async (req, res) => {
     var enrolledUser = await Enrollment.findOneEnrollment({course: quiz.course._id, user: user._id});
     if(enrolledUser.accountType == config.student){
       var submission = await Submission.findOneSubmission({quiz: quizId, user: user._id});
+      var labSubmission = await LabSubmission.findOneLabSubmission({quiz: quizId, user: user._id});
       var data = {
         quizId: quizId, 
         quiz: quiz, 
@@ -102,12 +103,16 @@ exports.getCourseQuiz = async (req, res) => {
         backLink: '/dashboard/user/course/' + quiz.course._id
       }
       if(quiz.startDate <= Date.now() && Date.now() < quiz.endDate){
-        if(!submission.submitted && req.device.type == 'desktop'){
-          // if(quiz.labQuiz)
-          //   return res.status(200).render('labPage/labpage', data);
+        if(((!quiz.labQuiz && !submission.submitted) || (quiz.labQuiz && !labSubmission.submitted)) && req.device.type == 'desktop'){
+          if(quiz.labQuiz){
+            data.submission = labSubmission;
+            var labQuestions = await LabQuestion.findLabQuestions({quiz: quizId});
+            data.questions = labQuestions;
+            return res.status(200).render('labPage/labpage', data);
+          }
           return res.status(200).render('quiz/quiz', data);
         }
-        else if(submission.submitted){
+        else if(((!quiz.labQuiz && submission.submitted) || (quiz.labQuiz && labSubmission.submitted))){
           return res.status(200).render('quiz/viewQuiz', data);
         }
         throw new Error('Invalid access to Quiz by User');
@@ -1040,6 +1045,8 @@ exports.addLabQuestion = async (req, res) => {
       if(foundTestCases) continue;
       var newTestCase = new LabTestCase(testCase);
       newTestCase.save();
+      removeFile(inputTestCasePath);
+      removeFile(outputTestCasePath);
     }
   }catch(e){
     console.log(e);
