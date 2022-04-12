@@ -1,24 +1,36 @@
-const Quiz = require('../../models/quiz');
-const User = require('../../models/user');
-const Course = require('../../models/course');
-const Question = require('../../models/question');
-const Enrollment = require('../../models/enrollment');
-const IllegalAttempt = require('../../models/illegalAttempt');
-const QuestionSubmission = require('../../models/questionSubmission');
-const multer = require('multer');
-const {removeFile} = require('../../functions');
+// Packages
+const ejs = require('ejs');
 const XLSX = require('xlsx');
 const path = require('path');
-const config = require('../../config');
-const Submission = require('../../models/submission');
-const {answerSimilarity} = require('../../queues/answerSimilarity');
-const {webPlagiarism} = require('../../queues/webPlagiarism');
-const {generateStudentSubmission} = require('../../queues/generateStudentSubmission');
+const pdf = require("html-pdf");
+const multer = require('multer');
 const Excel = require('exceljs');
 const AdmZip = require('adm-zip');
-const ejs = require('ejs');
-let pdf = require("html-pdf");
+const fs = require('fs').promises;
+const schedule = require('node-schedule');
+
+// Functions and Settings
+const config = require('../../config');
+const {removeFile} = require('../../functions');
+
+// Models
+const User = require('../../models/user');
+const Quiz = require('../../models/quiz');
+const Course = require('../../models/course');
+const Question = require('../../models/question');
 const AnswerPDF = require('../../models/answerPDF');
+const Enrollment = require('../../models/enrollment');
+const Submission = require('../../models/submission');
+const LabQuestion = require('../../models/labQuestion');
+const LabTestCase = require('../../models/labTestCase');
+const LabSubmission = require('../../models/labSubmission');
+const IllegalAttempt = require('../../models/illegalAttempt');
+const QuestionSubmission = require('../../models/questionSubmission');
+
+// Queues
+const {webPlagiarism} = require('../../queues/webPlagiarism');
+const {answerSimilarity} = require('../../queues/answerSimilarity');
+const {generateStudentSubmission} = require('../../queues/generateStudentSubmission');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -91,6 +103,8 @@ exports.getCourseQuiz = async (req, res) => {
       }
       if(quiz.startDate <= Date.now() && Date.now() < quiz.endDate){
         if(!submission.submitted && req.device.type == 'desktop'){
+          // if(quiz.labQuiz)
+          //   return res.status(200).render('labPage/labpage', data);
           return res.status(200).render('quiz/quiz', data);
         }
         else if(submission.submitted){
@@ -323,14 +337,14 @@ exports.addMCQQuestion = async (req, res) => {
       mcq: true, options: options, correctOptions: correctOptions, markingScheme: markingScheme,
       negativeMarking: negativeMarking, imageLinks: imageLinks};
     const newQuestion = new Question(mcqQuestion);
+    var foundQuestion = await Question.findOneQuestion(mcqQuestion);
+    if(foundQuestion) throw new Error('Question Already Exists');
     var quiz = await Quiz.findOne({_id: quizId});
     if(!quiz.setNames.includes(set)){
       quiz.setNames.push(set);
       quiz.setCount += 1;
       quiz.save();
     }
-    var foundQuestion = await Question.findOneQuestion(mcqQuestion);
-    if(foundQuestion) throw new Error('Question Already Exists');
     newQuestion.save();
   }
   catch(err){
@@ -604,12 +618,16 @@ exports.editWrittenQuestion = async (req, res) => {
 
 exports.editCourseQuiz = async (req, res) => {
   const quizId = req.quizId;
-  const startDate = req.body.startDate;
-  const endDate = req.body.endDate;
+  const startDate = new Date(req.body.startDate);
+  const endDate = new Date(req.body.endDate);
   var quiz = await Quiz.findOne({_id: quizId});
   quiz.startDate = startDate;
   quiz.endDate = endDate;
   quiz.save();
+  const job = schedule.scheduleJob(startDate.getTime() - 20000, async function(){
+    console.log('The world is going to end today.');
+    assignSets(String(quiz._id));
+  });
   return res.status(204).send();
 }
 
@@ -834,55 +852,50 @@ exports.downloadStudentSubmissions = async (req, res) => {
   }).clone().catch(function(err){console.log(err)});
 }
 
-//unmodified and unoptimized
-exports.assignSets = async (req, res) => {
-  await Quiz.findOne({_id: req.quizId}, async (err, quiz) => {
-    await Enrollment.find({course: quiz.course._id, accountType: config.student}, async (err, enrollments) => {
-      let generateSubmissionPromise = enrollments.map(function(enrollment, index){
-        return new Promise(async function(resolve){
-          await Submission.exists({quiz: req.quizId, user: enrollment.user._id}, async (err, submission) => {
-            if(!submission){
-              await Submission.create({quiz: req.quizId, user: enrollment.user._id});
-              resolve();
-            }
-            else{
-              resolve();
-            }
-          })
-        })
-      })
-  
-      Promise.all(generateSubmissionPromise).then(async function(){
-        if(Date.now() >= quiz.startDate){
-          return res.status(204).send();
-        }
-        else{
-          await Submission.find({quiz: req.quizId}, async (err, submissions) => {
-            let currentIndex = submissions.length,  randomIndex;
-            while (currentIndex != 0) {
-              randomIndex = Math.floor(Math.random() * currentIndex);
-              currentIndex--;
-              [submissions[currentIndex], submissions[randomIndex]] = [submissions[randomIndex], submissions[currentIndex]];
-            }
-            var k = Math.floor(submissions.length/quiz.setCount);
-            var j = 0;
-            for(let i=0; i<submissions.length; i++){
-              if(i%k == 0){
-                j += 1;
-                j %= quiz.setCount;
-              }
-              submissions[i].set = quiz.setNames[j];
-              submissions[i].save();
-              generateStudentSubmission.add({submissionId: submissions[i]._id, quizId: quiz._id});
-            }
-            return res.status(204).send();
-          }).clone().catch(function(err){console.log(err)})
-        }
-      })
-    }).clone().catch(function(err){console.log(err)})
-  }).clone().catch(function(err){console.log(err)})
-  
+
+assignSets = async (quizId) => {
+  console.log(quizId);
+  var quiz = await Quiz.findOneQuiz({_id: quizId});
+  var enrollments = await Enrollment.findEnrollments({course: quiz.course._id, accountType: config.student});
+  for(var i=0; i<enrollments.length; i++){
+    if(quiz.labQuiz){
+      var labSubmission = await LabSubmission.exists({quiz: quizId, user: enrollments[i].user._id});
+      if(labSubmission)
+        continue;
+      await LabSubmission.create({quiz: quizId, user: enrollments[i].user._id});
+    }
+    else{
+      var submission = await Submission.exists({quiz: quizId, user: enrollments[i].user._id});
+      if(submission)
+        continue;
+      await Submission.create({quiz: quizId, user: enrollments[i].user._id});
+    }
+  }
+  if(quiz.labQuiz)
+    return;
+  if(Date.now() >= quiz.startDate){
+    return;
+  }
+  var submissions = await Submission.findSubmissions({quiz: quizId});
+  let currentIndex = submissions.length,  randomIndex;
+  while (currentIndex != 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [submissions[currentIndex], submissions[randomIndex]] = [submissions[randomIndex], submissions[currentIndex]];
+  }
+  var k = Math.floor(submissions.length/quiz.setCount);
+  var j = 0;
+  for(let i=0; i<submissions.length; i++){
+    if(i%k == 0){
+      j += 1;
+      j %= quiz.setCount;
+    }
+    submissions[i].set = quiz.setNames[j];
+    submissions[i].save();
+    generateStudentSubmission.add({submissionId: submissions[i]._id, quizId: quiz._id});
+  }
 }
+exports.assignSets = assignSets;
 
 exports.renderPreviewQuiz = async (req, res) => {
   var quiz = await Quiz.findOneQuiz({_id: req.quizId});
@@ -942,4 +955,94 @@ exports.pdfUploadDuration = async (req, res) => {
   quiz.pdfUploadDuration = req.body.pdfUploadDuration;
   quiz.save();
   return res.status(204).send();
+}
+
+const testCaseStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/faculty');
+  },
+
+  filename: async function (req, file, cb) {
+    fileName = req.quizId + '_' +file.originalname;
+    cb(null, fileName);
+  }
+});
+
+const testCaseFileFilter = (req, file, cb) => {
+  if(!file.originalname.match(/\.(txt)$/)) {
+    return cb(new Error('You can upload only txt files!'), false);
+  }
+  cb(null, true);
+};
+
+exports.uploadTestCases = multer({ storage: testCaseStorage, fileFilter: testCaseFileFilter});
+
+exports.addLabQuestion = async (req, res) => {
+  try{
+    const body = req.body;
+    const question = body.question;
+    const maximumMarks = body.maximumMarks;
+    var count = 1;
+    var imageLinks = [];
+    while(body['imageLink'+count]){
+      if(body['imageLink'+count] != ''){
+        imageLinks.push(body['imageLink'+count]);
+        count += 1;
+      }
+    }
+    count = 1;
+    var constraints = [];
+    while(body['constraint'+count]){
+      if(body['constraint'+count] != ''){
+        constraints.push(body['constraint'+count]);
+        count += 1;
+      }
+    }
+    const sampleInputTestCase = body.sampleInputTestCase;
+    const sampleOutputTestCase = body.sampleOutputTestCase;
+    const sampleTestCaseExplanation = body.sampleTestCaseExplanation;
+    count = 1;
+    var explanationImageLinks = [];
+    while(body['explanationImageLink'+count]){
+      if(body['explanationImageLink'+count] != ''){
+        explanationImageLinks.push(body['explanationImageLink'+count]);
+        count += 1;
+      }
+    }
+    var sampleTestCaseGiven = false;
+    if(sampleInputTestCase.length){
+      sampleTestCaseGiven = true;
+    }
+    var sampleTestCaseExplanationGiven = false;
+    if(sampleTestCaseExplanation.length){
+      sampleTestCaseExplanationGiven = true;
+    }
+    var labQuestion = {quiz: req.quizId, question: question, questionImageLinks: imageLinks, 
+      maximumMarks: maximumMarks, constraints: constraints, sampleTestCaseGiven: sampleTestCaseGiven,
+      sampleInputTestCase: sampleInputTestCase, sampleOutputTestCase: sampleOutputTestCase, 
+      sampleTestCaseExplanationGiven: sampleTestCaseExplanationGiven, sampleTestCaseExplanation: sampleTestCaseExplanation,
+      explanationImageLinks: explanationImageLinks}
+    var foundQuestion = await LabQuestion.findOneLabQuestion(labQuestion);
+    if(foundQuestion) throw new Error('Question Already Exists');
+    const newQuestion = new LabQuestion(labQuestion);
+    newQuestion.save();
+    var files = req.files;
+    for(var i=1; i<=files.length/2; i++){
+      var inputTestCase = await files.find(file => file.filename.toLowerCase() == String(req.quizId + '_' + 'TestCase' + i + '.txt').toLowerCase());
+      var outputTestCase = await files.find(file => file.filename.toLowerCase() == String(req.quizId + '_' + 'Output' + i + '.txt').toLowerCase());
+      var inputTestCasePath = path.resolve(__dirname, "../../" + inputTestCase.path);
+      var outputTestCasePath = path.resolve(__dirname, "../../" + outputTestCase.path);
+      var inputData = await fs.readFile(inputTestCasePath, 'utf8');
+      var outputData = await fs.readFile(outputTestCasePath, 'utf8');
+      var testCase = {labQuestion: String(newQuestion._id), testCaseInput: {data: inputData, filename: inputTestCase.filename},
+        testCaseOutput: {data: outputData, filename: outputTestCase.filename}};
+      var foundTestCases = await LabTestCase.findOneLabTestCase(testCase);
+      if(foundTestCases) continue;
+      var newTestCase = new LabTestCase(testCase);
+      newTestCase.save();
+    }
+  }catch(e){
+    console.log(e);
+  }
+  return res.status(200).redirect(req.get('referer'));
 }

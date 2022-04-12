@@ -265,7 +265,6 @@ exports.headPoseDetection = async (req, res) => {
 exports.uploadPDF = async (req, res) => {
   try{
     const filePath = path.resolve(__dirname, '../../' + req.file.path);
-    console.log(req.file);
     var submission = await Submission.findOne({_id: req.body.submissionId});
     var pdfSubmissions = await AnswerPDF.findAnswerPDFs({submission: req.body.submissionId});
     submission.pdfUploaded = true;

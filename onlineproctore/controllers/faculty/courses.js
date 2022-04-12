@@ -1,8 +1,13 @@
-const { removeFile } = require("../../functions");
-const Course = require("../../models/course");
-const User = require("../../models/user");
-const path = require('path');
+// Packages
 const fs = require('fs');
+const path = require('path');
+
+// Functions
+const { removeFile } = require("../../functions");
+
+// Models
+const User = require("../../models/user");
+const Course = require("../../models/course");
 
 exports.addCourse = async (req,res) => {
   try{

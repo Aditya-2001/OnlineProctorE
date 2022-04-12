@@ -43,10 +43,10 @@
                       <h4 class="modal-title">Add Question</h4>
                     </div>
                     <div class="modal-body">
-                      <form >
+                      <form action="<%= quizId + '/addLabQuestion' %>" method="POST" enctype="multipart/form-data">
                         <div class="form-group">
                           <label class="bmd-label-floating">Type the question below</label>
-                          <textarea class="form-control" name="question" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="question" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                         </div>
                         <div class="form-group">
                           <label class="bmd-label-floating">Maximum Marks for the question</label>
@@ -70,15 +70,15 @@
                         <br><br>
                         <div class="form-group">
                           <label class="bmd-label-floating">Enter the sample test case</label>
-                          <textarea class="form-control" name="sampleInputTestCase" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="sampleInputTestCase" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                         </div><br>
                         <div class="form-group">
                           <label class="bmd-label-floating">Enter the output of sample test case</label>
-                          <textarea class="form-control" name="sampleOutputTestCase" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="sampleOutputTestCase" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                         </div><br>
                         <div class="form-group">
                           <label class="bmd-label-floating">Enter the Explanation for Sample Test Case</label>
-                          <textarea class="form-control" name="sampleTestCaseExplanation" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="sampleTestCaseExplanation" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                         </div><br>
                         <div id="explanationImages">
                           <div class="form-group">
@@ -88,7 +88,7 @@
                         </div>
                         <input type="button" onclick="addLabImageLink('explanationImages', 'explanationImageLink')" class="btn btn-primary" value="Add Image Link"/>
                         <br><br>
-                        <p style="color: brown;">While uploading testcases rename the testcase file as "TestCase01.txt" and the corresponding output files as "Output01.txt"</p>
+                        <p style="color: brown;">While uploading testcases rename the testcase file as "TestCase1.txt" and the corresponding output files as "Output1.txt"</p>
                         <div class="form-group">
                           <label class="bmd-label-floating">Enter the output of sample test case</label>
                         </div>
@@ -149,21 +149,6 @@
                   <div class="card-footer">
                     <div class="stats">
                       <a data-toggle="modal" data-target="#modal4" href="#">Change Settings</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card card-stats">
-                  <div class="card-header card-header-green card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">animation_outlined</i>
-                    </div>
-                    <p class="card-category">Assign Set</p>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <a href="<%= quizId + '/assignSets' %>">Assign Set to Students</a>
                     </div>
                   </div>
                 </div>
@@ -345,7 +330,7 @@
                           <form id="addMCQQuestion">
                             <div class="form-group">
                               <label class="bmd-label-floating">Type the question below</label>
-                              <textarea class="form-control" name="question" autocomplete="off" id="addMCQQuestionText" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                              <textarea class="form-control" name="question" autocomplete="off" id="addMCQQuestionText" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                             </div>
                             <div class="form-group">
                                 <label class="bmd-label-floating">Maximum Marks for the question</label>
@@ -392,11 +377,11 @@
                             <div class="form-group">
                               <input type="text" id="quizId" value="<%= quizId %>" hidden/>
                               <label class="bmd-label-floating">Type the question below</label>
-                              <textarea class="form-control" name="question" id="question_written" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                              <textarea class="form-control" name="question" id="question_written" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                             </div>
                             <div class="form-group">
                               <label class="bmd-label-floating">Add a note regarding Question if you wish</label>
-                              <textarea class="form-control" name="note" id="question_note" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                              <textarea class="form-control" name="note" id="question_note" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                             </div>
                             <div class="form-group">
                                 <label class="bmd-label-floating">Maximum Marks for the question</label>
@@ -442,7 +427,7 @@
                   <form id="editMCQQuestion">
                       <div class="form-group">
                         <label class="bmd-label-floating">Edit the question below</label><br>
-                        <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                        <textarea class="form-control" name="question" autocomplete="off" id="mcqQuestion" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                       </div>
                       <input type="text" name="questionId" id="mcqQuestionId" hidden/>
                       <div class="form-group">
@@ -494,12 +479,12 @@
                     <form id="editWrittenQuestion">
                         <div class="form-group">
                           <label class="bmd-label-floating">Edit the question below</label><br>
-                          <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="question" id="writtenQuestion" autocomplete="off" rows="4" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                         </div>
                         <input type="text" name="questionId" id="writtenQuestionId" hidden/>
                         <div class="form-group">
                           <label class="bmd-label-floating">Add a note regarding Question if you wish</label><br>
-                          <textarea class="form-control" name="note" id="writtenQuestionNote" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                          <textarea class="form-control" name="note" id="writtenQuestionNote" autocomplete="off" rows="2" onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;}'></textarea>
                         </div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Maximum Marks for the question</label><br>
