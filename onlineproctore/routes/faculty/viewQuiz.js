@@ -6,9 +6,10 @@ const {getCourseQuiz, addQuestions, uploadExcelFile,
   generateSimilarityReport, generatePlagiarismReport, 
   addWrittenQuestion, deleteQuiz, deleteIllegalAttempts, 
   addMCQQuestion, viewDetailAnalysis, deleteQuestion,
-  editMCQQuestion, editWrittenQuestion, editCourseQuiz, 
+  editMCQQuestion, editWrittenQuestion, editCourseQuiz,
+  addLabQuestion, uploadTestCases,
   viewStream, downloadQuizResults, downloadStudentSubmissions,
-  assignSets, renderPreviewQuiz, previewQuiz, faceDetectorSetting,
+  renderPreviewQuiz, previewQuiz, faceDetectorSetting,
   mobileDetectorSetting, tabSwitchDetectorSetting, ipAddressDetectorSetting,
   audioDetectorSetting, viewDetailAnalysisData, headPoseDetectorSetting,
   pdfUploadDuration} = require('../../controllers/faculty/viewEachQuiz');
@@ -32,9 +33,6 @@ router.route('/addQuestions')
 
 router.route('/hideQuiz')
   .get(authFacultyTaQuiz, hideQuiz)
-
-router.route('/assignSets')
-  .get(authFacultyTaQuiz, assignSets)
 
 router.route('/previewQuiz')
   .get(authFacultyTaQuiz, renderPreviewQuiz)
@@ -82,6 +80,9 @@ router.route('/addWrittenQuestion')
 
 router.route('/addMCQQuestion')
   .post(authFacultyTaQuiz, addMCQQuestion)
+
+router.route('/addLabQuestion')
+  .post([uploadTestCases.array('TestCases'), authFacultyTaQuiz], addLabQuestion)
 
 router.route('/editMCQQuestion')
   .post(authFacultyTaQuiz, editMCQQuestion)

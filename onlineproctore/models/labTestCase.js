@@ -10,11 +10,11 @@ const LabTestCase = new Schema({
     autopopulate: true
   },
   testCaseInput: {
-    data: Buffer,
+    data: String,
     filename: String
   },
   testCaseOutput: {
-    data: Buffer,
+    data: String,
     filename: String
   }},{
     timestamps: true

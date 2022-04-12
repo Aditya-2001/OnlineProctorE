@@ -1,16 +1,24 @@
-const Course = require("../../models/course");
-const Enrollment = require("../../models/enrollment");
-const User = require("../../models/user");
-const multer = require('multer');
-const config = require("../../config");
+// Packages
 const path = require('path');
 const XLSX = require('xlsx');
-const {removeFile} = require('../../functions');
-const Announcement = require("../../models/announcement");
-const Quiz = require("../../models/quiz");
-const Submission = require("../../models/submission");
-const LabSubmission = require("../../models/labSubmission");
+const multer = require('multer');
 const Excel = require('exceljs');
+const schedule = require('node-schedule');
+
+// Functions and Settings
+const config = require("../../config");
+const {assignSets} = require('./viewEachQuiz');
+const {removeFile} = require('../../functions');
+
+// Models
+const Quiz = require("../../models/quiz");
+const User = require("../../models/user");
+const Course = require("../../models/course");
+const Enrollment = require("../../models/enrollment");
+const Submission = require("../../models/submission");
+const Announcement = require("../../models/announcement");
+const LabSubmission = require("../../models/labSubmission");
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -211,6 +219,10 @@ exports.createQuiz = async(req, res) => {
       labQuiz: labQuiz
     })
     newQuiz.save();
+    const job = schedule.scheduleJob(startDate.getTime() - 20000, async function(){
+      console.log('The world is going to end today.');
+      assignSets(String(newQuiz._id));
+    });
     return res.status(204).send();
   }
   catch(err){

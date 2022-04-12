@@ -27,16 +27,18 @@ const LabQuestion = new Schema({
     default: ''
   }],
   sampleTestCaseGiven: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
-  sampleTestCase: {
+  sampleInputTestCase: {
     type: String
   },
   sampleOutputTestCase: {
     type: String
   },
   sampleTestCaseExplanationGiven: {
-    type: String
+    type: Boolean,
+    default: false
   },
   sampleTestCaseExplanation: {
     type: String
