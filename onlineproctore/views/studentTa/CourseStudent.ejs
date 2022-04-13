@@ -74,7 +74,7 @@
                                 <td>
                                   <%= quiz.endDate.toString().slice(16,-31) %>
                                 </td>
-                                <% if(quiz.quizHeld || submissions.filter(submission => submission.quiz._id == quiz._id).submitted || labSubmissions.filter(labSubmission => labSubmission.quiz._id == quiz._id).submitted){ %>
+                                <% if(quiz.quizHeld || (!quiz.labQuiz && submissions.find(submission => String(submission.quiz._id) == String(quiz._id)).submitted) || (quiz.labQuiz && labSubmissions.find(labSubmission => String(labSubmission.quiz._id) == String(quiz._id)).submitted)){ %>
                                   <td>
                                     <a href="<%= '/dashboard/user/quiz/' + quiz._id %>" type="button" rel="tooltip" title="View Quiz" class="btn btn-primary btn-link btn-sm">
                                       <i class="material-icons" style="vertical-align: auto;">visibility</i>

@@ -22,6 +22,14 @@ const LabQuestion = new Schema({
     type: Number,
     required: true
   },
+  inputFormat: {
+    type: String,
+    default: ''
+  },
+  outputFormat: {
+    type: String,
+    default: ''
+  },
   constraints: [{
     type: String,
     default: ''

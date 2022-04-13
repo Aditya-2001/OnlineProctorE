@@ -685,3 +685,7 @@ textarea{
 .ace_print-margin{
     display: none;
 }
+
+.wrap{
+    white-space: pre-wrap;
+}
