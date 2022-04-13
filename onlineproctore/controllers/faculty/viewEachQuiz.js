@@ -1006,6 +1006,8 @@ exports.addLabQuestion = async (req, res) => {
     const sampleInputTestCase = body.sampleInputTestCase;
     const sampleOutputTestCase = body.sampleOutputTestCase;
     const sampleTestCaseExplanation = body.sampleTestCaseExplanation;
+    const inputFormat = body.inputFormat;
+    const outputFormat = body.outputFormat;
     count = 1;
     var explanationImageLinks = [];
     while(body['explanationImageLink'+count]){
@@ -1019,14 +1021,14 @@ exports.addLabQuestion = async (req, res) => {
       sampleTestCaseGiven = true;
     }
     var sampleTestCaseExplanationGiven = false;
-    if(sampleTestCaseExplanation.length){
+    if(sampleTestCaseExplanation.length || explanationImageLinks.length){
       sampleTestCaseExplanationGiven = true;
     }
     var labQuestion = {quiz: req.quizId, question: question, questionImageLinks: imageLinks, 
       maximumMarks: maximumMarks, constraints: constraints, sampleTestCaseGiven: sampleTestCaseGiven,
       sampleInputTestCase: sampleInputTestCase, sampleOutputTestCase: sampleOutputTestCase, 
       sampleTestCaseExplanationGiven: sampleTestCaseExplanationGiven, sampleTestCaseExplanation: sampleTestCaseExplanation,
-      explanationImageLinks: explanationImageLinks}
+      explanationImageLinks: explanationImageLinks, inputFormat: inputFormat, outputFormat: outputFormat}
     var foundQuestion = await LabQuestion.findOneLabQuestion(labQuestion);
     if(foundQuestion) throw new Error('Question Already Exists');
     const newQuestion = new LabQuestion(labQuestion);

@@ -46,6 +46,20 @@ var myfunc = setInterval(function() {
         document.getElementById("mins").innerHTML = ""
         document.getElementById("secs").innerHTML = ""
         document.getElementById("end").innerHTML = "TIME UP!!";
+        var submissionId = document.getElementById("submissionId").value;
+        var quizId = document.getElementById("quizId").value;
+        var data = {
+            submissionId: submissionId
+        };
+        try{
+            var response = axios.post(quizId + '/endTest', data);
+            response.then( result => {
+                window.location.href = result.data.url;
+            })
+        }
+        catch(error){
+            console.log(error);
+        }
     }
 }, 1000);
 
@@ -76,6 +90,79 @@ function submitTest(){
         }
     }
 }
+
+function openQuestion(num, question, maximumMarks, questionImageLinks, inputFormat, outputFormat, constraints, sampleTestCaseGiven, sampleInputTestCase, sampleOutputTestCase, sampleTestCaseExplanationGiven, sampleTestCaseExplanation, explanationImageLinks){
+    changeDiv('labDescription')
+    document.getElementById('QuestionNumber').innerText = num+'.';
+    document.getElementById('Question').innerText = question.slice(1,question.length-1);
+    var qilinks = '';
+    questionImageLinks = JSON.parse(questionImageLinks);
+    for(var i=0;i<questionImageLinks.length;i++){
+        qilinks+='<img src="https://drive.google.com/uc?export=view&id='+questionImageLinks[i].split('/').reverse()[1]+'" alt="image" style="width: 90%; height: auto;"><br>';
+    }
+    document.getElementById('questionImageLinks').innerHTML = qilinks;
+    document.getElementById('inputFormat').innerText = inputFormat.slice(1,inputFormat.length-1);
+    document.getElementById('outputFormat').innerText = outputFormat.slice(1,outputFormat.length-1);
+    constraints = JSON.parse(constraints);
+    constraintsHTML = '';
+    for(var i=0;i<constraints.length;i++){
+        constraintsHTML+='<li id="constraint'+(i+1)+'"></li>'
+    }
+    document.getElementById('constraints').innerHTML = constraintsHTML;
+    for(var i=0;i<constraints.length;i++){
+        document.getElementById('constraint'+(i+1)).innerText = constraints[i];
+    }
+    if(document.getElementById('sampleTestCaseGiven').classList.contains('none')){
+        document.getElementById('sampleTestCaseGiven').classList.remove('none');
+    }
+    if(!JSON.parse(sampleTestCaseGiven)){
+        document.getElementById('sampleTestCaseGiven').classList.add('none');
+        return;
+    }
+    document.getElementById('sampleInputTestCase').innerText = sampleInputTestCase.slice(1,sampleInputTestCase.length-1);
+    document.getElementById('sampleOutputTestCase').innerText = sampleOutputTestCase.slice(1,sampleOutputTestCase.length-1);
+    if(document.getElementById('sampleTestCaseExplanationGiven').classList.contains('none')){
+        document.getElementById('sampleTestCaseExplanationGiven').classList.remove('none');
+    }
+    if(!JSON.parse(sampleTestCaseExplanationGiven)){
+        document.getElementById('sampleTestCaseExplanationGiven').classList.add('none');
+    }
+    else{
+        document.getElementById('sampleTestCaseExplanation').innerText = sampleTestCaseExplanation.slice(1,sampleTestCaseExplanation.length-1);
+    }
+    var eilinks = '';
+    explanationImageLinks = JSON.parse(explanationImageLinks);
+    for(var i=0;i<explanationImageLinks.length;i++){
+        eilinks+='<img src="https://drive.google.com/uc?export=view&id='+explanationImageLinks[i].split('/').reverse()[1]+'" alt="image" style="width: 90%; height: auto;"><br>';
+    }
+    document.getElementById('explanationImageLinks').innerHTML = eilinks;
+}
+
+function fullscreen(flag, id1, id2){
+    if(flag){
+        document.getElementById('resize1').classList.remove('col-lg-4');
+        document.getElementById('resize1').classList.add('col-md-12');
+        document.getElementById('resize2').classList.remove('col-lg-8');
+        document.getElementById('resize2').classList.add('col-md-12');
+    }
+    else{
+        document.getElementById('resize1').classList.add('col-lg-4');
+        document.getElementById('resize1').classList.remove('col-md-12');
+        document.getElementById('resize2').classList.add('col-lg-8');
+        document.getElementById('resize2').classList.remove('col-md-12');
+    }
+    document.getElementById(id1).classList.add('none');
+    document.getElementById(id2).classList.remove('none');
+}
+
+document.getElementById('upload')
+    .addEventListener('change', function() {
+    var fr=new FileReader();
+    fr.onload=function(){
+        editor.session.setValue(fr.result);
+    }
+    fr.readAsText(this.files[0]);
+})
 
 $(document).ready(function() {
 
@@ -180,9 +267,7 @@ function copy_helper(id1,id2){
 }
 
 function copy_code(){
-    // navigator.clipboard.writeText(document.getElementsByClassName("ace_text-layer")[0].innerText);
-    console.log(document.getElementsByClassName("ace_text-layer")[0].innerHTML)
-    navigator.clipboard.writeText(document.getElementsByClassName("ace_text-layer")[0].innerHTML);
+    navigator.clipboard.writeText(editor.getValue());
     copy_helper("content_copy","done_all");
 }
 

@@ -90,20 +90,23 @@ exports.submit = async (req, res) => {
   submission.submitted = true;
   submission.save();
   res.status(200).json({
-    url: '/dashboard/user/course/'+submission.quiz.course._id
+    url: '/dashboard/user/course/'+quiz.course._id
   });
 }
 
 exports.endTest = async (req, res) => {
   const quizId = req.quizId;
+  var quiz = await Quiz.findOneQuiz({_id: quizId});
   var submission = await Submission.findOne({_id: req.body.submissionId});
+  if(quiz.labQuiz){
+    submission = await LabSubmission.findOne({_id: req.body.submissionId});
+  }
   submission.submitted = true;
   submission.save();
-  var quiz = await Quiz.findOne({_id: quizId});
   quiz.quizHeld = true;
   quiz.save();
   res.status(200).json({
-    url: '/dashboard/user/course/'+submission.quiz.course._id
+    url: '/dashboard/user/course/'+quiz.course._id
   });
 }
 
