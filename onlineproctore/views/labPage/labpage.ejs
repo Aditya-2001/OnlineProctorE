@@ -23,7 +23,7 @@
             <nav class="nbar">
                 <div class="row">
                     <div class="col-sm-6">
-                        <h1 class="heading">OnlineProctorE</h1>
+                        <a href="/"><h1 class="heading">OnlineProctorE</h1></a>
                     </div>
                     <div class="col-sm-6 nav-name">
                         <div class="info">
@@ -95,7 +95,7 @@
                                 <a class="nav-link descBar" id="labDescription" onclick="changeDiv('labDescription')">Description</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link descBar" href="./submissions.html">Submissions</a>
+                                <a class="nav-link descBar" id="labSubmission" onclick="changeDiv('labSubmission')">Submissions</a>
                             </li>
                             </ul>
                         </div>
@@ -118,28 +118,18 @@
                                                 <tr>
                                                     <td><%= i+1 %></td>
                                                     <td class="question-short-desc">Question <%= i+1 %></td>
-                                                    <td>0/<%= questions[i].maximumMarks %></td>
-                                                    <td><a class="btn btn-primary btn-width" onclick="openQuestion('<%= i+1 %>','<%= JSON.stringify(questions[i].question) %>', '<%= questions[i].maximumMarks %>', '<%= JSON.stringify(questions[i].questionImageLinks) %>', '<%= JSON.stringify(questions[i].inputFormat) %>', '<%= JSON.stringify(questions[i].outputFormat) %>', '<%= JSON.stringify(questions[i].constraints) %>', '<%= questions[i].sampleTestCaseGiven %>', '<%= JSON.stringify(questions[i].sampleInputTestCase) %>', '<%= JSON.stringify(questions[i].sampleOutputTestCase) %>', '<%= questions[i].sampleTestCaseExplanationGiven %>', '<%= JSON.stringify(questions[i].sampleTestCaseExplanation) %>', '<%= JSON.stringify(questions[i].explanationImageLinks) %>')">Solve</a></td>
+                                                    <td
+                                                    <% if(submission.questionMarks[i] == 0){ %>
+                                                        class="red"
+                                                    <% }else if(submission.questionMarks[i] < questions[i].maximumMarks){ %>
+                                                        class="yellow"
+                                                    <% }else{ %>
+                                                        class="green"
+                                                    <% } %>
+                                                    ><%= submission.questionMarks[i] %>/<%= questions[i].maximumMarks %></td>
+                                                    <td><a class="btn btn-primary btn-width" href="#" onclick="openQuestion('<%= JSON.stringify(questions[i]._id) %>', '<%= i+1 %>','<%= JSON.stringify(questions[i].question) %>', '<%= questions[i].maximumMarks %>', '<%= JSON.stringify(questions[i].questionImageLinks) %>', '<%= JSON.stringify(questions[i].inputFormat) %>', '<%= JSON.stringify(questions[i].outputFormat) %>', '<%= JSON.stringify(questions[i].constraints) %>', '<%= questions[i].sampleTestCaseGiven %>', '<%= JSON.stringify(questions[i].sampleInputTestCase) %>', '<%= JSON.stringify(questions[i].sampleOutputTestCase) %>', '<%= questions[i].sampleTestCaseExplanationGiven %>', '<%= JSON.stringify(questions[i].sampleTestCaseExplanation) %>', '<%= JSON.stringify(questions[i].explanationImageLinks) %>')">Solve</a></td>
                                                 </tr>
                                             <% } %>
-                                                <!-- <tr>
-                                                    <td>2</td>
-                                                    <td class="question-short-desc">Question 2</td>
-                                                    <td class="red">0/5</td>
-                                                    <td><a class="btn btn-primary btn-width" href="./question.html">Solve</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td class="question-short-desc"> Question 3 </td>
-                                                    <td class="yellow">3/5</td>
-                                                    <td><a class="btn btn-primary btn-width" href="./question.html">Solve</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td class="question-short-desc"> Question 4</td>
-                                                    <td class="green">5/5</td>
-                                                    <td><a class="btn btn-primary btn-width" href="./question.html">Solve</a></td>
-                                                </tr> -->
                                             </tbody>
                                         </table>
                                     </div>
@@ -174,6 +164,7 @@
                                                         <span class="wrap" id="outputFormat"><%= questions[0].outputFormat %></span>
                                                     </div><br>
                                                 <% } %>
+                                                <input type="text" name="questionId" id="questionId" value="<%= questions[0]._id %>" hidden/>
                                                 <div class="constrained">
                                                     <span class="que">Constraints</span>
                                                     <ul id="constraints">
@@ -244,7 +235,7 @@
                                                 <input id="upload" type="file" accept=".c,.cpp,.py,.java"/>
                                                 <span class="control-panel-theme upload_link">
                                                     <span class="que1 custom-select custom-select-sm form-control form-control-sm themes"><a href="" id="upload_link">Upload the code</a> as file.</span>
-                                                    <span class="material-icons icon1 CopyColumn" id="content_copy"  onclick="copy_code()">content_copy</span>
+                                                    <span class="material-icons icon1 CopyColumn" id="content_copy" onclick="copy_code(true)">content_copy</span>
                                                     <span class="material-icons icon1 CopyColumn" id="done_all" style="display: none;">done_all</span>
                                                 </span>
                                             </div>
@@ -278,8 +269,12 @@
                                     <div class="editor" id="editor"></div>
                                     <div class="button-container">
                                         <!-- <a href="#" style="float: left;">Custom Input</a> -->
-                                        <button data-bs-toggle="modal" data-bs-target="#modal1" href="#" class="btn btn-primary btn-width"> Run </button>
-                                        <button data-bs-toggle="modal" data-bs-target="#modal2" href="#" class="btn btn-danger btn-width"> Submit </button>
+                                        <button data-bs-toggle="modal" id="runCode" data-bs-target="#modal1" onclick="openRunModal()" class="btn btn-primary btn-width
+                                        <% if(!questions[0].sampleTestCaseGiven){ %>
+                                            none
+                                        <% } %>
+                                        "> Run </button>
+                                        <button data-bs-toggle="modal" data-bs-target="#modal2" onclick="openSubmitModal('<%= JSON.stringify(testCaseFrequency) %>')" class="btn btn-danger btn-width"> Submit </button>
                                     </div>
                                     <!-- <div class="output"></div> -->
                                 </div>
@@ -296,15 +291,15 @@
                                     <form action="#" method="POST" enctype="multipart/form-data">
                                         <div class="form-group">
                                         <label class="bmd-label">Sample Input</label>
-                                        <h6>5 <br> 85 25 65 21 84</h6>
+                                        <h6><span class="wrap" id="sampleInputTestCaseModal"><%= questions[0].sampleInputTestCase %></span></h6>
                                         </div>
                                         <div class="form-group">
                                             <label class="bmd-label">Expected Output</label>
-                                            <h6>No</h6>
+                                            <h6><span class="wrap" id="sampleOutputTestCaseExpectedModal"><%= questions[0].sampleOutputTestCase %></span></h6>
                                         </div>
                                         <div class="form-group">
                                             <label class="bmd-label">Output</label>
-                                            <h6>No</h6>
+                                            <h6><span class="wrap" id="sampleOutputTestCaseModal"><%= questions[0].sampleOutputTestCase %></span></h6>
                                         </div>
                                         <div class="form-group">
                                         <h6 class="pass">Sample Test Case Pass</h6>
@@ -329,27 +324,139 @@
                                 <div class="modal-body">
                                     <form action="#" method="POST" enctype="multipart/form-data">
                                         <div class="form-group">
-                                        <label class="bmd-label">Score: <span class="green">4</span></label>
+                                            <label class="bmd-label">Score: <span class="green">4</span></label>
                                         </div>
                                         <div class="form-group">
-                                        <div class="row center">
-                                            <div class="col-md-4 col-6">
-                                                <!-- <input type="checkbox" disabled checked><i class="fa icon-checkbox"></i><span class="options">Potato</span> -->
-                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 1</span>
-                                            </div>
-                                            <div class="col-md-4 col-6">
-                                                <i class="icon fa fa-remove text-danger fa-fw red"></i><span class="incorrect-test">Test Case 2</span>
-                                            </div>
-                                            <div class="col-md-4 col-6">
-                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 3</span>
-                                            </div>
-                                            <div class="col-md-4 col-6">
-                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 4</span>
-                                            </div>
-                                            <div class="col-md-4 col-6">
-                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 5</span>
+                                            <div class="row center" id="finalTestCaseDisplay">
+                                                <% for(var i=0;i<testCaseFrequency[String(questions[0]._id)];i++){ %>
+                                                    <div class="col-md-4 col-6">
+                                                        <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case <%= i+1 %></span>
+                                                    </div>
+                                                <% } %>
+                                                <!-- <div class="col-md-4 col-6">
+                                                    <i class="icon fa fa-remove text-danger fa-fw red"></i><span class="incorrect-test">Test Case 2</span>
+                                                </div> -->
                                             </div>
                                         </div>
+                                    </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row external none" id="labSubmission1">
+                        <div class="col-sm-12 pad-unset pad hgt">
+                            <div class="marg">
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        <span class="control-panel-theme">
+                                            <span class="que">Submissions: </span>
+                                            <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm">
+                                                <option value="all"> All </option>
+                                                <% for(var i=0;i<questions.length;i++){ %>
+                                                    <option value="<%= i+1 %>"> Question <%= i+1 %> </option>
+                                                <% } %>
+                                            </select>
+                                        </span>
+                                        <table class="dtBasicExample table table-hover table-striped table-sm table-responsive-sm" style="width: 100%;">
+                                            <thead class="text-warning">
+                                            <tr><th class="th-sm">Problem</th>
+                                            <th class="th-sm">Score</th>
+                                            <th class="th-sm">Time</th>
+                                            <th class="th-sm">Memory</th>
+                                            <th class="th-sm">Language</th>
+                                            <th class="th-sm">Detail</th>
+                                            <th class="th-sm">Submission Time</th>
+                                            </tr></thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Question 1</td>
+                                                    <td>5</td>
+                                                    <td>0.04794</td>
+                                                    <td>2</td>
+                                                    <td>C++</td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal3" href="#">view</a></td>
+                                                    <td>23:17, 23 Mar 2022</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Question 2</td>
+                                                    <td>0</td>
+                                                    <td>0.94</td>
+                                                    <td>20</td>
+                                                    <td>C++</td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal3" href="#">view</a></td>
+                                                    <td>23:18, 23 Mar 2022</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Question 3</td>
+                                                    <td>5</td>
+                                                    <td>0.794</td>
+                                                    <td>90</td>
+                                                    <td>C++</td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal3" href="#">view</a></td>
+                                                    <td>20:17, 23 Mar 2022</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Question 4</td>
+                                                    <td>1</td>
+                                                    <td>0.4</td>
+                                                    <td>200</td>
+                                                    <td>C++</td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal3" href="#">view</a></td>
+                                                    <td>23:17, 23 Mar 2022</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                        <!-- Modal 3 -->
+                        <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content card">
+                                <div class="card-header card-header-green">
+                                <span class="heading-4">Submission(863563)</span><span class="material-icons icon CopyColumn right-right" id="content_copy1" onclick="copy_code(false)">content_copy</span>
+                                <span class="material-icons icon CopyColumn right-right" id="done_all1" style="display: none;">done_all</span>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="#" method="POST" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <div class="row center">
+                                                <div class="col-md-4 col-sm-6">
+                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 1</span>
+                                                </div>
+                                                <div class="col-md-4 col-sm-6">
+                                                <i class="icon fa fa-remove text-danger fa-fw red"></i><span class="incorrect-test">Test Case 2</span>
+                                                </div>
+                                                <div class="col-md-4 col-sm-6">
+                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 3</span>
+                                                </div>
+                                                <div class="col-md-4 col-sm-6">
+                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 4</span>
+                                                </div>
+                                                <div class="col-md-4 col-sm-6">
+                                                <i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case 5</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="editor" id="submissionEditor">
+                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. In totam recusandae reiciendis consectetur esse et iure nisi qui perspiciatis. Laboriosam nemo illo nobis ipsa possimus vero eaque ut natus facilis?
+                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cum pariatur omnis autem laudantium sint possimus, eius recusandae maiores non, deserunt magnam totam ex? Sunt iste adipisci eius ipsum quam.
+                                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore pariatur rerum numquam tenetur nam distinctio voluptates labore quas, assumenda nemo fugiat quam explicabo nulla, molestias dolores sit vitae soluta esse?
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo harum natus atque adipisci veritatis voluptate, eaque cumque suscipit numquam repellendus qui quos. Odit quod distinctio atque cum temporibus? Enim, ea?
+                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tenetur officia quam eveniet. Ab modi deserunt ullam. Alias nulla ipsa illum soluta sed, quibusdam, ut sequi, iusto cupiditate necessitatibus rem eveniet.
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aperiam officia nostrum corporis, praesentium est magnam, deserunt omnis doloribus consectetur eum beatae odit pariatur, obcaecati sequi facere reiciendis ipsum fugiat?
+                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis laborum doloribus ducimus ab tempore eligendi in vel recusandae, veritatis architecto qui dolorum adipisci magnam incidunt vero nesciunt voluptatem excepturi officia?
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos repellendus ipsa tempore ullam ipsum pariatur sint, consectetur, explicabo voluptates adipisci aut recusandae sunt asperiores maxime nesciunt tenetur maiores quis beatae?
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus dolorum necessitatibus, asperiores mollitia laudantium libero harum voluptatum reiciendis non, provident perferendis eos eligendi ducimus quia, id repellat repudiandae impedit unde!
+                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minus atque blanditiis repudiandae labore dolores sapiente sint porro reprehenderit vero molestiae quidem recusandae incidunt eveniet architecto, provident fugit. Laudantium, nemo quibusdam?
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam suscipit repellendus tempora animi soluta vero voluptatem esse, hic, nihil est quibusdam officiis! Eveniet et enim iste. Dignissimos voluptas ratione corrupti!
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem a saepe excepturi aut numquam debitis ut explicabo sapiente, sequi necessitatibus magni libero in temporibus accusamus quia iusto quaerat. Animi, doloremque!
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum modi eveniet quo, quia sapiente atque omnis impedit deserunt hic vero similique praesentium quis voluptatem quos rem iste doloribus labore tempore.
+                                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nobis animi dignissimos delectus molestias accusantium? Nam nulla vel, accusamus, alias voluptas accusantium eius dolores natus provident quae sequi fuga at voluptatum!
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -361,15 +468,12 @@
             </div>
         </div>
       </div>
-    <script>
-        var countDownDate = new Date("<%= quiz.endDate %>").getTime();
-    </script>
-    <script src="/Common/js/bootstrap5.1.3.min.js"></script>
-    <script src="/LabPage/js/jquery.js"></script>
+    <script defer src="/Common/js/bootstrap5.1.3.min.js"></script>
+    <script defer src="/LabPage/js/jquery.js"></script>
     <script defer src="/Common/axios.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="/LabPage/js/ace.js"></script>
-    <script src="/LabPage/js/jquery.dataTables.min.js"></script>
-    <script src="/LabPage/js/script.js"></script>
+    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="/LabPage/js/ace.js"></script>
+    <script defer src="/LabPage/js/jquery.dataTables.min.js"></script>
+    <script defer src="/LabPage/js/script.js"></script>
 </body>
 </html>

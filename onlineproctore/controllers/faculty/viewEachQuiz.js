@@ -108,6 +108,11 @@ exports.getCourseQuiz = async (req, res) => {
             data.submission = labSubmission;
             var labQuestions = await LabQuestion.findLabQuestions({quiz: quizId});
             data.questions = labQuestions;
+            var labQuestionIds = labQuestions.map(ques => String(ques._id));
+            var testCases = await LabTestCase.find({labQuestion: {$in: labQuestionIds}});
+            data.testCaseFrequency = testCases.map(testCase => String(testCase.labQuestion._id)).reduce(function (acc, curr) {
+              return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+            }, {});
             return res.status(200).render('labPage/labpage', data);
           }
           return res.status(200).render('quiz/quiz', data);
@@ -859,15 +864,20 @@ exports.downloadStudentSubmissions = async (req, res) => {
 
 
 assignSets = async (quizId) => {
-  console.log(quizId);
   var quiz = await Quiz.findOneQuiz({_id: quizId});
   var enrollments = await Enrollment.findEnrollments({course: quiz.course._id, accountType: config.student});
   for(var i=0; i<enrollments.length; i++){
     if(quiz.labQuiz){
       var labSubmission = await LabSubmission.exists({quiz: quizId, user: enrollments[i].user._id});
-      if(labSubmission)
-        continue;
-      await LabSubmission.create({quiz: quizId, user: enrollments[i].user._id});
+      if(!labSubmission)
+        await LabSubmission.create({quiz: quizId, user: enrollments[i].user._id});
+      labSubmission = await LabSubmission.findOne({quiz: quizId, user: enrollments[i].user._id});
+      var labQuestions = await LabQuestion.find({quiz: quizId});
+      labSubmission.questionMarks = [];
+      for(var j=0;j<labQuestions.length;j++){
+        labSubmission.questionMarks.push(0);
+      }
+      labSubmission.save();
     }
     else{
       var submission = await Submission.exists({quiz: quizId, user: enrollments[i].user._id});

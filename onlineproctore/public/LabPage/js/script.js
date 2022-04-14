@@ -13,55 +13,75 @@ var temp=setInterval(function(){
     }
 },1000);
 
-var myfunc = setInterval(function() {
-    var now = new Date().getTime();
-    var timeleft = countDownDate - now;
-        
-    // Calculating the days, hours, minutes and seconds left
-    var hoursrem = Math.floor((timeleft) / (1000 * 60 * 60));
-    var hours=hoursrem
-    if(hoursrem<10){
-        hours="0"+hoursrem
+var quizId = document.getElementById("quizId").value;
+var time = axios.post(quizId + '/getTime', {});
+var timechange = false;
+time.then( t => {
+    var now = t.data.time;
+    countDownDate = t.data.countDownDate;
+    if(t.data.redirect){
+        window.location.href = t.data.url;
     }
-    var minutesrem = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-    var minutes = minutesrem
-    if(minutesrem<10){
-        minutes="0"+minutesrem
-    }
-    var secondsrem = Math.floor((timeleft % (1000 * 60)) / 1000);
-    var seconds=secondsrem
-    if(secondsrem<10){
-        seconds="0"+secondsrem;
-    }
-        
-    // Result is output to the specific element
-    document.getElementById("hours").innerHTML = hours + ":" 
-    document.getElementById("mins").innerHTML = minutes + ":" 
-    document.getElementById("secs").innerHTML = seconds 
-        
-    // Display the message when countdown is over
-    if (timeleft < 0) {
-        clearInterval(myfunc);
-        document.getElementById("hours").innerHTML = "" 
-        document.getElementById("mins").innerHTML = ""
-        document.getElementById("secs").innerHTML = ""
-        document.getElementById("end").innerHTML = "TIME UP!!";
-        var submissionId = document.getElementById("submissionId").value;
-        var quizId = document.getElementById("quizId").value;
-        var data = {
-            submissionId: submissionId
-        };
-        try{
-            var response = axios.post(quizId + '/endTest', data);
-            response.then( result => {
-                window.location.href = result.data.url;
+    var myfunc = setInterval(function() {
+        var timeleft = countDownDate - now;
+        now += 999;
+        // Calculating the days, hours, minutes and seconds left
+        var hoursrem = Math.floor((timeleft) / (1000 * 60 * 60));
+        var hours=hoursrem
+        if(hoursrem<10){
+            hours="0"+hoursrem
+        }
+        var minutesrem = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+        var minutes = minutesrem
+        if(minutesrem<10){
+            minutes="0"+minutesrem
+        }
+        var secondsrem = Math.floor((timeleft % (1000 * 60)) / 1000);
+        var seconds=secondsrem
+        if(secondsrem<10){
+            seconds="0"+secondsrem;
+        }
+            
+        // Result is output to the specific element
+        document.getElementById("hours").innerHTML = hours + ":" 
+        document.getElementById("mins").innerHTML = minutes + ":" 
+        document.getElementById("secs").innerHTML = seconds
+
+        if(timeleft < 5*60*1000 && !timechange){
+            time = axios.post(quizId + '/getTime', {});
+            timechange = true;
+            time.then(t1 => {
+                now = t1.data.time;
+                countDownDate = t1.data.countDownDate;
+                if(t1.data.redirect){
+                    window.location.href = t1.data.url;
+                }
             })
         }
-        catch(error){
-            console.log(error);
+
+        // Display the message when countdown is over
+        if (timeleft < 0) {
+            clearInterval(myfunc);
+            document.getElementById("hours").innerHTML = "" 
+            document.getElementById("mins").innerHTML = ""
+            document.getElementById("secs").innerHTML = ""
+            document.getElementById("end").innerHTML = "TIME UP!!";
+            var submissionId = document.getElementById("submissionId").value;
+            var data = {
+                submissionId: submissionId
+            };
+            try{
+                var response = axios.post(quizId + '/endTest', data);
+                response.then( result => {
+                    window.location.href = result.data.url;
+                })
+            }
+            catch(error){
+                console.log(error);
+            }
         }
-    }
-}, 1000);
+    }, 1000);
+})
 
 async function start(){
     let video = document.querySelector("#video");
@@ -91,8 +111,9 @@ function submitTest(){
     }
 }
 
-function openQuestion(num, question, maximumMarks, questionImageLinks, inputFormat, outputFormat, constraints, sampleTestCaseGiven, sampleInputTestCase, sampleOutputTestCase, sampleTestCaseExplanationGiven, sampleTestCaseExplanation, explanationImageLinks){
+function openQuestion(id, num, question, maximumMarks, questionImageLinks, inputFormat, outputFormat, constraints, sampleTestCaseGiven, sampleInputTestCase, sampleOutputTestCase, sampleTestCaseExplanationGiven, sampleTestCaseExplanation, explanationImageLinks){
     changeDiv('labDescription')
+    document.getElementById('questionId').value = id;
     document.getElementById('QuestionNumber').innerText = num+'.';
     document.getElementById('Question').innerText = question.slice(1,question.length-1);
     var qilinks = '';
@@ -115,8 +136,12 @@ function openQuestion(num, question, maximumMarks, questionImageLinks, inputForm
     if(document.getElementById('sampleTestCaseGiven').classList.contains('none')){
         document.getElementById('sampleTestCaseGiven').classList.remove('none');
     }
+    if(document.getElementById('runCode').classList.contains('none')){
+        document.getElementById('runCode').classList.remove('none');
+    }
     if(!JSON.parse(sampleTestCaseGiven)){
         document.getElementById('sampleTestCaseGiven').classList.add('none');
+        document.getElementById('runCode').classList.add('none');
         return;
     }
     document.getElementById('sampleInputTestCase').innerText = sampleInputTestCase.slice(1,sampleInputTestCase.length-1);
@@ -163,6 +188,22 @@ document.getElementById('upload')
     }
     fr.readAsText(this.files[0]);
 })
+
+function openRunModal(){
+    document.getElementById('sampleInputTestCaseModal').innerText = document.getElementById('sampleInputTestCase').innerText;
+    document.getElementById('sampleOutputTestCaseExpectedModal').innerText = document.getElementById('sampleOutputTestCase').innerText;
+    document.getElementById('sampleOutputTestCaseModal').innerText = document.getElementById('sampleOutputTestCase').innerText;
+}
+
+function openSubmitModal(testCaseFrequency){
+    testCaseFrequency = JSON.parse(testCaseFrequency);
+    testCaseCountHTML = '';
+    var questionId = document.getElementById('questionId').value;
+    for(var i=0;i<testCaseFrequency[questionId];i++){
+        testCaseCountHTML += '<div class="col-md-4 col-6"><i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case'+ (i+1)+'</span></div>';
+    }
+    document.getElementById('finalTestCaseDisplay').innerHTML = testCaseCountHTML;
+}
 
 $(document).ready(function() {
 
@@ -213,12 +254,14 @@ function copyToClipboard(text) {
     }
 }
 
-let editor;
+let editor,submissionEditor;
 window.onload = function() {
     editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/c_cpp");
-    // editor.setReadOnly(true);
+    submissionEditor = ace.edit("submissionEditor");
+    submissionEditor.setReadOnly(true);
+    submissionEditor.setTheme("ace/theme/monokai");
     // editor.session.setValue("/* Your Code Goes Here */");
 }
 
@@ -238,15 +281,12 @@ function changeLanguage() {
     let language = $("#languages").val();
     if(language == 'c' || language == 'cpp'){
         editor.session.setMode("ace/mode/c_cpp");
-        // editor.session.setValue("/* Your Code Goes Here */");
     }
     else if(language == 'java'){
         editor.session.setMode("ace/mode/java");
-    //     editor.session.setValue("/* Your Code Goes Here */");
     }
     else if(language == 'python'){
         editor.session.setMode("ace/mode/python");
-        // editor.session.setValue("# Your Code Goes Here");
     }
 }
 
@@ -266,9 +306,15 @@ function copy_helper(id1,id2){
     }, 1000);
 }
 
-function copy_code(){
-    navigator.clipboard.writeText(editor.getValue());
-    copy_helper("content_copy","done_all");
+function copy_code(flag){
+    if(flag){
+        navigator.clipboard.writeText(editor.getValue());
+        copy_helper("content_copy","done_all");
+    }
+    else{
+        navigator.clipboard.writeText(submissionEditor.getValue());
+        copy_helper("content_copy1","done_all1");
+    }
 }
 
 function copy_testcase(num){
