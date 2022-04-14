@@ -22,13 +22,13 @@ const LabTestCase = new Schema({
 
 LabTestCase.statics.findLabTestCases = async function(filter){
   var labTestCase = this;
-  var labTestCases = await labTestCase.find(filter).populate('submission');
+  var labTestCases = await labTestCase.find(filter).populate('labQuestion');
   return labTestCases;
 };
 
 LabTestCase.statics.findOneLabTestCase = async function(filter){
   var labTestCase = this;
-  var labTestCases = await labTestCase.findOne(filter).populate('submission');
+  var labTestCases = await labTestCase.findOne(filter).populate('labQuestion');
   return labTestCases;
 };
 

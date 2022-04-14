@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
 const LabTestCase = require('./labTestCase');
+const LabCode = require('./labCodes');
 
 const LabQuestion = new Schema({
   quiz: {
@@ -62,6 +63,11 @@ LabQuestion.post("remove", async function(res, next) {
   await LabTestCase.find({labQuestion: this._id}, async (err, labTestCases) => {
     for await (let labTestCase of labTestCases){
       labTestCase.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  await LabCode.find({labQuestion: this._id}, async (err, labCodes) => {
+    for await (let labCode of labCodes){
+      labCode.remove();
     }
   }).clone().catch(function(err){console.log(err)});
   next();

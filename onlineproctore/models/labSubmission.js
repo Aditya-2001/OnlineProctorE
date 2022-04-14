@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseAutopopulate = require('mongoose-autopopulate');
-
+const LabCode = require('./labCodes');
 
 const LabSubmission = new Schema({
   quiz: {
@@ -16,6 +16,10 @@ const LabSubmission = new Schema({
     required: true,
     autopopulate: true
   },
+  questionMarks: [{
+    type: Number,
+    default: 0
+  }],
   submitted: {
     type: Boolean,
     default: false
@@ -46,6 +50,15 @@ const LabSubmission = new Schema({
   }},{
     timestamps: true
 })
+
+LabSubmission.post("remove", async function(res, next) {
+  await LabCode.find({labSubmission: this._id}, async (err, labCodes) => {
+    for await (let labCode of labCodes){
+      labCode.remove();
+    }
+  }).clone().catch(function(err){console.log(err)});
+  next();
+});
 
 LabSubmission.statics.findLabSubmissions = async function(filter){
   var labSubmission = this;
