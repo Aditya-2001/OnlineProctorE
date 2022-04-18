@@ -113,7 +113,7 @@ function submitTest(){
 
 function openQuestion(id, num, question, maximumMarks, questionImageLinks, inputFormat, outputFormat, constraints, sampleTestCaseGiven, sampleInputTestCase, sampleOutputTestCase, sampleTestCaseExplanationGiven, sampleTestCaseExplanation, explanationImageLinks){
     changeDiv('labDescription')
-    document.getElementById('questionId').value = id;
+    document.getElementById('questionId').value = id.slice(1,id.length-1);
     document.getElementById('QuestionNumber').innerText = num+'.';
     document.getElementById('Question').innerText = question.slice(1,question.length-1);
     var qilinks = '';
@@ -193,6 +193,7 @@ function openRunModal(){
     document.getElementById('sampleInputTestCaseModal').innerText = document.getElementById('sampleInputTestCase').innerText;
     document.getElementById('sampleOutputTestCaseExpectedModal').innerText = document.getElementById('sampleOutputTestCase').innerText;
     document.getElementById('sampleOutputTestCaseModal').innerText = document.getElementById('sampleOutputTestCase').innerText;
+    runCode();
 }
 
 function openSubmitModal(testCaseFrequency){
@@ -203,6 +204,53 @@ function openSubmitModal(testCaseFrequency){
         testCaseCountHTML += '<div class="col-md-4 col-6"><i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case'+ (i+1)+'</span></div>';
     }
     document.getElementById('finalTestCaseDisplay').innerHTML = testCaseCountHTML;
+}
+
+async function runCode(){
+    var questionId = document.getElementById('questionId').value;
+    var quizId = document.getElementById('quizId').value;
+    var submissionId = document.getElementById("submissionId").value;
+    var code = editor.getValue();
+    var language;
+    if(editor.session.$modeId.includes('python'))
+        language = 'python';
+    else if(editor.session.$modeId.includes('cpp'))
+        language = 'cpp';
+    else if(editor.session.$modeId.includes('c'))
+        language = 'c';
+    else if(editor.session.$modeId.includes('java'))
+        language = 'java';
+    document.getElementById('sampleOutputTestCaseModal').innerHTML = '';
+    if(!document.getElementById('testCasePass').classList.contains('none')){
+        document.getElementById('testCasePass').classList.add('none');
+    }
+    if(!document.getElementById('testCaseFail').classList.contains('none')){
+        document.getElementById('testCaseFail').classList.add('none');
+    }
+    if(!document.getElementById('testCaseError').classList.contains('none')){
+        document.getElementById('testCaseError').classList.add('none');
+    }
+    try{
+        var data = {language: language, code: code, questionId: questionId, submissionId: submissionId};
+        var response = await axios.post(quizId+'/runCode', data);
+        var result = response.data;
+        document.getElementById('sampleOutputTestCaseModal').innerHTML = result.stdout;
+        if(result.success){
+            document.getElementById('testCasePass').classList.remove('none');
+        }
+        else{
+            document.getElementById('testCaseFail').classList.remove('none');
+            if(result.exitCode != 0 || result.stderr != '' || result.errorType != undefined){
+                document.getElementById('testCaseError').classList.remove('none');
+                var stderr = result.stderr;
+                if(stderr == '')
+                    stderr = result.errorType;
+                document.getElementById('testCaseError').innerHTML = stderr;
+            }
+        }
+    }catch(error){
+        console.log("Error :", error);
+    }
 }
 
 $(document).ready(function() {

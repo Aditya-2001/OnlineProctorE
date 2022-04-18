@@ -19,7 +19,7 @@ const {getQuestions, markAnswer, submit, endTest,
   tabChanged, mobileDetected, multipleFace, noPerson, 
   getTime, getQuizDetectionSettings, headPoseDetection,
   givingQuiz, exitingQuiz, uploadPDF, uploadPDFFile,
-  downloadSubmission} = require('../../controllers/studentTa/quiz');
+  downloadSubmission, runCode} = require('../../controllers/studentTa/quiz');
 
 const {authFacultyTaQuiz, authStudentQuiz, authFacultyTaQuizAnalysis} = require('../../controllers/studentTa/courses');
 
@@ -143,6 +143,9 @@ router.route('/getTime')
 
 router.route('/ipAddress')
   .post(authStudentQuiz, ipAddress);
+
+router.route('/runCode')
+  .post(authStudentQuiz, runCode);
 
 router.route('/givingQuiz')
   .post(authStudentQuiz, givingQuiz);
