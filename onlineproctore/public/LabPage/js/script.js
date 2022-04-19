@@ -1,6 +1,7 @@
 var wid;
 var leftTime=10;
 var testStarted = true;
+var testCaseCount = new Map();
 var temp=setInterval(function(){
     leftTime-=1;
     if(leftTime==0){
@@ -114,6 +115,7 @@ function submitTest(){
 function openQuestion(id, num, question, maximumMarks, questionImageLinks, inputFormat, outputFormat, constraints, sampleTestCaseGiven, sampleInputTestCase, sampleOutputTestCase, sampleTestCaseExplanationGiven, sampleTestCaseExplanation, explanationImageLinks){
     changeDiv('labDescription')
     document.getElementById('questionId').value = id.slice(1,id.length-1);
+    document.getElementById('questionNumber').value = num;
     document.getElementById('QuestionNumber').innerText = num+'.';
     document.getElementById('Question').innerText = question.slice(1,question.length-1);
     var qilinks = '';
@@ -189,6 +191,22 @@ document.getElementById('upload')
     fr.readAsText(this.files[0]);
 })
 
+function filterSubmissions(questionNumber){
+    questionNumber = questionNumber.value;
+    $(".questionDisplayNumber").each(function(){
+        $(this).closest("tr").show();
+    });
+    if(questionNumber == 'all')
+        return;
+    $(".questionDisplayNumber").each(function(){
+        if ($(this).text() == 'Question '+questionNumber){
+            $(this).closest("tr").show();
+        } else {
+            $(this).closest("tr").hide();
+        }
+    });
+}
+
 function openRunModal(){
     document.getElementById('sampleInputTestCaseModal').innerText = document.getElementById('sampleInputTestCase').innerText;
     document.getElementById('sampleOutputTestCaseExpectedModal').innerText = document.getElementById('sampleOutputTestCase').innerText;
@@ -196,12 +214,13 @@ function openRunModal(){
     runCode();
 }
 
-function openSubmitModal(testCaseFrequency){
-    testCaseFrequency = JSON.parse(testCaseFrequency);
-    testCaseCountHTML = '';
-    var questionId = document.getElementById('questionId').value;
-    for(var i=0;i<testCaseFrequency[questionId];i++){
-        testCaseCountHTML += '<div class="col-md-4 col-6"><i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case'+ (i+1)+'</span></div>';
+function openSubmitModal(totalTestCases, correctTestCases){
+    var testCaseCountHTML = '';
+    for(var i=0;i<correctTestCases;i++){
+        testCaseCountHTML += '<div class="col-md-4 col-6"><i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case '+ (i+1)+'</span></div>';
+    }
+    for(var i=0;i<totalTestCases-correctTestCases;i++){
+        testCaseCountHTML += '<div class="col-md-4 col-6"><i class="icon fa fa-remove text-danger fa-fw red"></i><span class="incorrect-test">Test Case '+ (i+parseInt(correctTestCases)+1)+'</span></div>';
     }
     document.getElementById('finalTestCaseDisplay').innerHTML = testCaseCountHTML;
 }
@@ -248,6 +267,58 @@ async function runCode(){
                 document.getElementById('testCaseError').innerHTML = stderr;
             }
         }
+    }catch(error){
+        console.log("Error :", error);
+    }
+}
+
+async function submitCode(){
+    var questionId = document.getElementById('questionId').value;
+    var quizId = document.getElementById('quizId').value;
+    var submissionId = document.getElementById("submissionId").value;
+    var questionNumber = document.getElementById('questionNumber').value;
+    var code = editor.getValue();
+    var language;
+    if(editor.session.$modeId.includes('python'))
+        language = 'python';
+    else if(editor.session.$modeId.includes('cpp'))
+        language = 'cpp';
+    else if(editor.session.$modeId.includes('c'))
+        language = 'c';
+    else if(editor.session.$modeId.includes('java'))
+        language = 'java';
+    try{
+        document.getElementById('questionScore').innerHTML = '0';
+        document.getElementById('finalTestCaseDisplay').innerHTML = '';
+        var date = new Date();
+        var data = {language: language, code: code, questionId: questionId, submissionId: submissionId, questionNumber: questionNumber};
+        var response = await axios.post(quizId+'/submitCode', data);
+        var result = await response.data;
+        document.getElementById('questionScore').innerHTML = parseFloat(result.marks).toFixed(2);
+        var marksTillNow = document.getElementById('marks'+questionId).innerText;
+        var score = Math.max(parseFloat(marksTillNow), parseFloat(result.marks));
+        document.getElementById('marks'+questionId).innerText = parseFloat(score).toFixed(2);
+        document.getElementById('marksColor'+questionId).classList = [];
+        if(score == 0){
+            document.getElementById('marksColor'+questionId).classList.add('red');
+        }
+        else if(score < result.maximumMarks){
+            document.getElementById('marksColor'+questionId).classList.add('yellow');
+        }
+        else{
+            document.getElementById('marksColor'+questionId).classList.add('green');
+        }
+        testCaseCount.set(questionId, result.totalTestCases);
+        await openSubmitModal(result.totalTestCases, result.correctTestCases);
+        var submission = '<tr><td class="questionDisplayNumber">Question '+questionNumber+'</td>';
+        submission += '<td>'+parseFloat(result.marks).toFixed(2)+'</td>';
+        submission += '<td>'+result.totalTime+'</td>';
+        submission += '<td>'+result.totalMemory+'</td>';
+        submission += '<td>'+language.toUpperCase()+'</td>';
+        submission += '<textarea class="none" name="labCodeSubmision" id="labCodeSubmision'+result.id+'">'+String(code)+'</textarea>';
+        submission += '<td><a data-bs-toggle="modal" data-bs-target="#modal3" href="#" onclick="viewSubmission(\''+result.correctTestCases+'\',\''+result.totalTestCases+'\',\''+language+'\')">view</a></td>';
+        submission += '<td>'+String(date).slice(0,24)+'</td>';
+        $('#questionSubmissions').append(submission);
     }catch(error){
         console.log("Error :", error);
     }
@@ -311,6 +382,23 @@ window.onload = function() {
     submissionEditor.setReadOnly(true);
     submissionEditor.setTheme("ace/theme/monokai");
     // editor.session.setValue("/* Your Code Goes Here */");
+}
+
+function viewSubmission(id, correctTestCases, totalTestCases, language){
+    var code = document.getElementById('labCodeSubmision'+id).innerText;
+    if(language == 'cpp')
+        language = 'c_'+language;
+    submissionEditor.session.setMode("ace/mode/"+language);
+    submissionEditor.session.setValue(code);
+    document.getElementById('veiwSubmissionTestCases').innerHTML = '';
+    var testCaseCountHTML = '';
+    for(var i=0;i<correctTestCases;i++){
+        testCaseCountHTML += '<div class="col-md-4 col-6"><i class="icon fa fa-check text-success fa-fw"></i><span class="correct-test">Test Case '+ (i+1)+'</span></div>';
+    }
+    for(var i=0;i<totalTestCases-correctTestCases;i++){
+        testCaseCountHTML += '<div class="col-md-4 col-6"><i class="icon fa fa-remove text-danger fa-fw red"></i><span class="incorrect-test">Test Case '+ (i+parseInt(correctTestCases)+1)+'</span></div>';
+    }
+    document.getElementById('veiwSubmissionTestCases').innerHTML = testCaseCountHTML;
 }
 
 function changeTheme() {

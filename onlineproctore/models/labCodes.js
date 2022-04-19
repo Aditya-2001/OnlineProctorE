@@ -23,7 +23,15 @@ const LabCode = new Schema({
     type: String,
     default: ''
   },
+  questionNumber: {
+    type: String,
+    default: ''
+  },
   testCasesPassed: {
+    type: Number,
+    default: 0
+  },
+  totalTestCases: {
     type: Number,
     default: 0
   },

@@ -342,3 +342,17 @@ exports.runCode = async (req, res) => {
     }
   });
 }
+
+exports.submitCode = async (req, res) => {
+  var labCode = await LabCode.create({labQuestion: req.body.questionId, labSubmission: req.body.submissionId});
+  labCode.code = req.body.code;
+  labCode.language = req.body.language;
+  labCode.questionNumber = req.body.questionNumber;
+  labCode.save();
+  var jobSent = await executeCode.add({codeId: labCode._id, flag: false});
+  executeCode.on('completed', (job, result) => {
+    if(job.id == jobSent.id){
+      return res.status(200).json(result);
+    }
+  });
+}

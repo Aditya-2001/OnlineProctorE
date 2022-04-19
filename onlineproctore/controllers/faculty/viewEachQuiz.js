@@ -17,6 +17,7 @@ const {removeFile} = require('../../functions');
 const User = require('../../models/user');
 const Quiz = require('../../models/quiz');
 const Course = require('../../models/course');
+const LabCode = require('../../models/labCodes');
 const Question = require('../../models/question');
 const AnswerPDF = require('../../models/answerPDF');
 const Enrollment = require('../../models/enrollment');
@@ -108,11 +109,8 @@ exports.getCourseQuiz = async (req, res) => {
             data.submission = labSubmission;
             var labQuestions = await LabQuestion.findLabQuestions({quiz: quizId});
             data.questions = labQuestions;
-            var labQuestionIds = labQuestions.map(ques => String(ques._id));
-            var testCases = await LabTestCase.find({labQuestion: {$in: labQuestionIds}});
-            data.testCaseFrequency = testCases.map(testCase => String(testCase.labQuestion._id)).reduce(function (acc, curr) {
-              return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-            }, {});
+            var labCodes = await LabCode.find({labSubmission: labSubmission._id});
+            data.labCodes = labCodes;
             return res.status(200).render('labPage/labpage', data);
           }
           return res.status(200).render('quiz/quiz', data);
@@ -866,18 +864,25 @@ exports.downloadStudentSubmissions = async (req, res) => {
 assignSets = async (quizId) => {
   var quiz = await Quiz.findOneQuiz({_id: quizId});
   var enrollments = await Enrollment.findEnrollments({course: quiz.course._id, accountType: config.student});
+  var labQuestions = await LabQuestion.find({quiz: quizId});
+  var questionMarks = new Map();
+  for(var j=0;j<labQuestions.length;j++){
+    questionMarks.set(String(labQuestions[j]._id), '0');
+  }
   for(var i=0; i<enrollments.length; i++){
     if(quiz.labQuiz){
       var labSubmission = await LabSubmission.exists({quiz: quizId, user: enrollments[i].user._id});
-      if(!labSubmission)
-        await LabSubmission.create({quiz: quizId, user: enrollments[i].user._id});
-      labSubmission = await LabSubmission.findOne({quiz: quizId, user: enrollments[i].user._id});
-      var labQuestions = await LabQuestion.find({quiz: quizId});
-      labSubmission.questionMarks = [];
-      for(var j=0;j<labQuestions.length;j++){
-        labSubmission.questionMarks.push(0);
+      if(labSubmission){
+        labSubmission = await LabSubmission.findOne({quiz: quizId, user: enrollments[i].user._id});
+        for(var key of questionMarks.keys()){
+          if(labSubmission.questionMarks.has(key)){
+            questionMarks.set(key, Math.max(parseFloat(questionMarks.get(key)), parseFloat(labSubmission.questionMarks.get(key))));
+          }
+        }
+        labSubmission.questionMarks = questionMarks;
+        labSubmission.save();
       }
-      labSubmission.save();
+      await LabSubmission.create({quiz: quizId, user: enrollments[i].user._id, questionMarks: questionMarks});
     }
     else{
       var submission = await Submission.exists({quiz: quizId, user: enrollments[i].user._id});
