@@ -16,10 +16,10 @@ const LabSubmission = new Schema({
     required: true,
     autopopulate: true
   },
-  questionMarks: [{
-    type: Number,
-    default: 0
-  }],
+  questionMarks: {
+    type: Map,
+    of: String
+  },
   submitted: {
     type: Boolean,
     default: false

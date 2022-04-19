@@ -9,12 +9,17 @@ const { removeFile } = require("../../functions");
 // Models
 const Quiz = require("../../models/quiz");
 const User = require("../../models/user");
+const LabCode = require('../../models/labCodes');
 const Question = require('../../models/question');
 const AnswerPDF = require('../../models/answerPDF');
 const Submission = require('../../models/submission');
+const LabQuestion = require('../../models/labQuestion');
 const LabSubmission = require('../../models/labSubmission');
 const IllegalAttempt = require('../../models/illegalAttempt');
 const QuestionSubmission = require('../../models/questionSubmission');
+
+// Queues
+const {executeCode} = require('../../queues/executeCode');
 
 
 const storage = multer.diskStorage({
@@ -320,4 +325,34 @@ exports.downloadSubmission = async (req, res) => {
     console.log(err);
     res.status(204).send();
   }
+}
+
+exports.runCode = async (req, res) => {
+  var labCode = await LabCode.exists({labQuestion: req.body.questionId, labSubmission: req.body.submissionId, tempCode: true});
+  if(!labCode)
+    await LabCode.create({labQuestion: req.body.questionId, labSubmission: req.body.submissionId, tempCode: true});
+  labCode = await LabCode.findOneLabCode({labQuestion: req.body.questionId, labSubmission: req.body.submissionId, tempCode: true});
+  labCode.code = req.body.code;
+  labCode.language = req.body.language;
+  labCode.save();
+  var jobSent = await executeCode.add({codeId: labCode._id, flag: true});
+  executeCode.on('completed', (job, result) => {
+    if(job.id == jobSent.id){
+      return res.status(200).json(result);
+    }
+  });
+}
+
+exports.submitCode = async (req, res) => {
+  var labCode = await LabCode.create({labQuestion: req.body.questionId, labSubmission: req.body.submissionId});
+  labCode.code = req.body.code;
+  labCode.language = req.body.language;
+  labCode.questionNumber = req.body.questionNumber;
+  labCode.save();
+  var jobSent = await executeCode.add({codeId: labCode._id, flag: false});
+  executeCode.on('completed', (job, result) => {
+    if(job.id == jobSent.id){
+      return res.status(200).json(result);
+    }
+  });
 }

@@ -15,11 +15,23 @@ const LabCode = new Schema({
     required: true,
     autopopulate: true
   },
+  tempCode: {
+    type: Boolean,
+    default: false
+  },
   code: {
     type: String,
     default: ''
   },
+  questionNumber: {
+    type: String,
+    default: ''
+  },
   testCasesPassed: {
+    type: Number,
+    default: 0
+  },
+  totalTestCases: {
     type: Number,
     default: 0
   },
@@ -48,13 +60,13 @@ const LabCode = new Schema({
 
 LabCode.statics.findLabCodes = async function(filter){
   var labCode = this;
-  var labCodes = await labCode.find(filter).populate('submission');
+  var labCodes = await labCode.find(filter).populate('labQuestion').populate('labSubmission');
   return labCodes;
 };
 
 LabCode.statics.findOneLabCode = async function(filter){
   var labCode = this;
-  var labCodes = await labCode.findOne(filter).populate('submission');
+  var labCodes = await labCode.findOne(filter).populate('labQuestion').populate('labSubmission');
   return labCodes;
 };
 
